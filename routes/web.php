@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -32,8 +33,11 @@ Route::resource('Category', CategoryController::class)->names([
     'update' => 'Category.update',
     'destroy' => 'Category.destroy',
 ]);
-// Route::resource('categories', CategoryController::class);
-
+Route::resource('/Product', ProductController::class)->names([
+    'index' => 'Product',
+      'create'  => 'Product.create',
+      'store'  => 'Product.store',
+]);
 
 
 
