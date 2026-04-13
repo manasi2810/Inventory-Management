@@ -148,6 +148,21 @@
                             <p style="color:red;">No Main Image Found</p>
                         @endif
                     </div>
+                    <div class="mb-2">
+                        <label>Gallery Images</label><br>
+
+                        @php
+                            $galleryImages = $product->images()->where('type','gallery')->get();
+                        @endphp
+
+                        @if($galleryImages->count())
+                            @foreach($galleryImages as $img)
+                                <img src="{{ asset('storage/' . $img->image_path) }}" width="100" style="margin-right:10px;">
+                            @endforeach
+                        @else
+                            <p style="color:red;">No Gallery Images Found</p>
+                        @endif
+                    </div>
 
                     <div class="form-group">
                         <label>Change Main Image</label>

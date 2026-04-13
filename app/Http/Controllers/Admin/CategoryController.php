@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Validation\Rule;
 
+
 class CategoryController extends Controller
 {
     public function index(Request $request)
@@ -40,19 +41,20 @@ public function store(Request $request)
     return view('admin.category.edit', compact('category'));
 }
 
- public function update(Request $request, Category $category)
+ public function update(Request $request, Category $Category)
 {
-    // Only validate description
     $request->validate([
+        'name' => 'required|string|max:255',
         'description' => 'nullable|string',
     ]);
 
-    // Update description
-    $category->description = $request->description;
-    $category->save();
+    $Category->update([
+        'name' => $request->name,
+        'description' => $request->description,
+    ]);
 
     return redirect()->route('Category')
-                     ->with('success', 'Category description updated successfully!');
+        ->with('success', 'Category updated successfully!');
 }
     public function destroy(Category $category)
     {

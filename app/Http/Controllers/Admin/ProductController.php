@@ -9,6 +9,7 @@ use App\Models\ProductImage;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -47,12 +48,7 @@ class ProductController extends Controller
             'alt_text' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255'
         ]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    //     // Create product
-    //       if ($validator->fails()) {
-    //     dd($validator->errors());  
-    // }
-
-    // dd($request->all());
+   
         $product = Product::create($request->only([
             'name','category_id','sku','description','opening_stock','pack_size',
             'moq','uom','price','feature_product','status','page_title','alt_text','meta_keywords'
@@ -89,14 +85,14 @@ class ProductController extends Controller
         $product = $Product->load('images');
         return view('admin.Product.edit', compact('product', 'categories'));
     }
-
     // Update product
-   public function update(Request $request, Product $product)
-{
-    $request->validate([
+    
+    public function update(Request $request, Product $Product)
+    {
+        $request->validate([
         'name' => 'required|string',
         'category_id' => 'required|exists:categories,id',
-        'sku' => 'nullable|unique:products,sku,' . $product->id,
+       'sku' => 'nullable',
         'price' => 'required|numeric',
         'uom' => 'required|string',
         'status' => 'required',
@@ -104,8 +100,7 @@ class ProductController extends Controller
         'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
     ]);
 
-    // ✅ SAFE UPDATE
-    $product->update([
+    $Product->update([
         'name' => $request->name,
         'category_id' => $request->category_id,
         'sku' => $request->sku,
@@ -122,12 +117,9 @@ class ProductController extends Controller
         'meta_keywords' => $request->meta_keywords,
     ]);
 
-    // =========================
-    // MAIN IMAGE (ONLY ONCE)
-    // =========================
     if ($request->hasFile('main_image')) {
 
-        $oldMain = $product->images()->where('type', 'main')->first();
+        $oldMain = $Product->images()->where('type', 'main')->first();
 
         if ($oldMain) {
             Storage::disk('public')->delete($oldMain->image_path);
@@ -139,15 +131,12 @@ class ProductController extends Controller
 
         $path = $file->storeAs('products', $filename, 'public');
 
-        $product->images()->create([
+        $Product->images()->create([
             'type' => 'main',
             'image_path' => $path
         ]);
     }
 
-    // =========================
-    // GALLERY IMAGES (FIXED)
-    // =========================
     if ($request->hasFile('gallery_images')) {
 
         foreach ($request->file('gallery_images') as $image) {
@@ -155,20 +144,20 @@ class ProductController extends Controller
             $filename = time().'_'.$image->getClientOriginalName();
             $path = $image->storeAs('products', $filename, 'public');
 
-            $product->images()->create([
+            $Product->images()->create([
                 'type' => 'gallery',
                 'image_path' => $path
             ]);
         }
-    }
-  
+    } 
         return redirect('/Product')
     ->with('success', 'Category created successfully');
 }
+
+
     // Delete product
     public function destroy(Product $Product)
     {
-        // Delete all related images
         foreach($Product->images as $img){
             Storage::disk('public')->delete($img->image_path);
             $img->delete();

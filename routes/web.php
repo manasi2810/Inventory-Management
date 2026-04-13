@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\VendorController;
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -38,7 +40,14 @@ Route::resource('/Product', ProductController::class)->names([
       'create'  => 'Product.create',
       'store'  => 'Product.store',
 ]);
-
+Route::resource('/Vendor', VendorController::class)->names([
+    'index' => 'Vendor.index',
+    'create' => 'Vendor.create',
+    'store' => 'Vendor.store',
+    'edit' => 'Vendor.edit',
+    'update' => 'Vendor.update',
+    'destroy' => 'Vendor.destroy',
+]);
 
 
 Route::middleware('auth')->group(function () {

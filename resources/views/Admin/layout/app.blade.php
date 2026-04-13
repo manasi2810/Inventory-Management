@@ -104,66 +104,151 @@
       </div> 
       </li> 
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> 
-         <li class="nav-item ">
-            <a href="" class="nav-link{{ (request()->is('dashboard')) ? ' active' : '' }}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
+   <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+
+        {{-- ================= DASHBOARD ================= --}}
+        <li class="nav-item">
+            <a href="{{ url('/dashboard') }}"
+               class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Dashboard</p>
             </a>
-          </li>   
-          <li class="nav-item">
-            <a href="{{route('Employee')}}" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-               Employee 
-              </p>
-            </a> 
-          </li>
-          <li class="nav-item ">
-            <a href="{{route('Role')}}" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
-              <p>
-                Role
-              </p>
+        </li>
+
+        {{-- ================= USER MANAGEMENT ================= --}}
+        <li class="nav-header">USER MANAGEMENT</li>
+
+        @can('manage users')
+        <li class="nav-item">
+            <a href="{{ route('Employee') }}"
+               class="nav-link {{ request()->is('Employee*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-user"></i>
+                <p>Employees</p>
             </a>
-          </li> 
-          <li class="nav-item ">
-            <a href="{{route('Category')}}" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>
-              Category
-              </p>
+        </li>
+        @endcan
+
+        @can('manage roles')
+        <li class="nav-item">
+            <a href="{{ route('Role') }}"
+               class="nav-link {{ request()->is('Role*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-user-shield"></i>
+                <p>Roles & Permissions</p>
             </a>
-          </li> 
-           <li class="nav-item ">
-            <a href="" class="nav-link">
-            <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-              Workflow
-              </p>
+        </li>
+        @endcan
+
+        {{-- ================= MASTER DATA ================= --}}
+        <li class="nav-header">MASTER DATA</li>
+
+        <li class="nav-item">
+            <a href="{{ route('Category') }}"
+               class="nav-link {{ request()->is('Category*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-list"></i>
+                <p>Categories</p>
             </a>
-          </li> 
-           <li class="nav-item ">
-            <a href="" class="nav-link">
-            <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-              Payroll
-              </p>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('Product') }}"
+               class="nav-link {{ request()->is('Product*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-box"></i>
+                <p>Products</p>
             </a>
-          </li> 
-          <li class="nav-item ">
-                <a href="" class="nav-link">
-                <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-              Reports
-              </p>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('Vendor.index') }}"
+               class="nav-link {{ request()->is('Vendor*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-truck"></i>
+                <p>Vendors</p>
             </a>
-          </li>
-        </ul>
-      </nav>
+        </li>
+
+        {{-- ================= STOCK MANAGEMENT ================= --}}
+        <li class="nav-header">STOCK MANAGEMENT</li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-arrow-down"></i>
+                <p>Stock In</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-arrow-up"></i>
+                <p>Stock Out</p>
+            </a>
+        </li>
+
+        {{-- ================= PURCHASE ================= --}}
+        <li class="nav-header">PURCHASE</li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-shopping-cart"></i>
+                <p>Purchase Orders</p>
+            </a>
+        </li>
+
+        {{-- ================= SALES ================= --}}
+        <li class="nav-header">SALES</li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-truck-loading"></i>
+                <p>Delivery Challan</p>
+            </a>
+        </li>
+
+        {{-- ================= REPORTS ================= --}}
+        <li class="nav-header">REPORTS</li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-chart-line"></i>
+                <p>Stock Report</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-file-invoice"></i>
+                <p>Purchase Report</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <p>Sales Report</p>
+            </a>
+        </li>
+
+        {{-- ================= ACTIVITY LOGS ================= --}}
+        @can('view logs')
+        <li class="nav-header">ACTIVITY</li>
+
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link">
+                <i class="nav-icon fas fa-history"></i>
+                <p>Activity Logs</p>
+            </a>
+        </li>
+        @endcan
+
+    </ul>
+</nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
