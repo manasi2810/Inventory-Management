@@ -41,9 +41,9 @@
 <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper"> 
   <!-- Preloader -->
-  <div class="preloader flex-column justify-content-center align-items-center">
+  {{-- <div class="preloader flex-column justify-content-center align-items-center">
     <img class="animation__shake" src="g" alt="Logo" height="100" width="500">
-  </div> 
+  </div>  --}}
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -104,151 +104,167 @@
       </div> 
       </li> 
       <!-- Sidebar Menu -->
-   <nav class="mt-2">
-    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-
-        {{-- ================= DASHBOARD ================= --}}
-        <li class="nav-item">
-            <a href="{{ url('/dashboard') }}"
-               class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Dashboard</p>
+     <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="{{ url('/dashboard') }}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Dashboard 
+              </p>
             </a>
-        </li>
-
-        {{-- ================= USER MANAGEMENT ================= --}}
-        <li class="nav-header">USER MANAGEMENT</li>
-
-        @can('manage users')
-        <li class="nav-item">
-            <a href="{{ route('Employee') }}"
-               class="nav-link {{ request()->is('Employee*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-user"></i>
-                <p>Employees</p>
+          </li>
+         
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                USER MANAGEMENT 
+                <i class="fas fa-angle-left right"></i> 
+              </p>
             </a>
-        </li>
-        @endcan
-
-        @can('manage roles')
-        <li class="nav-item">
-            <a href="{{ route('Role') }}"
-               class="nav-link {{ request()->is('Role*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-user-shield"></i>
-                <p>Roles & Permissions</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('Role') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Roles & Permissions</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('Employee') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Employees</p>
+                </a>
+              </li> 
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+              MASTER DATA
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
-        </li>
-        @endcan
-
-        {{-- ================= MASTER DATA ================= --}}
-        <li class="nav-header">MASTER DATA</li>
-
-        <li class="nav-item">
-            <a href="{{ route('Category') }}"
-               class="nav-link {{ request()->is('Category*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-list"></i>
-                <p>Categories</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('Category') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Categories</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('Product') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Products</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('Vendor.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Vendors</p>
+                </a>
+              </li> 
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tree"></i>
+              <p>
+               STOCK MANAGEMENT
+                <i class="fas fa-angle-left right"></i>
+              </p>
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('Product') }}"
-               class="nav-link {{ request()->is('Product*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-box"></i>
-                <p>Products</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Stock In</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Stock Out</p>
+                </a>
+              </li> 
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                PURCHASE
+                <i class="fas fa-angle-left right"></i>
+              </p>
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('Vendor.index') }}"
-               class="nav-link {{ request()->is('Vendor*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-truck"></i>
-                <p>Vendors</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Purchase Orders</p>
+                </a>
+              </li> 
+            </ul>
+          </li> 
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                SALES
+                <i class="fas fa-angle-left right"></i>
+              </p>
             </a>
-        </li>
-
-        {{-- ================= STOCK MANAGEMENT ================= --}}
-        <li class="nav-header">STOCK MANAGEMENT</li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-arrow-down"></i>
-                <p>Stock In</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Delivery Challan</p>
+                </a>
+              </li> 
+            </ul>
+          </li> 
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                REPORTS
+                <i class="fas fa-angle-left right"></i>
+              </p>
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-arrow-up"></i>
-                <p>Stock Out</p>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Stock Report</p>
+                </a>
+              </li> 
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Purchase Report</p>
+                </a>
+              </li> 
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Sales Report</p>
+                </a>
+              </li> 
+            </ul>
+          </li> 
+           <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Activity Logs 
+              </p>
             </a>
-        </li>
-
-        {{-- ================= PURCHASE ================= --}}
-        <li class="nav-header">PURCHASE</li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-shopping-cart"></i>
-                <p>Purchase Orders</p>
-            </a>
-        </li>
-
-        {{-- ================= SALES ================= --}}
-        <li class="nav-header">SALES</li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-truck-loading"></i>
-                <p>Delivery Challan</p>
-            </a>
-        </li>
-
-        {{-- ================= REPORTS ================= --}}
-        <li class="nav-header">REPORTS</li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-chart-line"></i>
-                <p>Stock Report</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-file-invoice"></i>
-                <p>Purchase Report</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-chart-bar"></i>
-                <p>Sales Report</p>
-            </a>
-        </li>
-
-        {{-- ================= ACTIVITY LOGS ================= --}}
-        @can('view logs')
-        <li class="nav-header">ACTIVITY</li>
-
-        <li class="nav-item">
-            <a href="#"
-               class="nav-link">
-                <i class="nav-icon fas fa-history"></i>
-                <p>Activity Logs</p>
-            </a>
-        </li>
-        @endcan
-
-    </ul>
-</nav>
+          </li>
+        </ul>
+      </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
