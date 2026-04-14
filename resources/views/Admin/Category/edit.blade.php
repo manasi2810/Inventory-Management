@@ -1,62 +1,62 @@
-@extends('admin.layout.app', ['activePage' => 'category', 'titlePage' => __('Edit Category')])
+@extends('adminlte::page')
+
+@section('title', 'Edit Category')
+
+@section('content_header')
+    <h1>Edit Category</h1>
+@stop
 
 @section('content')
-<div class="content-wrapper">
 
-    <!-- Header -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <h1>Edit Category</h1>
-        </div>
-    </section>
+<div class="row">
+    <div class="col-md-6">
 
-    <!-- Main -->
-    <section class="content">
+        <div class="card card-primary">
+            <div class="card-body">
 
-        <div class="container-fluid">
+                <form action="{{ route('Category.update', $category->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
 
-            <div class="card card-primary">
-                <div class="card-body">
+                    <!-- Category Name -->
+                    <div class="form-group">
+                        <label>Category Name</label>
+                        <input type="text" 
+                               name="name" 
+                               class="form-control"
+                               value="{{ old('name', $category->name) }}" 
+                               required>
 
-                    <form action="{{ route('Category.update', $category->id) }}" method="POST">
-    @csrf
-    @method('PUT')
+                        @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-    <!-- Category Name -->
-    <div class="form-group">
-        <label>Category Name</label>
-        <input type="text" 
-               name="name" 
-               class="form-control"
-               value="{{ old('name', $category->name) }}" 
-               required>
-        @error('name')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control">{{ old('description', $category->description) }}</textarea>
 
-    <!-- Description -->
-    <div class="form-group">
-        <label>Description</label>
-        <textarea name="description" class="form-control">{{ old('description', $category->description) }}</textarea>
-        @error('description')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                        @error('description')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-    <!-- Buttons -->
-    <button type="submit" class="btn btn-success">
-        <i class="fas fa-save"></i> Update Category
-    </button>
-    <a href="{{ route('Category') }}" class="btn btn-secondary">Cancel</a>
-</form>
+                    <!-- Buttons -->
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Update Category
+                    </button>
 
-                </div>
+                    <a href="{{ route('Category') }}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </form>
+
             </div>
-
         </div>
 
-    </section>
-
+    </div>
 </div>
-@endsection
+
+@stop
