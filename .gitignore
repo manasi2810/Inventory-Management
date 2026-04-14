@@ -25,6 +25,9 @@ Thumbs.db
 /public/vendor
 
 /public/dist
+/public/asset/dist
+/public/asset/docs
+/public/asset/plugins
 /public/plugins
 
 
@@ -33,6 +36,7 @@ Thumbs.db
 /public/storage
 
 /storage/*.key
+/storage
 /storage/pail
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
