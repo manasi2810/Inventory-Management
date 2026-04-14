@@ -1,30 +1,38 @@
 # --- Laravel Core ---
-/node_modules
 /vendor
+/node_modules
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-*.log
+.env.*
+
+# --- Laravel Cache ---
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
 
 # --- IDE & System Files ---
-/.fleet
 /.idea
-/.nova
-/.phpunit.cache
 /.vscode
+/.nova
 /.zed
-/auth.json
-Homestead.json
-Homestead.yaml
+/.fleet
+auth.json
 Thumbs.db
 .DS_Store
 **/.DS_Store
 **/Thumbs.db
 
-# --- AdminLTE & Asset Handling ---
-# Blocks the heavy template folders you downloaded
+# --- PHPUnit / Logs ---
+.phpunit.result.cache
+.phpunit.cache
+*.log
+
+# --- Frontend Build ---
+/public/build
+/public/hot
+.vite
+
+# --- AdminLTE / Assets ---
 /public/vendor
 /public/dist
 /public/plugins
@@ -32,19 +40,21 @@ Thumbs.db
 /public/asset/docs
 /public/asset/plugins
 
-# Blocks compiled files (Vite/Mix) - these rebuild on the server
-/public/build
-/public/hot
-
-# --- Storage & Uploads ---
-/public/storage
-/storage/*.key
-/storage/pail
-/storage/framework/cache/data/*
-/storage/framework/sessions/*
-/storage/framework/views/*.php
-/storage/logs/*.log
-
-# Prevent personal uploads from going to GitHub
+# --- Storage ---
+/storage/app/*
+!/storage/app/public
 /storage/app/public/*
 !/storage/app/public/.gitignore
+
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+/storage/*.key
+/storage/pail
+
+# --- Optional ---
+*.bak
+*.swp
+*.tmp
