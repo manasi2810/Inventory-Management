@@ -49,7 +49,6 @@ Route::resource('/Vendor', VendorController::class)->names([
     'destroy' => 'Vendor.destroy',
 ]);
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
