@@ -1,4 +1,4 @@
-
+# --- Laravel Core ---
 /node_modules
 /vendor
 .env
@@ -8,7 +8,7 @@
 .phpunit.result.cache
 *.log
 
-
+# --- IDE & System Files ---
 /.fleet
 /.idea
 /.nova
@@ -20,25 +20,31 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .DS_Store
+**/.DS_Store
+**/Thumbs.db
 
-
+# --- AdminLTE & Asset Handling ---
+# Blocks the heavy template folders you downloaded
 /public/vendor
-
 /public/dist
+/public/plugins
 /public/asset/dist
 /public/asset/docs
 /public/asset/plugins
-/public/plugins
 
-
+# Blocks compiled files (Vite/Mix) - these rebuild on the server
 /public/build
 /public/hot
-/public/storage
 
+# --- Storage & Uploads ---
+/public/storage
 /storage/*.key
-/storage
 /storage/pail
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
 /storage/framework/views/*.php
 /storage/logs/*.log
+
+# Prevent personal uploads from going to GitHub
+/storage/app/public/*
+!/storage/app/public/.gitignore
