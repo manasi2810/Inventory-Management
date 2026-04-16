@@ -1,63 +1,71 @@
-<?php
+<?php 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;  
 use App\Models\Vendor;
+use Illuminate\Http\Request;
 
 class VendorController extends Controller
 {
     public function index()
     {
         $vendors = Vendor::latest()->get();
-        return view('Admin.Vendor.index', compact('vendors'));
+        return view('admin.vendor.index', compact('vendors'));
     }
-
+ 
     public function create()
     {
-        return view('Admin.Vendor.create');
+        return view('admin.vendor.create');
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
-            'phone' => 'nullable',
-            'status' => 'required'
-        ]);
-
-        Vendor::create($request->all());
-
-        return redirect('/Vendor')
-            ->with('success', 'Vendor created successfully');
-    }
-
-    public function edit($id)
 {
-    $vendor = Vendor::findOrFail($id);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'nullable|email|max:255',
+        'contact' => 'nullable|string|max:20',
+        'gst_number' => 'nullable|string|max:50',
+        'company_name' => 'nullable|string|max:255',
+        'address' => 'nullable|string',
+        'city' => 'nullable|string|max:100',
+        'state' => 'nullable|string|max:100',
+    ]);
 
-    return view('admin.vendor.edit', compact('vendor'));
+    Vendor::create($request->only([
+        'name',
+        'email',
+        'contact',
+        'gst_number',
+        'company_name',
+        'address',
+        'city',
+        'state'
+    ]));
+
+    return redirect()->route('Vendors')
+        ->with('success', 'Vendor created successfully');
 }
 
-    public function update(Request $request, Vendor $Vendor)
+    public function edit($id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
-            'status' => 'required'
-        ]);
+        $vendor = Vendor::findOrFail($id);
+        return view('admin.vendor.edit', compact('vendor'));
+    }
 
-        $Vendor->update($request->all());  
-        return redirect('/Vendor') 
+    public function update(Request $request, $id)
+    {
+        $vendor = Vendor::findOrFail($id);
+        $vendor->update($request->all());
+
+        return redirect()->route('Vendors')
             ->with('success', 'Vendor updated successfully');
     }
 
-    public function destroy(Vendor $vendor)
+    public function destroy($id)
     {
-        $vendor->delete();
+        Vendor::destroy($id);
 
-        return redirect()->back()
+        return redirect()->route('vendors.index')
             ->with('success', 'Vendor deleted successfully');
     }
 }

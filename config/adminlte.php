@@ -354,9 +354,9 @@ return [
                 'route' => 'Product',
             ],
             [
-    'text' => 'Vendors',
-    'route' => 'Vendor.index',
-],
+                'text' => 'Vendors',
+                 'route' => 'Vendors',
+            ],
         ],
     ],
 
@@ -367,7 +367,7 @@ return [
         'submenu' => [
             [
                 'text' => 'Stock In',
-                'url' => '/stock-in',
+                'route' => 'stock-in',
             ],
             [
                 'text' => 'Stock Out',
@@ -383,7 +383,7 @@ return [
         'submenu' => [
             [
                 'text' => 'Purchase Orders',
-                'url' => '/purchase-orders',
+                'route' => 'Purchase',
             ],
         ],
     ],

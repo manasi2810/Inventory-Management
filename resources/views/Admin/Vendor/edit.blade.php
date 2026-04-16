@@ -6,7 +6,7 @@
 <div class="row mb-2">
 
     <div class="col-sm-6">
-        <h1>Edit Vendor</h1>
+        <h1>Vendor</h1>
     </div>
 
     <div class="col-sm-6">
@@ -29,7 +29,7 @@
     </div>
 
     {{-- FORM --}}
-    <form action="{{ route('Vendor.update', $vendor->id) }}" method="POST">
+    <form action="{{ route('Vendors.update', $vendor->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -58,11 +58,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Phone</label>
+                        <label>Contact</label>
                         <input type="text"
-                               name="phone"
+                               name="contact"
                                class="form-control"
-                               value="{{ old('phone', $vendor->phone) }}">
+                               value="{{ old('contact', $vendor->contact) }}">
                     </div>
 
                 </div>
@@ -87,20 +87,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
+                        <label>City</label>
+                        <input type="text"
+                               name="city"
+                               class="form-control"
+                               value="{{ old('city', $vendor->city) }}">
+                    </div>
 
-                            <option value="active"
-                                {{ $vendor->status == 'active' ? 'selected' : '' }}>
-                                Active
-                            </option>
-
-                            <option value="inactive"
-                                {{ $vendor->status == 'inactive' ? 'selected' : '' }}>
-                                Inactive
-                            </option>
-
-                        </select>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text"
+                               name="state"
+                               class="form-control"
+                               value="{{ old('state', $vendor->state) }}">
                     </div>
 
                 </div>
@@ -118,7 +117,7 @@
         {{-- FOOTER --}}
         <div class="card-footer text-right">
 
-            <a href="{{ route('Vendor.index') }}" class="btn btn-secondary">
+            <a href="{{ route('Vendors') }}" class="btn btn-secondary">
                 Cancel
             </a>
 

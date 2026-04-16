@@ -14,12 +14,13 @@ return new class extends Migration
     Schema::create('vendors', function (Blueprint $table) {
         $table->id();
         $table->string('name');
-        $table->string('email')->nullable();
-        $table->string('phone')->nullable();
+        $table->string('contact')->nullable();
         $table->text('address')->nullable();
         $table->string('gst_number')->nullable();
+        $table->string('email')->nullable();
         $table->string('company_name')->nullable();
-        $table->enum('status', ['active', 'inactive'])->default('active');
+        $table->string('city')->nullable();
+        $table->string('state')->nullable();
         $table->timestamps();
     });
 }

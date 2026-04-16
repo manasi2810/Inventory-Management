@@ -29,7 +29,7 @@
     </div>
 
     {{-- FORM --}}
-    <form action="{{ route('Vendor.store') }}" method="POST">
+    <form action="{{ route('Vendors.store') }}" method="POST">
         @csrf
 
         <div class="card-body">
@@ -50,8 +50,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Phone</label>
-                        <input type="text" name="phone" class="form-control">
+                        <label>Contact</label>
+                        <input type="text" name="contact" class="form-control">
                     </div>
 
                 </div>
@@ -70,11 +70,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
+                        <label>City</label>
+                        <input type="text" name="city" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="state" class="form-control">
                     </div>
 
                 </div>
@@ -92,7 +94,7 @@
         {{-- FOOTER BUTTONS --}}
         <div class="card-footer text-right">
 
-            <a href="{{ route('Vendor.index') }}" class="btn btn-secondary">
+            <a href="{{ route('Vendors') }}" class="btn btn-secondary">
                 Cancel
             </a>
 

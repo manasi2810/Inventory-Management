@@ -16,8 +16,7 @@ return new class extends Migration
     $table->unsignedBigInteger('product_id');
     $table->enum('type', ['main','gallery'])->default('gallery');
     $table->string('image_path');
-    $table->timestamps();
-
+    $table->timestamps();  
     $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 });
     }

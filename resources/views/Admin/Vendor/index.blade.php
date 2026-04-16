@@ -1,122 +1,119 @@
 @extends('adminlte::page')
 
-@section('title', 'Vendor')
+@section('title', 'Vendors')
 
 @section('content_header')
-<div class="row mb-2">
-
-    <div class="col-sm-6">
-        <h1>Vendor</h1>
-    </div>
-
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            <li class="breadcrumb-item active">Vendor</li>
-        </ol>
-    </div>
-
-</div>
+    <h1>Vendors</h1>
 @stop
 
 @section('content')
 
-<div class="card">
+<div class="row">
+    <div class="col-12">
 
-    {{-- HEADER --}}
-    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card">
 
-        <h3 class="card-title mb-0">Vendor Details</h3>
+            {{-- HEADER --}}
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
 
-        <a href="{{ route('Vendor.create') }}" class="btn btn-primary btn-sm">
-            + Add Vendor
-        </a>
+                    <h3 class="card-title mb-0">Vendor Details</h3>
 
-    </div>
+                    <a href="{{ route('Vendors.create') }}" class="btn btn-primary">
+                        + Add Vendor
+                    </a>
 
-    {{-- BODY --}}
-    <div class="card-body">
-
-        {{-- SUCCESS MESSAGE --}}
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+                </div>
             </div>
-        @endif
 
-        {{-- TABLE --}}
-        <table class="table table-bordered table-striped" id="example1">
+            <div class="card-body">
 
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+                {{-- Success Message --}}
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-            <tbody>
+                <table class="table table-bordered table-striped" id="vendorTable">
 
-                @forelse($vendors as $vendor)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Company</th>
+                            <th>GST</th>
+                            <th>Status</th>
+                            <th width="200">Actions</th>
+                        </tr>
+                    </thead>
 
-                    <td>{{ $vendor->name }}</td>
-                    <td>{{ $vendor->phone }}</td>
-                    <td>{{ $vendor->email }}</td>
+                    <tbody>
 
-                    <td>
-                        <span class="badge {{ $vendor->status == 'active' ? 'badge-success' : 'badge-danger' }}">
-                            {{ ucfirst($vendor->status ?? 'active') }}
-                        </span>
-                    </td>
+                        @foreach($vendors as $vendor)
 
-                    <td>
-                        <a href="{{ route('Vendor.edit', $vendor->id) }}" class="btn btn-sm btn-info">
-                            Edit
-                        </a>
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $vendor->name }}</td>
+                            <td>{{ $vendor->email ?? '-' }}</td>
+                            <td>{{ $vendor->contact ?? '-' }}</td>
+                            <td>{{ $vendor->company_name ?? '-' }}</td>
+                            <td>{{ $vendor->gst_number ?? '-' }}</td>
 
-                        <form action="{{ route('Vendor.destroy', $vendor->id) }}"
-                              method="POST"
-                              style="display:inline-block;">
+                            <td>
+                                @if($vendor->status == 'active')
+                                    <span class="badge badge-success">Active</span>
+                                @else
+                                    <span class="badge badge-danger">Inactive</span>
+                                @endif
+                            </td>
 
-                            @csrf
-                            @method('DELETE')
+                            <td>
 
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure?')">
-                                Delete
-                            </button>
+                                <a href="{{ route('Vendors.edit', $vendor->id) }}"
+                                   class="btn btn-sm btn-info">
+                                    Edit
+                                </a>
 
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted">
-                        No Vendors Found
-                    </td>
-                </tr>
-                @endforelse
+                                <form action="{{ route('Vendors.destroy', $vendor->id) }}"
+                                      method="POST"
+                                      style="display:inline;">
 
-            </tbody>
+                                    @csrf
+                                    @method('DELETE')
 
-        </table>
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this vendor?')">
+
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
 
     </div>
-
 </div>
 
 @stop
-
-{{-- DATATABLE SCRIPT --}}
 @push('js')
 <script>
-$(function () {
-    $('#example1').DataTable({
+$(document).ready(function () {
+    $('#vendorTable').DataTable({
         responsive: true,
         autoWidth: false,
         paging: true,
@@ -124,7 +121,7 @@ $(function () {
         ordering: true,
         info: true,
         dom: 'Bfrtip',
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        buttons: ["copy", "csv", "excel", "pdf", "print"]
     });
 });
 </script>

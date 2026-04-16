@@ -6,9 +6,10 @@ use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductController; 
 use App\Http\Controllers\Admin\VendorController;
-
+use App\Http\Controllers\Admin\PurchaseController;  
+use App\Http\Controllers\Admin\StockInController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -40,14 +41,25 @@ Route::resource('/Product', ProductController::class)->names([
       'create'  => 'Product.create',
       'store'  => 'Product.store',
 ]);
-Route::resource('/Vendor', VendorController::class)->names([
-    'index' => 'Vendor.index',
-    'create' => 'Vendor.create',
-    'store' => 'Vendor.store',
-    'edit' => 'Vendor.edit',
-    'update' => 'Vendor.update',
-    'destroy' => 'Vendor.destroy',
+Route::resource('/Vendors', VendorController::class)->names([
+    'index' => 'Vendors',
+      'create'  => 'Vendors.create',
+      'store'  => 'Vendors.store',
 ]);
+Route::resource('/Purchase', PurchaseController::class)->names([
+    'index' => 'Purchase',
+      'create'  => 'Purchase.create',
+      'store'  => 'Purchase.store',
+]);
+Route::get('/Purchase/{id}/receive', [PurchaseController::class, 'receive'])
+    ->name('Purchase.receive');
+
+Route::post('/Purchase/{id}/receive', [PurchaseController::class, 'storeReceive'])
+    ->name('Purchase.receive.store');
+    
+Route::resource('/stock-in', StockInController::class)->names([
+    'index' => 'stock-in', 
+]); 
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

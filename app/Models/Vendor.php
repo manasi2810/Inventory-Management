@@ -8,14 +8,16 @@ class Vendor extends Model
 {
     protected $fillable = [
         'name',
-        'email',
-        'phone',
+        'contact',
         'address',
         'gst_number',
+        'email',
         'company_name',
-        'status'
+        'city',
+        'state'
     ];
 
+    // RELATIONSHIP
     public function purchases()
     {
         return $this->hasMany(Purchase::class);
