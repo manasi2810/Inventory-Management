@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\PurchaseController;  
 use App\Http\Controllers\Admin\StockInController;
+use App\Http\Controllers\Admin\DeliveryChallanController;
+use App\Http\Controllers\Admin\CustomerController;
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -56,10 +59,30 @@ Route::get('/Purchase/{id}/receive', [PurchaseController::class, 'receive'])
 
 Route::post('/Purchase/{id}/receive', [PurchaseController::class, 'storeReceive'])
     ->name('Purchase.receive.store');
-    
+Route::get('/Purchase/{id}/print', [PurchaseController::class, 'print'])
+    ->name('Purchase.print');
+Route::get('/purchase/multi-print', [PurchaseController::class, 'multiPrint'])
+    ->name('Purchase.multiPrint');
+    Route::post('/purchase/{id}/short-close', [PurchaseController::class, 'shortClose'])
+    ->name('purchase.shortClose');
 Route::resource('/stock-in', StockInController::class)->names([
     'index' => 'stock-in', 
 ]); 
+Route::resource('Customer', CustomerController::class)->names([
+    'index' => 'Customer', 
+]); 
+Route::get('/delivery-challan/print/{id}', [DeliveryChallanController::class, 'print'])
+    ->name('Delivery_challan.print');
+Route::get('/Delivery_challan/bulk-print', [DeliveryChallanController::class, 'bulkPrint'])
+    ->name('Delivery_challan.bulkPrint');
+
+    
+Route::resource('/Delivery_challan', DeliveryChallanController::class)->names([
+    'index' => 'Delivery_challan',
+      'create'  => 'Delivery_challan.create',
+      'store'  => 'Delivery_challan.store',
+]);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

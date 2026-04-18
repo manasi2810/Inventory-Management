@@ -19,7 +19,7 @@
                     <th>Product</th>
                     <th>Qty</th>
                     <th>Type</th>
-                    <th>Reference ID</th>
+                     <th>PO No</th> 
                     <th>Date</th>
                 </tr>
             </thead>
@@ -35,7 +35,15 @@
                                 {{ $stock->type }}
                             </span>
                         </td>
-                        <td>{{ $stock->reference_id }}</td>
+                      <td>
+                        @if($stock->reference_id)
+                            <a href="{{ route('Purchase.show', ['Purchase' => $stock->reference_id]) }}">
+                                {{ $stock->po_no }}
+                            </a>
+                        @else
+                            {{ $stock->po_no }}
+                        @endif
+                    </td>
                         <td>{{ $stock->created_at }}</td>
                     </tr>
                 @endforeach

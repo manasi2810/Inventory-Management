@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class StockIn extends Model
 {
     protected $fillable = [
-        'product_id',
-        'qty',
-        'type',
-        'reference_id',
-        'created_by'
-    ];
+    'product_id',
+    'purchase_id',
+    'po_no',
+    'qty',
+    'type',
+    'reference_id',
+    'created_by',
+];
 
     public function product()
     {

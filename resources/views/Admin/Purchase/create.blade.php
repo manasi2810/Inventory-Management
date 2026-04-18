@@ -44,11 +44,9 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Invoice No</label>
-                                <input type="text" name="invoice_no" class="form-control" placeholder="INV-001">
-                            </div>
+                        <div class="form-group">
+                            <label>Invoice No</label>
+                            <input type="text" class="form-control" value="{{ $invoice_no }}" readonly>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">

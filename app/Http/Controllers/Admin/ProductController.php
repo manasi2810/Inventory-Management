@@ -167,4 +167,7 @@ class ProductController extends Controller
 
         return redirect()->route('Product.index')->with('success','Product deleted successfully.');
     }
+
+
+   
 }

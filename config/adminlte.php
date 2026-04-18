@@ -340,6 +340,12 @@ return [
         ],
     ],
 
+     [
+        'text' => 'Customer Master',
+        'route'  => 'Customer',
+        'icon' => 'fas fa-copy',
+    ],
+
     // 📦 MASTER DATA
     [
         'text' => 'MASTER DATA',
@@ -395,7 +401,7 @@ return [
         'submenu' => [
             [
                 'text' => 'Delivery Challan',
-                'url' => '/delivery-challan',
+                'route' => 'Delivery_challan',
             ],
         ],
     ],
