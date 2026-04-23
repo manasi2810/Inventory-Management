@@ -10,36 +10,27 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="card">
-
-            {{-- HEADER --}}
+        <div class="card"> 
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">Purchase List</h3>
-
+                    <h3 class="card-title mb-0">Purchase List</h3> 
                     <div>
                         <button class="btn btn-dark btn-sm" id="printSelected">
                             Print Selected
-                        </button>
-
+                        </button> 
                         <a href="{{ route('Purchase.create') }}" class="btn btn-primary btn-sm">
                             + Create Purchase
                         </a>
                     </div>
                 </div>
-            </div>
-
-            <div class="card-body">
-
-                {{-- SUCCESS --}}
+            </div> 
+            <div class="card-body"> 
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @endif
-
-                <table class="table table-bordered table-striped" id="purchaseTable">
-
+                @endif 
+                <table class="table table-bordered table-striped" id="purchaseTable"> 
                     <thead>
                         <tr>
                             <th>
@@ -53,63 +44,45 @@
                             <th>Status</th>
                             <th width="300">Actions</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
-
+                    </thead> 
+                    <tbody> 
                         @foreach($purchases as $purchase)
-                        <tr>
-
-                            {{-- CHECKBOX --}}
+                        <tr> 
                             <td>
                                 <input type="checkbox" class="po-check" value="{{ $purchase->id }}">
-                            </td>
-
+                            </td> 
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $purchase->invoice_no ?? '-' }}</td>
                             <td>{{ $purchase->vendor->name ?? '-' }}</td>
                             <td>{{ $purchase->purchase_date }}</td>
-                            <td>₹ {{ number_format($purchase->total_amount, 2) }}</td>
-
-                            {{-- STATUS --}}
+                            <td>₹ {{ number_format($purchase->total_amount, 2) }}</td> 
                             <td>
                                 @if($purchase->status == 'received')
-                                    <span class="badge badge-success">Received</span>
-
+                                    <span class="badge badge-success">Received</span> 
                                 @elseif($purchase->status == 'partial')
-                                    <span class="badge badge-info">Partial</span>
-
+                                    <span class="badge badge-info">Partial</span> 
                                 @elseif($purchase->status == 'short_closed')
-                                    <span class="badge badge-danger">Short Closed</span>
-
+                                    <span class="badge badge-danger">Short Closed</span> 
                                 @else
                                     <span class="badge badge-warning">Pending</span>
                                 @endif
-                            </td>
-
-                            {{-- ACTIONS --}}
-                            <td>
-
+                            </td> 
+                            <td> 
                                 <a href="{{ route('Purchase.show', $purchase->id) }}"
                                    class="btn btn-sm btn-info">
                                     View
-                                </a>
-
-                                {{-- SINGLE PRINT --}}
+                                </a> 
                                 <a href="{{ route('Purchase.print', $purchase->id) }}"
                                    target="_blank"
                                    class="btn btn-sm btn-secondary">
                                     Print
-                                </a>
-
+                                </a> 
                                 @php
                                     $totalOrdered = $purchase->items->sum('qty');
                                     $totalReceived = \App\Models\PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
                                         $q->where('purchase_id', $purchase->id);
                                     })->sum('received_qty');
-                                @endphp
-
-                                {{-- RECEIVE --}}
+                                @endphp 
                                 @if($totalReceived < $totalOrdered && !in_array($purchase->status, ['received','short_closed']))
 
                                     <a href="{{ route('Purchase.receive', $purchase->id) }}"
@@ -125,40 +98,30 @@
 
                                 @else
                                     <span class="btn btn-sm btn-success">Completed</span>
-                                @endif
-
-                                {{-- SHORT CLOSE --}}
+                                @endif 
                                 @if(!in_array($purchase->status, ['received', 'short_closed']))
 
                                     <form action="{{ route('purchase.shortClose', $purchase->id) }}"
                                           method="POST"
                                           style="display:inline-block;">
-                                        @csrf
-
+                                        @csrf 
                                         <button type="submit"
                                                 class="btn btn-sm btn-danger"
                                                 onclick="return confirm('Are you sure to short close this PO? Remaining qty will be cancelled.')">
                                             Short Close
                                         </button>
-                                    </form>
-
-                                @endif
-
+                                    </form> 
+                                @endif 
                             </td>
                         </tr>
-                        @endforeach
-
+                        @endforeach 
                     </tbody>
-                </table>
-
+                </table> 
             </div>
         </div>
     </div>
-</div>
-
-@stop
-
-
+</div> 
+@stop 
 @push('js')
 <script>
 $(document).ready(function () {

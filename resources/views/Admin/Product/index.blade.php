@@ -6,8 +6,7 @@
 <div class="row mb-2">
     <div class="col-sm-6">
         <h1>Products</h1>
-    </div>
-
+    </div> 
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -19,28 +18,17 @@
 
 @section('content')
 
-<div class="card">
-
-    {{-- HEADER --}}
+<div class="card"> 
    <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center">
-
-        <!-- LEFT SIDE TITLE -->
-        <h3 class="card-title mb-0">Product Details</h3>
-
-        <!-- RIGHT SIDE BUTTON -->
+    <div class="d-flex justify-content-between align-items-center"> 
+        <h3 class="card-title mb-0">Product Details</h3> 
         <a href="{{ route('Product.create') }}" class="btn btn-primary btn-sm">
             + Add Product
-        </a>
-
+        </a> 
     </div>
 </div>
-
-    {{-- TABLE --}}
-    <div class="card-body">
-
-        <table class="table table-bordered table-striped" id="example1">
-
+    <div class="card-body"> 
+        <table class="table table-bordered table-striped" id="example1"> 
             <thead>
                 <tr>
                     <th>#</th>
@@ -51,35 +39,29 @@
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
-            </thead>
-
-            <tbody>
-
+            </thead> 
+            <tbody>  
                 @forelse($products as $product)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->category->name ?? '-' }}</td>
                     <td>{{ $product->sku ?? '-' }}</td>
-                    <td>{{ $product->price ?? 0 }}</td>
-
+                    <td>{{ $product->price ?? 0 }}</td> 
                     <td>
                         <span class="badge {{ $product->status == 'active' ? 'badge-success' : 'badge-danger' }}">
                             {{ ucfirst($product->status) }}
                         </span>
-                    </td>
-
+                    </td> 
                     <td>
                         <a href="{{ route('Product.edit', $product->id) }}" class="btn btn-sm btn-warning">
                             Edit
-                        </a>
-
+                        </a> 
                         <form action="{{ route('Product.destroy', $product->id) }}"
                               method="POST"
                               style="display:inline-block;">
                             @csrf
                             @method('DELETE')
-
                             <button class="btn btn-sm btn-danger"
                                     onclick="return confirm('Delete this product?')">
                                 Delete
@@ -93,19 +75,12 @@
                         No Products Found
                     </td>
                 </tr>
-                @endforelse
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-@stop
-
-{{-- ✅ DATATABLE JS --}}
+                @endforelse 
+            </tbody> 
+        </table> 
+    </div> 
+</div> 
+@stop 
 @push('js')
 <script>
 $(function () {

@@ -11,32 +11,22 @@
 <div class="row">
     <div class="col-12">
 
-        <div class="card">
-
-            {{-- HEADER --}}
+        <div class="card">  
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h3 class="card-title mb-0">Customer Details</h3>
-
+                <div class="d-flex justify-content-between align-items-center"> 
+                    <h3 class="card-title mb-0">Customer Details</h3> 
                     <a href="{{ route('Customer.create') }}" class="btn btn-primary">
                         + Add Customer
-                    </a>
-
+                    </a> 
                 </div>
-            </div>
-
-            <div class="card-body">
-
-                {{-- SUCCESS MESSAGE --}}
+            </div> 
+            <div class="card-body"> 
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @endif
-
-                <table class="table table-bordered table-striped" id="customerTable">
-
+                @endif 
+                <table class="table table-bordered table-striped" id="customerTable">  
                     <thead>
                         <tr>
                             <th>#</th>
@@ -48,39 +38,28 @@
                             <th>Status</th>
                             <th width="200">Actions</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
-
+                    </thead> 
+                    <tbody> 
                         @foreach($customers as $customer)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-
-                            <td>{{ $customer->name }}</td>
-
-                            <td>{{ $customer->company_name ?? '-' }}</td>
-
-                            <td>{{ $customer->mobile ?? '-' }}</td>
-
-                            <td>{{ $customer->city ?? '-' }}</td>
-
-                            <td>{{ $customer->gst_number ?? '-' }}</td>
-
+                            <td>{{ $loop->iteration }}</td> 
+                            <td>{{ $customer->name }}</td> 
+                            <td>{{ $customer->company_name ?? '-' }}</td> 
+                            <td>{{ $customer->mobile ?? '-' }}</td>   
+                            <td>{{ $customer->city ?? '-' }}</td>  
+                            <td>{{ $customer->gst_number ?? '-' }}</td> 
                             <td>
                                 @if($customer->status)
                                     <span class="badge badge-success">Active</span>
                                 @else
                                     <span class="badge badge-danger">Inactive</span>
                                 @endif
-                            </td>
-
-                            <td>
-
+                            </td> 
+                            <td> 
                                 <a href="{{ route('Customer.edit', $customer->id) }}" 
                                    class="btn btn-sm btn-info">
                                     Edit
-                                </a>
-
+                                </a> 
                                 <form action="{{ route('Customer.destroy', $customer->id) }}" 
                                       method="POST" 
                                       style="display:inline;">
@@ -91,26 +70,17 @@
                                             class="btn btn-sm btn-danger"
                                             onclick="return confirm('Are you sure you want to delete this customer?')">
                                         Delete
-                                    </button>
-
-                                </form>
-
-                            </td>
-
+                                    </button> 
+                                </form> 
+                            </td> 
                         </tr>
-                        @endforeach
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+                        @endforeach 
+                    </tbody> 
+                </table> 
+            </div> 
+        </div> 
     </div>
-</div>
-
+</div>  
 @stop
 
 @push('js')

@@ -11,7 +11,7 @@ Roles & Permissions
 Admin: Full access
 Manager: Manage stock, products, purchase, vendor
 Staff: Only stock in/out and view reports
-Master Data
+Master Data 
 Category: Product categories
 Product: Name, SKU, category, price, stock, unit, description
 Vendors: Name, contact, address, GST, etc.
@@ -66,7 +66,7 @@ stock_in: id, product_id, qty, date, created_by
 stock_out: id, product_id, qty, date, created_by, reason
 Relationships:
 Product hasMany StockIn
-Product hasMany StockOut
+Product hasMany StockOut  
 Delivery / Sales
 delivery_challan: id, customer_id, date, total_amount
 delivery_items: id, dc_id, product_id, qty, price
@@ -118,9 +118,19 @@ Reports
 Activity Logs
 
 5. Implementation Notes
-Use Laravel + Blade for backend & frontend (or Livewire for dynamic tables)
+Use Laravel + Blade for backend & frontend 
 Use Spatie Laravel Permission for roles & access control
 Use Datatables / Ajax for tables
 Use Laravel Excel / PDF for reports & print
 Make modular controllers: ProductController, StockController, PurchaseController, DCController
 Add middleware for role-based access control
+
+
+
+
+Low Stock Alert
+Mail send module 
+invoice
+reports 
+Low stock alert
+DC status flow (draft → dispatched)

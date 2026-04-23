@@ -8,10 +8,8 @@
 
 @section('content')
 
-<div class="card">
-
-    <div class="card-body">
-
+<div class="card"> 
+    <div class="card-body"> 
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -22,8 +20,7 @@
                      <th>PO No</th> 
                     <th>Date</th>
                 </tr>
-            </thead>
-
+            </thead> 
             <tbody>
                 @foreach($stockIns as $key => $stock)
                     <tr>
@@ -47,10 +44,8 @@
                         <td>{{ $stock->created_at }}</td>
                     </tr>
                 @endforeach
-            </tbody>
-
-        </table>
-
+            </tbody> 
+        </table> 
     </div>
 </div>
 

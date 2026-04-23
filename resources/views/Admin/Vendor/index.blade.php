@@ -11,32 +11,22 @@
 <div class="row">
     <div class="col-12">
 
-        <div class="card">
-
-            {{-- HEADER --}}
+        <div class="card"> 
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h3 class="card-title mb-0">Vendor Details</h3>
-
+                <div class="d-flex justify-content-between align-items-center">  
+                    <h3 class="card-title mb-0">Vendor Details</h3> 
                     <a href="{{ route('Vendors.create') }}" class="btn btn-primary">
                         + Add Vendor
-                    </a>
-
+                    </a> 
                 </div>
-            </div>
-
-            <div class="card-body">
-
-                {{-- Success Message --}}
+            </div> 
+            <div class="card-body">  
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @endif
-
-                <table class="table table-bordered table-striped" id="vendorTable">
-
+                @endif 
+                <table class="table table-bordered table-striped" id="vendorTable"> 
                     <thead>
                         <tr>
                             <th>#</th>
@@ -48,67 +38,48 @@
                             <th>Status</th>
                             <th width="200">Actions</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
-
-                        @foreach($vendors as $vendor)
-
+                    </thead> 
+                    <tbody> 
+                        @foreach($vendors as $vendor) 
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $vendor->name }}</td>
                             <td>{{ $vendor->email ?? '-' }}</td>
                             <td>{{ $vendor->contact ?? '-' }}</td>
                             <td>{{ $vendor->company_name ?? '-' }}</td>
-                            <td>{{ $vendor->gst_number ?? '-' }}</td>
-
+                            <td>{{ $vendor->gst_number ?? '-' }}</td> 
                             <td>
                                 @if($vendor->status == 'active')
                                     <span class="badge badge-success">Active</span>
                                 @else
                                     <span class="badge badge-danger">Inactive</span>
                                 @endif
-                            </td>
-
-                            <td>
-
+                            </td> 
+                            <td> 
                                 <a href="{{ route('Vendors.edit', $vendor->id) }}"
                                    class="btn btn-sm btn-info">
                                     Edit
-                                </a>
-
+                                </a> 
                                 <form action="{{ route('Vendors.destroy', $vendor->id) }}"
                                       method="POST"
-                                      style="display:inline;">
-
+                                      style="display:inline;"> 
                                     @csrf
-                                    @method('DELETE')
-
+                                    @method('DELETE') 
                                     <button type="submit"
                                             class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this vendor?')">
-
+                                            onclick="return confirm('Are you sure you want to delete this vendor?')"> 
                                         Delete
-                                    </button>
-
-                                </form>
-
+                                    </button> 
+                                </form> 
                             </td>
-                        </tr>
-
-                        @endforeach
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+                        </tr> 
+                        @endforeach 
+                    </tbody> 
+                </table> 
+            </div> 
+        </div> 
     </div>
 </div>
-
 @stop
 @push('js')
 <script>

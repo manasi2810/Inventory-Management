@@ -20,8 +20,7 @@
                 <i class="ion ion-bag"></i>
             </div>
         </div>
-    </div>
-
+    </div> 
     <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
             <div class="inner">
@@ -32,8 +31,7 @@
                 <i class="ion ion-stats-bars"></i>
             </div>
         </div>
-    </div>
-
+    </div> 
     <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
             <div class="inner">
@@ -44,8 +42,7 @@
                 <i class="ion ion-person-add"></i>
             </div>
         </div>
-    </div>
-
+    </div> 
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
@@ -57,6 +54,5 @@
             </div>
         </div>
     </div>
-</div>
- 
+</div> 
 @stop

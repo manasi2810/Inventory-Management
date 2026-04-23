@@ -14,8 +14,8 @@ class UserSeeder extends Seeder
     {
         DB::beginTransaction();
 
-        try {
-            // Admin
+        try { 
+
             $adminUser = User::create([
                 'name' => 'Super Admin',
                 'email' => 'admin@hr.com',
@@ -38,8 +38,7 @@ class UserSeeder extends Seeder
                 'certificates' => null,
                 'id_proof' => null,
             ]);
-
-            // HR
+ 
             $hrUser = User::create([
                 'name' => 'HR Manager',
                 'email' => 'hr@hr.com',
@@ -62,8 +61,7 @@ class UserSeeder extends Seeder
                 'certificates' => null,
                 'id_proof' => null,
             ]);
-
-            // Employee
+ 
             $employeeUser = User::create([
                 'name' => 'Test Employee',
                 'email' => 'employee@hr.com',

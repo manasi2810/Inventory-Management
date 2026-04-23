@@ -9,30 +9,23 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-
-        <div class="card">
-
-              <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center">
-
-        <h3 class="card-title mb-0">Category Details</h3>
-
-        <a href="{{ route('Category.create') }}" class="btn btn-primary">
-            + Add Category
-        </a>
-
+    <div class="col-12"> 
+        <div class="card"> 
+            <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center"> 
+            <h3 class="card-title mb-0">Category Details</h3> 
+            <a href="{{ route('Category.create') }}" class="btn btn-primary">
+                + Add Category
+            </a> 
+        </div>
     </div>
-</div>
-            <div class="card-body">
-
+            <div class="card-body"> 
                 {{-- Success Message --}}
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @endif
-
+                @endif 
                 <table class="table table-bordered table-striped" id="categoryTable">
                     <thead>
                         <tr>
@@ -40,20 +33,17 @@
                             <th>Name</th>
                             <th width="200">Actions</th>
                         </tr>
-                    </thead>
-
+                    </thead> 
                     <tbody>
                         @foreach($categories as $category)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->name }}</td>
-
+                            <td>{{ $category->name }}</td> 
                             <td>
                                 <a href="{{ route('Category.edit', $category->id) }}" 
                                    class="btn btn-sm btn-info">
                                     Edit
-                                </a>
-
+                                </a> 
                                 <form action="{{ route('Category.destroy', $category->id) }}" 
                                       method="POST" 
                                       style="display:inline;">
@@ -69,17 +59,12 @@
                             </td>
                         </tr>
                         @endforeach
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+                    </tbody> 
+                </table> 
+            </div> 
+        </div> 
     </div>
-</div>
-
+</div>  
 @stop
 
 @push('js')

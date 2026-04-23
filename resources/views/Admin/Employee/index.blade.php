@@ -20,28 +20,20 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-
-        <div class="card">
-
-            {{-- ✅ FIXED HEADER --}}
+    <div class="col-12"> 
+        <div class="card"> 
             <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center w-100">
-
-        <h3 class="card-title mb-0">Employee Details</h3>
-
+    <div class="d-flex justify-content-between align-items-center w-100"> 
+        <h3 class="card-title mb-0">Employee Details</h3> 
         <div>
             <a href="{{ route('Employee.create') }}" class="btn btn-primary">
                 + Add Employee
             </a>
-        </div>
-
+        </div> 
     </div>
 </div>
-            <div class="card-body">
-
-                <table id="employeeTable" class="table table-bordered table-striped">
-
+            <div class="card-body"> 
+                <table id="employeeTable" class="table table-bordered table-striped"> 
                     <thead>
                         <tr>
                             <th>#</th>
@@ -53,8 +45,7 @@
                             <th>Date of Joining</th>
                             <th>Actions</th>
                         </tr>
-                    </thead>
-
+                    </thead> 
                     <tbody>
                         @foreach($employees as $key => $employee)
                         <tr>
@@ -64,13 +55,11 @@
                             <td>{{ $employee->department ?? '-' }}</td>
                             <td>{{ $employee->designation ?? '-' }}</td>
                             <td>{{ $employee->user->role ?? '-' }}</td>
-                            <td>{{ $employee->date_of_join ?? '-' }}</td>
-
+                            <td>{{ $employee->date_of_join ?? '-' }}</td> 
                             <td>
                                 <a href="{{ route('Employee.edit', $employee->id) }}" class="btn btn-sm btn-info">
                                     Edit
-                                </a>
-
+                                </a> 
                                 <form action="#" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -83,17 +72,12 @@
                             </td>
                         </tr>
                         @endforeach
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+                    </tbody> 
+                </table> 
+            </div> 
+        </div> 
     </div>
-</div>
-
+</div> 
 @stop
 
 @push('js')

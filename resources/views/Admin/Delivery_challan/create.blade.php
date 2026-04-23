@@ -11,7 +11,6 @@
 <form action="{{ route('Delivery_challan.store') }}" method="POST" id="challanForm">
 @csrf
 
-{{-- ================= HEADER ================= --}}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Challan Details</h3>
@@ -23,8 +22,10 @@
 
             <div class="col-md-3">
                 <label>Challan No</label>
-                <input type="text" name="challan_no" class="form-control"
-                       value="{{ $challan_no }}" readonly>
+                <input type="text" name="challan_no"
+                       class="form-control"
+                       value="{{ $challan_no }}"
+                       readonly>
             </div>
 
             <div class="col-md-3">
@@ -41,20 +42,13 @@
 
             <div class="col-md-3">
                 <label>Challan Date</label>
-                <input type="date" name="challan_date"
+                <input type="date"
+                       name="challan_date"
                        class="form-control"
                        value="{{ date('Y-m-d') }}">
             </div>
-
-            <div class="col-md-3">
-                <label>Status</label>
-                <select name="status" class="form-control">
-                    <option value="pending">Pending</option>
-                    <option value="partial">Partial</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-            </div>
+ 
+            <input type="hidden" name="status" value="draft">
 
         </div>
 
@@ -81,9 +75,11 @@
 
             <div class="col-md-6">
                 <label>Dispatch From</label>
-                <input type="text" name="dispatch_from"
+                <input type="text"
+                       name="dispatch_from"
                        class="form-control"
-                       value="Main Warehouse" readonly>
+                       value="Main Warehouse"
+                       readonly>
             </div>
 
             <div class="col-md-6">
@@ -95,6 +91,7 @@
 
     </div>
 </div>
+
 
 {{-- ================= PRODUCTS ================= --}}
 <div class="card">
@@ -113,49 +110,57 @@
         <table class="table table-bordered" id="productTable">
 
             <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Stock</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>
-                        <select name="items[0][product_id]" class="form-control product">
-                            <option value="">Select Product</option>
-                            @foreach($products as $product)
-                                <option value="{{ $product->id }}"
-                                        data-price="{{ $product->price }}"
-                                        data-stock="{{ $product->stock ?? 0 }}">
-                                    {{ $product->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
+            <tr>
 
-                    <td class="stock-info">0</td>
+                <td>
+                    <select name="items[0][product_id]" class="form-control product">
+                        <option value="">Select Product</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}"
+                                    data-price="{{ $product->price }}"
+                                    data-stock="{{ $product->stock ?? 0 }}">
+                                {{ $product->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
 
-                    <td>
-                        <input type="number" name="items[0][qty]" class="form-control qty" value="1">
-                    </td>
+                <td class="stock-info">0</td>
 
-                    <td>
-                        <input type="number" name="items[0][rate]" class="form-control rate" step="0.01">
-                    </td>
+                <td>
+                    <input type="number"
+                           name="items[0][qty]"
+                           class="form-control qty"
+                           value="1">
+                </td>
 
-                    <td>
-                        <input type="text" class="form-control total" readonly>
-                    </td>
+                <td>
+                    <input type="number"
+                           name="items[0][rate]"
+                           class="form-control rate"
+                           step="0.01">
+                </td>
 
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
-                    </td>
-                </tr>
+                <td>
+                    <input type="text" class="form-control total" readonly>
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
+                </td>
+
+            </tr>
             </tbody>
 
         </table>
@@ -163,8 +168,10 @@
     </div>
 </div>
 
+
 {{-- ================= TOTAL ================= --}}
 <div class="card">
+
     <div class="card-body text-right">
 
         <h4>Subtotal: ₹ <span id="subTotal">0.00</span></h4>
@@ -181,9 +188,10 @@
     </div>
 </div>
 
+
 <div class="text-right mb-3">
     <button type="submit" class="btn btn-primary" id="submitBtn">
-        Save Challan
+        Save Draft Challan
     </button>
 </div>
 
@@ -261,7 +269,7 @@ $(document).on('change', '.product', function () {
     calculateTotal();
 });
 
-/* QTY & RATE CHANGE */
+/* QTY / RATE CHANGE */
 $(document).on('keyup change', '.qty, .rate', function () {
     calculateTotal();
 });
@@ -302,12 +310,9 @@ function calculateTotal() {
     $('#grandTotalInput').val(grandTotal.toFixed(2));
 }
 
-/* FORM SUBMIT PROTECTION */
+/* SUBMIT LOCK */
 $('#challanForm').on('submit', function () {
-
-    $('#submitBtn').attr('disabled', true);
-    $('#submitBtn').text('Processing...');
-
+    $('#submitBtn').prop('disabled', true).text('Saving...');
 });
 
 </script>

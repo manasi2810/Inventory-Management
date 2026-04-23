@@ -299,8 +299,7 @@ return [
     */
 
     'menu' => [
-
-    // 🔍 Top Navbar
+ 
     [
         'type' => 'navbar-search',
         'text' => 'search',
@@ -310,21 +309,18 @@ return [
         'type' => 'fullscreen-widget',
         'topnav_right' => true,
     ],
-
-    // 🔎 Sidebar Search
+ 
     [
         'type' => 'sidebar-menu-search',
         'text' => 'search',
     ],
-
-    // 📊 Dashboard
+ 
     [
         'text' => 'Dashboard',
         'url'  => '/dashboard',
         'icon' => 'fas fa-th',
     ],
-
-    // 👤 USER MANAGEMENT
+ 
     [
         'text' => 'USER MANAGEMENT',
         'icon' => 'fas fa-copy',
@@ -341,12 +337,11 @@ return [
     ],
 
      [
-        'text' => 'Customer Master',
+        'text' => 'CUSTOMER MASTER',
         'route'  => 'Customer',
         'icon' => 'fas fa-copy',
     ],
-
-    // 📦 MASTER DATA
+ 
     [
         'text' => 'MASTER DATA',
         'icon' => 'fas fa-chart-pie',
@@ -365,8 +360,7 @@ return [
             ],
         ],
     ],
-
-    // 📥 STOCK MANAGEMENT
+ 
     [
         'text' => 'STOCK MANAGEMENT',
         'icon' => 'fas fa-tree',
@@ -381,8 +375,7 @@ return [
             ],
         ],
     ],
-
-    // 🛒 PURCHASE
+ 
     [
         'text' => 'PURCHASE',
         'icon' => 'fas fa-edit',
@@ -393,8 +386,7 @@ return [
             ],
         ],
     ],
-
-    // 💰 SALES
+ 
     [
         'text' => 'SALES',
         'icon' => 'fas fa-edit',
@@ -405,8 +397,7 @@ return [
             ],
         ],
     ],
-
-    // 📊 REPORTS
+ 
     [
         'text' => 'REPORTS',
         'icon' => 'fas fa-edit',
@@ -425,8 +416,7 @@ return [
             ],
         ],
     ],
-
-    // 📜 Activity Logs
+  
     [
         'text' => 'Activity Logs',
         'url'  => '/activity-logs',
