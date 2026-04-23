@@ -246,13 +246,10 @@ public function index()
 
                     if ($challan->status == 'dispatched') {
                         throw new \Exception("Cannot edit dispatched challan");
-                    }
-
-                    $userId = auth()->id();
-
+                    } 
+                    $userId = auth()->id(); 
                     $subTotal = 0;
-                    $totalQty = 0;
- 
+                    $totalQty = 0; 
                     $challan->update([
                         'challan_date'   => $request->challan_date,
                         'status'         => $request->status,

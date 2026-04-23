@@ -46,33 +46,27 @@
                        name="challan_date"
                        class="form-control"
                        value="{{ date('Y-m-d') }}">
-            </div>
- 
+            </div> 
             <input type="hidden" name="status" value="draft">
 
         </div>
 
-        <div class="row mt-2">
-
+        <div class="row mt-2"> 
             <div class="col-md-4">
                 <label>Transport Mode</label>
                 <input type="text" name="transport_mode" class="form-control">
-            </div>
-
+            </div> 
             <div class="col-md-4">
                 <label>Vehicle No</label>
                 <input type="text" name="vehicle_no" class="form-control">
-            </div>
-
+            </div> 
             <div class="col-md-4">
                 <label>LR No</label>
                 <input type="text" name="lr_no" class="form-control">
-            </div>
-
+            </div> 
         </div>
 
-        <div class="row mt-2">
-
+        <div class="row mt-2"> 
             <div class="col-md-6">
                 <label>Dispatch From</label>
                 <input type="text"
@@ -80,35 +74,27 @@
                        class="form-control"
                        value="Main Warehouse"
                        readonly>
-            </div>
-
+            </div> 
             <div class="col-md-6">
                 <label>Delivery To</label>
                 <textarea name="delivery_to" class="form-control"></textarea>
-            </div>
-
-        </div>
-
+            </div>  
+        </div> 
     </div>
 </div>
 
-
-{{-- ================= PRODUCTS ================= --}}
+ 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Products</h3>
-
+        <h3 class="card-title">Products</h3> 
         <div class="card-tools">
             <button type="button" class="btn btn-success btn-sm" id="addRow">
                 + Add Row
             </button>
         </div>
-    </div>
-
-    <div class="card-body">
-
-        <table class="table table-bordered" id="productTable">
-
+    </div> 
+    <div class="card-body"> 
+        <table class="table table-bordered" id="productTable"> 
             <thead>
             <tr>
                 <th>Product</th>
@@ -118,11 +104,9 @@
                 <th>Total</th>
                 <th>Action</th>
             </tr>
-            </thead>
-
+            </thead> 
             <tbody>
-            <tr>
-
+            <tr> 
                 <td>
                     <select name="items[0][product_id]" class="form-control product">
                         <option value="">Select Product</option>
@@ -134,60 +118,43 @@
                             </option>
                         @endforeach
                     </select>
-                </td>
-
-                <td class="stock-info">0</td>
-
+                </td> 
+                <td class="stock-info">0</td> 
                 <td>
                     <input type="number"
                            name="items[0][qty]"
                            class="form-control qty"
                            value="1">
-                </td>
-
+                </td> 
                 <td>
                     <input type="number"
                            name="items[0][rate]"
                            class="form-control rate"
                            step="0.01">
-                </td>
-
+                </td> 
                 <td>
                     <input type="text" class="form-control total" readonly>
-                </td>
-
+                </td> 
                 <td>
                     <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
-                </td>
-
+                </td> 
             </tr>
-            </tbody>
-
-        </table>
-
+            </tbody> 
+        </table> 
     </div>
 </div>
-
-
-{{-- ================= TOTAL ================= --}}
-<div class="card">
-
-    <div class="card-body text-right">
-
+ 
+<div class="card"> 
+    <div class="card-body text-right"> 
         <h4>Subtotal: ₹ <span id="subTotal">0.00</span></h4>
-        <h4>GST (18%): ₹ <span id="gstAmount">0.00</span></h4>
-
-        <hr>
-
-        <h3>Grand Total: ₹ <span id="grandTotal">0.00</span></h3>
-
+        <h4>GST (18%): ₹ <span id="gstAmount">0.00</span></h4> 
+        <hr> 
+        <h3>Grand Total: ₹ <span id="grandTotal">0.00</span></h3> 
         <input type="hidden" name="sub_total" id="subTotalInput">
         <input type="hidden" name="gst_amount" id="gstInput">
-        <input type="hidden" name="grand_total" id="grandTotalInput">
-
+        <input type="hidden" name="grand_total" id="grandTotalInput"> 
     </div>
-</div>
-
+</div> 
 
 <div class="text-right mb-3">
     <button type="submit" class="btn btn-primary" id="submitBtn">
@@ -199,14 +166,12 @@
 
 @stop
 
-
-{{-- ================= SCRIPT ================= --}}
+ 
 @push('js')
 <script>
 
 let rowIndex = 1;
-
-/* ADD ROW */
+ 
 $('#addRow').click(function () {
 
     let row = `
@@ -246,14 +211,12 @@ $('#addRow').click(function () {
     $('#productTable tbody').append(row);
     rowIndex++;
 });
-
-/* REMOVE ROW */
+ 
 $(document).on('click', '.removeRow', function () {
     $(this).closest('tr').remove();
     calculateTotal();
 });
-
-/* PRODUCT CHANGE */
+ 
 $(document).on('change', '.product', function () {
 
     let selected = $(this).find(':selected');
@@ -268,13 +231,11 @@ $(document).on('change', '.product', function () {
 
     calculateTotal();
 });
-
-/* QTY / RATE CHANGE */
+ 
 $(document).on('keyup change', '.qty, .rate', function () {
     calculateTotal();
 });
-
-/* CALCULATION */
+  
 function calculateTotal() {
 
     let subTotal = 0;
@@ -309,8 +270,7 @@ function calculateTotal() {
     $('#gstInput').val(gst.toFixed(2));
     $('#grandTotalInput').val(grandTotal.toFixed(2));
 }
-
-/* SUBMIT LOCK */
+ 
 $('#challanForm').on('submit', function () {
     $('#submitBtn').prop('disabled', true).text('Saving...');
 });

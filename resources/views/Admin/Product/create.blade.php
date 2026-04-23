@@ -31,8 +31,7 @@
     </div>
 
     <div class="card-body">
-
-        {{-- ================= GENERAL DETAILS ================= --}}
+ 
         <h5 class="mb-3 text-primary"><b>General Details</b></h5>
 
         <div class="row">
@@ -58,8 +57,7 @@
 
         </div>
 
-        <div class="row">
-
+        <div class="row"> 
             <div class="col-md-4">
                 <div class="form-group">
                     <label>SKU</label>
@@ -90,7 +88,7 @@
 
         <hr>
 
-        {{-- ================= STOCK & PRICING ================= --}}
+       
         <h5 class="mb-3 text-success"><b>Stock & Pricing</b></h5>
 
         <div class="row">
@@ -144,7 +142,7 @@
 
         <hr>
 
-        {{-- ================= IMAGES ================= --}}
+         
         <h5 class="mb-3 text-warning"><b>Product Images</b></h5>
 
         <div class="row">
@@ -167,7 +165,7 @@
 
         <hr>
 
-        {{-- ================= SEO ================= --}}
+        
         <h5 class="mb-3 text-info"><b>SEO Details</b></h5>
 
         <div class="row">
@@ -197,7 +195,7 @@
 
     </div>
 
-    {{-- FOOTER --}}
+     
     <div class="card-footer text-right">
 
         <button type="submit" id="saveBtn" class="btn btn-success">

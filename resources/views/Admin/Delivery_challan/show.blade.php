@@ -39,8 +39,7 @@
                     <p><strong>Vehicle:</strong> {{ $challan->vehicle_no }}</p>
                     <p><strong>LR No:</strong> {{ $challan->lr_no ?? '-' }}</p>
                 </div>
-            </div>
-
+            </div> 
         </div>
 
         

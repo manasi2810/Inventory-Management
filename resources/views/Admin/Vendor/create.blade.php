@@ -22,21 +22,18 @@
 @section('content')
 
 <div class="card">
-
-    {{-- HEADER --}}
+ 
     <div class="card-header">
         <h3 class="card-title">Add Vendor</h3>
     </div>
-
-    {{-- FORM --}}
+ 
     <form action="{{ route('Vendors.store') }}" method="POST">
         @csrf
 
         <div class="card-body">
 
             <div class="row">
-
-                {{-- LEFT SIDE --}}
+ 
                 <div class="col-md-6">
 
                     <div class="form-group">
@@ -55,8 +52,7 @@
                     </div>
 
                 </div>
-
-                {{-- RIGHT SIDE --}}
+ 
                 <div class="col-md-6">
 
                     <div class="form-group">
@@ -82,16 +78,14 @@
                 </div>
 
             </div>
-
-            {{-- FULL WIDTH ADDRESS --}}
+ 
             <div class="form-group mt-2">
                 <label>Address</label>
                 <textarea name="address" class="form-control"></textarea>
             </div>
 
         </div>
-
-        {{-- FOOTER BUTTONS --}}
+   
         <div class="card-footer text-right">
 
             <a href="{{ route('Vendors') }}" class="btn btn-secondary">
@@ -109,8 +103,7 @@
 </div>
 
 @stop
-
-{{-- SCRIPT --}}
+ 
 @push('js')
 <script>
 document.addEventListener("DOMContentLoaded", function () {

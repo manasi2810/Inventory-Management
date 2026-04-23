@@ -25,7 +25,6 @@ public function store(Request $request)
     $request->validate([
         'name' => 'required|unique:categories,name'
     ]);
-
     Category::create([
         'name' => $request->name,
         'description' => $request->description

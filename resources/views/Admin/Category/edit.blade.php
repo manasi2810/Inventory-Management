@@ -17,8 +17,7 @@
                 <form action="{{ route('Category.update', $category->id) }}" method="POST">
                     @csrf
                     @method('PUT')
-
-                    <!-- Category Name -->
+ 
                     <div class="form-group">
                         <label>Category Name</label>
                         <input type="text" 
@@ -31,8 +30,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
-                    <!-- Description -->
+ 
                     <div class="form-group">
                         <label>Description</label>
                         <textarea name="description" class="form-control">{{ old('description', $category->description) }}</textarea>
@@ -41,8 +39,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
-                    <!-- Buttons -->
+ 
                     <button type="submit" class="btn btn-success">
                         <i class="fas fa-save"></i> Update Category
                     </button>

@@ -8,9 +8,7 @@ use App\Models\StockIn;
 
 class StockInController extends Controller
 {
-    /**
-     * STOCK IN LIST (READ ONLY)
-     */
+   
     public function index()
     {
         $stockIns = StockIn::with('product')

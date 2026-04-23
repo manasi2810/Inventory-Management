@@ -23,8 +23,7 @@
     @csrf
 
     <div class="row">
-
-        <!-- Basic Info -->
+  
         <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
@@ -80,8 +79,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- Job & Documents -->
+ 
         <div class="col-md-6">
             <div class="card card-secondary">
                 <div class="card-header">

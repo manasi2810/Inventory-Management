@@ -11,8 +11,7 @@
 <form action="{{ route('Delivery_challan.update', $challan->id) }}" method="POST">
 @csrf
 @method('PUT')
-
-{{-- ================= CHALLAN HEADER ================= --}}
+ 
 <div class="card">
 
     <div class="card-header">
@@ -58,8 +57,7 @@
 
     </div>
 </div>
-
-{{-- ================= PRODUCTS ================= --}}
+ 
 <div class="card">
 
     <div class="card-header d-flex justify-content-between">
@@ -74,10 +72,8 @@
 
     </div>
 
-    <div class="card-body">
-
-        <table class="table table-bordered" id="productTable">
-
+    <div class="card-body"> 
+        <table class="table table-bordered" id="productTable"> 
             <thead>
                 <tr>
                     <th>Product</th>
@@ -89,115 +85,82 @@
                         <th>Action</th>
                     @endif
                 </tr>
-            </thead>
-
-            <tbody>
-
-                @foreach($challan->items as $index => $item)
-
-                <tr> 
-                    
+            </thead>  
+            <tbody>   
+                @foreach($challan->items as $index => $item) 
+                <tr>  
                     <td>
                         <select name="items[{{ $index }}][product_id]"
                                 class="form-control product"
-                                {{ $challan->status == 'dispatched' ? 'disabled' : '' }}>
-
-                            @foreach($products as $product)
-                                <option value="{{ $product->id }}"
-                                    data-price="{{ $product->price }}"
-                                    data-stock="{{ $product->stock ?? 0 }}"
-                                    {{ $item->product_id == $product->id ? 'selected' : '' }}>
-
-                                    {{ $product->name }}
-
-                                </option>
-                            @endforeach
-
+                                {{ $challan->status == 'dispatched' ? 'disabled' : '' }}> 
+                                @foreach($products as $product)
+                                    <option value="{{ $product->id }}"
+                                        data-price="{{ $product->price }}"
+                                        data-stock="{{ $product->stock ?? 0 }}"
+                                        {{ $item->product_id == $product->id ? 'selected' : '' }}> 
+                                        {{ $product->name }} 
+                                    </option>
+                                @endforeach 
                         </select>
-                    </td>
-
-                     
+                    </td> 
                     <td class="stock-info">
                        {{ $item->product->stock_quantity ?? 0 }}
-                    </td>
-
-                    
+                    </td> 
                     <td>
                         <input type="number"
                                name="items[{{ $index }}][qty]"
                                class="form-control qty"
                                value="{{ $item->qty }}"
                                {{ $challan->status == 'dispatched' ? 'readonly' : '' }}>
-                    </td>
-
-                  
-                    
+                    </td> 
                     <td>
                         <input type="number"
                                name="items[{{ $index }}][rate]"
                                class="form-control rate"
                                value="{{ $item->rate }}"
                                {{ $challan->status == 'dispatched' ? 'readonly' : '' }}>
-                    </td>
-
-                  
+                    </td> 
                     <td>
                         <input type="text"
                                class="form-control total"
                                value="{{ $item->qty * $item->rate }}"
                                readonly>
-                    </td>
-
-                   
+                    </td>  
                     @if($challan->status != 'dispatched')
                     <td>
                         <button type="button" class="btn btn-danger btn-sm removeRow">
                             X
                         </button>
                     </td>
-                    @endif
-
-                </tr>
-
-                @endforeach
-
-            </tbody>
-
-        </table>
-
+                    @endif 
+                </tr> 
+                @endforeach 
+            </tbody> 
+        </table> 
     </div>
-</div>
+</div> 
 
-{{-- ================= BUTTON ================= --}}
-<div class="text-right mb-3">
-
-    @if($challan->status != 'dispatched')
-
+<div class="text-right mb-3">  
+    @if($challan->status != 'dispatched') 
         <button type="submit" class="btn btn-primary">
             Update Challan
-        </button>
-
-    @else
-
+        </button> 
+    @else 
         <div class="alert alert-danger">
             🚫 This challan is dispatched and locked for editing
-        </div>
-
+        </div> 
     @endif
 
-</div>
-
-</form>
-
+</div> 
+</form> 
 @stop
 
-{{-- ================= SCRIPT ================= --}}
+
 @push('js')
 <script>
 
 let index = {{ count($challan->items) }};
-
-/* ADD NEW ROW */
+ 
 $('#addRow').click(function () {
 
     let row = `
@@ -243,13 +206,12 @@ $('#addRow').click(function () {
     index++;
 });
 
-/* REMOVE ROW */
+ 
 $(document).on('click', '.removeRow', function () {
     $(this).closest('tr').remove();
     calculateTotal();
 });
 
-/* PRODUCT CHANGE */
 $(document).on('change', '.product', function () {
 
     let selected = $(this).find(':selected');
@@ -265,12 +227,11 @@ $(document).on('change', '.product', function () {
     calculateTotal();
 });
 
-/* QTY / RATE CHANGE */
+
 $(document).on('keyup change', '.qty, .rate', function () {
     calculateTotal();
 });
-
-/* CALCULATION */
+ 
 function calculateTotal() {
 
     let subTotal = 0;

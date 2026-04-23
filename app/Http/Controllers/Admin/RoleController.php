@@ -34,15 +34,13 @@ class RoleController extends Controller
             $request->validate([
                 'name' => 'required|string|unique:roles,name',
                 'permissions' => 'nullable|array',
-                'permissions.*' => 'string|exists:permissions,name', // validate names
+                'permissions.*' => 'string|exists:permissions,name',  
             ]);
-
-            // Create role
+ 
             $role = Role::create(['name' => $request->name]);
-
-            // Assign permissions
+ 
             if($request->has('permissions')) {
-                $role->syncPermissions($request->permissions); // now it works
+                $role->syncPermissions($request->permissions);  
             }
             return redirect('/Role')->with('success', 'Role created successfully');
         }
@@ -66,7 +64,7 @@ class RoleController extends Controller
 
     public function update(Request $request, $id)
         {
-            // Validate input
+            
             $request->validate([
                 'name' => 'required|string|unique:roles,name,' . $id, 
                 'permissions' => 'nullable|array',
@@ -77,7 +75,6 @@ class RoleController extends Controller
             $role->save(); 
             $permissions = $request->permissions ?? [];  
             $role->syncPermissions($permissions);  
-            // Redirect back with success message
             return redirect()->route('Role')->with('success', 'Role updated successfully!');
         }
 

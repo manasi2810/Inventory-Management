@@ -17,8 +17,7 @@
 @method('PUT')
 
 <div class="row">
-
-    <!-- LEFT SIDE -->
+ 
     <div class="col-md-6">
 
         <div class="card">
@@ -133,11 +132,9 @@
         </div>
 
     </div>
-
-    <!-- RIGHT SIDE -->
+ 
     <div class="col-md-6">
-
-        <!-- IMAGES -->
+ 
         <div class="card">
 
             <div class="card-header">
@@ -184,8 +181,7 @@
 
             </div>
         </div>
-
-        <!-- SEO -->
+ 
         <div class="card mt-3">
 
             <div class="card-header">
@@ -218,8 +214,7 @@
     </div>
 
 </div>
-
-<!-- BUTTONS -->
+ 
 <div class="row mt-3">
     <div class="col-12 text-right">
 

@@ -11,7 +11,7 @@
             color: #000;
         }
 
-        /* EACH CHALLAN PAGE */
+        
         .dc-page {
             page-break-after: always;
             padding: 10px;
@@ -21,7 +21,7 @@
             page-break-after: auto;
         }
 
-        /* HEADER */
+         
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
@@ -39,7 +39,7 @@
             font-size: 12px;
         }
 
-        /* FLEX SECTION */
+         
         .flex {
             display: flex;
             justify-content: space-between;
@@ -62,8 +62,7 @@
             margin: 2px 0;
             font-size: 12px;
         }
-
-        /* TABLE */
+ 
         table {
             width: 100%;
             border-collapse: collapse;
@@ -87,8 +86,7 @@
         .right {
             text-align: right;
         }
-
-        /* TOTAL TABLE */
+ 
         .total-table {
             margin-top: 10px;
         }
@@ -96,14 +94,12 @@
         .total-table td {
             padding: 5px;
         }
-
-        /* FOOTER */
+ 
         .footer {
             margin-top: 15px;
             font-size: 11px;
         }
-
-        /* SIGNATURE */
+ 
         .signature {
             margin-top: 40px;
             display: flex;
@@ -115,7 +111,7 @@
             text-align: center;
         }
 
-        /* PRINT */
+        
         .print-btn {
             margin-bottom: 10px;
         }
@@ -131,19 +127,17 @@
 <body onload="window.print()">
 
 <button class="print-btn" onclick="window.print()">Print</button>
-
-{{-- ================= LOOP ALL DC ================= --}}
+ 
 @foreach($challans as $challan)
 
 <div class="dc-page">
-
-    {{-- HEADER --}}
+ 
     <div class="header">
         <h2>SMARTSTOCK PRIVATE LIMITED</h2>
         <p>DELIVERY CHALLAN</p>
     </div>
 
-    {{-- CUSTOMER + TRANSPORT --}}
+     
     <div class="flex">
 
         <div class="box">
@@ -163,8 +157,7 @@
         </div>
 
     </div>
-
-    {{-- ITEMS TABLE --}}
+ 
     <table>
         <thead>
             <tr>
@@ -189,8 +182,7 @@
             @endforeach
         </tbody>
     </table>
-
-    {{-- TOTALS --}}
+ 
     <table class="total-table">
 
         <tr>
@@ -209,14 +201,12 @@
         </tr>
 
     </table>
-
-    {{-- FOOTER --}}
+ 
     <div class="footer">
         <p><b>Note:</b> Goods once issued cannot be returned without approval.</p>
         <p>This is a system generated Delivery Challan.</p>
     </div>
-
-    {{-- SIGNATURE --}}
+ 
     <div class="signature">
         <div class="sign">
             ___________________<br>

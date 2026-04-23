@@ -164,16 +164,12 @@
                         </tr>
                     @endforeach
 
-                    </tbody>
-
-                </table>
-
+                    </tbody> 
+                </table> 
             </div>
-        </div>
-
+        </div> 
     </div>
-</div>
-
+</div> 
 @stop
 
 @push('js')

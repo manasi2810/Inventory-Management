@@ -26,15 +26,12 @@
     @method('PUT')
 
     <div class="card">
-
-        <!-- HEADER -->
+ 
         <div class="card-header">
             <h3 class="card-title">Edit Role</h3>
         </div>
-
-        <!-- BODY -->
+ 
         <div class="card-body">
-
             <div class="row">
 
                 <div class="col-md-6">
@@ -78,8 +75,7 @@
             </div>
 
         </div>
-
-        <!-- FOOTER -->
+ 
         <div class="card-footer text-right">
 
             <a href="{{ route('Role') }}" class="btn btn-secondary">

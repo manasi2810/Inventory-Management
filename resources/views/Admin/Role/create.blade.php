@@ -25,16 +25,13 @@
     @csrf
 
     <div class="card">
-
-        <!-- HEADER -->
+ 
         <div class="card-header">
             <h3 class="card-title">Role Details</h3>
         </div>
-
-        <!-- BODY -->
+ 
         <div class="card-body">
-
-            <!-- Role Name -->
+ 
             <div class="row">
 
                 <div class="col-md-6">
@@ -51,8 +48,7 @@
             </div>
 
             <hr>
-
-            <!-- Permissions -->
+ 
             <h5>Assign Permissions</h5>
 
             <div class="row">
@@ -78,8 +74,7 @@
             </div>
 
         </div>
-
-        <!-- FOOTER -->
+ 
         <div class="card-footer text-right">
 
             <a href="{{ route('Role') }}" class="btn btn-secondary">

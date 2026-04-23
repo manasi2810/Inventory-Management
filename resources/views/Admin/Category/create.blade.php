@@ -13,8 +13,7 @@
 
     <div class="card card-primary">
         <div class="card-body"> 
-
-            <!-- Category Name -->
+ 
             <div class="form-group">
                 <label>Category Name</label>
                 <input type="text" name="name" class="form-control"> 
@@ -23,14 +22,12 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div> 
-
-            <!-- Description -->
+ 
             <div class="form-group">
                 <label>Description</label>
                 <textarea name="description" class="form-control"></textarea>
             </div> 
-
-            <!-- Buttons -->
+ 
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Save Category
             </button> 

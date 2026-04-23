@@ -11,7 +11,7 @@
             color: #000;
         }
 
-        /* HEADER */
+         
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
@@ -30,7 +30,7 @@
             font-size: 12px;
         }
 
-        /* TWO COLUMN WITH VERTICAL LINE */
+        
         .flex {
             display: flex;
             margin-top: 10px;
@@ -57,7 +57,7 @@
             padding-bottom: 4px;
         }
 
-        /* TABLE */
+         
         table {
             width: 100%;
             border-collapse: collapse;
@@ -79,7 +79,7 @@
             text-align: right;
         }
 
-        /* TOTAL TABLE */
+         
         .totals {
             width: 100%;
             margin-top: 10px;
@@ -90,7 +90,7 @@
             padding: 4px;
         }
 
-        /* FOOTER */
+         
         .footer {
             margin-top: 20px;
             border-top: 1px solid #000;
@@ -98,7 +98,7 @@
             font-size: 11px;
         }
 
-        /* SIGNATURE */
+         
         .signature {
             margin-top: 50px;
             display: flex;
@@ -125,14 +125,12 @@
 <body onload="window.print()">
 
 <button class="print-btn" onclick="window.print()">Print</button>
-
-{{-- HEADER --}}
+ 
 <div class="header">
     <h2>SMARTSTOCK PRIVATE LIMITED</h2>
     <p>DELIVERY CHALLAN</p>
 </div>
-
-{{-- CUSTOMER + TRANSPORT --}}
+ 
 <div class="flex">
 
     <div class="col">
@@ -152,8 +150,7 @@
     </div>
 
 </div>
-
-{{-- ITEMS TABLE --}}
+ 
 <table>
     <thead>
         <tr>
@@ -179,8 +176,7 @@
         @endforeach
     </tbody>
 </table>
-
-{{-- TOTALS --}}
+ 
 <table class="totals">
 
     <tr>
@@ -211,14 +207,12 @@
     </tr>
 
 </table>
-
-{{-- FOOTER --}}
+ 
 <div class="footer">
     <p><b>Note:</b> Goods once issued cannot be returned without approval.</p>
     <p>This is a computer generated Delivery Challan.</p>
 </div>
-
-{{-- SIGNATURE --}}
+ 
 <div class="signature">
 
     <div class="sign">

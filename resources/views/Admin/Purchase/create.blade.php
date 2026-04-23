@@ -15,7 +15,7 @@
                 <h3 class="card-title">New Purchase Entry</h3>
             </div>
             <div class="card-body">
-                {{-- ERROR --}}
+              
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -29,7 +29,7 @@
                 <form action="{{ route('Purchase.store') }}" method="POST">
                     @csrf
 
-                    {{-- ROW 1 --}}
+                   
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     <hr>
-                    {{-- PRODUCTS TABLE --}}
+                   
                     <h5>Purchase Items</h5>
                     <table class="table table-bordered" id="itemsTable">
                         <thead>

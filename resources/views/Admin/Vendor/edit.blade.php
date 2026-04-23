@@ -22,13 +22,11 @@
 @section('content')
 
 <div class="card">
-
-    {{-- HEADER --}}
+ 
     <div class="card-header">
         <h3 class="card-title">Update Vendor</h3>
     </div>
-
-    {{-- FORM --}}
+ 
     <form action="{{ route('Vendors.update', $vendor->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -36,8 +34,7 @@
         <div class="card-body">
 
             <div class="row">
-
-                {{-- LEFT SIDE --}}
+  
                 <div class="col-md-6">
 
                     <div class="form-group">
@@ -66,8 +63,7 @@
                     </div>
 
                 </div>
-
-                {{-- RIGHT SIDE --}}
+ 
                 <div class="col-md-6">
 
                     <div class="form-group">
@@ -105,16 +101,14 @@
                 </div>
 
             </div>
-
-            {{-- FULL WIDTH ADDRESS --}}
+ 
             <div class="form-group mt-2">
                 <label>Address</label>
                 <textarea name="address" class="form-control">{{ old('address', $vendor->address) }}</textarea>
             </div>
 
         </div>
-
-        {{-- FOOTER --}}
+ 
         <div class="card-footer text-right">
 
             <a href="{{ route('Vendors') }}" class="btn btn-secondary">
