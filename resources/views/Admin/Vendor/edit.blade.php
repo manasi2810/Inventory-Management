@@ -127,7 +127,6 @@
 
 @stop
 
-{{-- SCRIPT --}}
 @push('js')
 <script>
 document.addEventListener("DOMContentLoaded", function () {

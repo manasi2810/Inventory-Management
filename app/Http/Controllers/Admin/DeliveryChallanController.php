@@ -72,8 +72,7 @@ public function index()
     
     public function store(Request $request)
             {
-                DB::beginTransaction();
-
+                DB::beginTransaction(); 
                 try {
 
                     $userId = auth()->id();

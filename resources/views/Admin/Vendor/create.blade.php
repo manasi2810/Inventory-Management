@@ -40,58 +40,45 @@
                         <label>Vendor Name *</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
-
                     <div class="form-group">
                         <label>Email</label>
                         <input type="email" name="email" class="form-control">
                     </div>
-
                     <div class="form-group">
                         <label>Contact</label>
                         <input type="text" name="contact" class="form-control">
-                    </div>
-
-                </div>
- 
+                    </div> 
+                </div> 
                 <div class="col-md-6">
-
                     <div class="form-group">
                         <label>Company Name</label>
                         <input type="text" name="company_name" class="form-control">
                     </div>
-
                     <div class="form-group">
                         <label>GST Number</label>
                         <input type="text" name="gst_number" class="form-control">
                     </div>
-
                     <div class="form-group">
                         <label>City</label>
                         <input type="text" name="city" class="form-control">
                     </div>
-
                     <div class="form-group">
                         <label>State</label>
                         <input type="text" name="state" class="form-control">
                     </div>
-
                 </div>
-
             </div>
  
             <div class="form-group mt-2">
                 <label>Address</label>
                 <textarea name="address" class="form-control"></textarea>
             </div>
-
         </div>
    
         <div class="card-footer text-right">
-
             <a href="{{ route('Vendors') }}" class="btn btn-secondary">
                 Cancel
             </a>
-
             <button type="submit" id="saveBtn" class="btn btn-success">
                 <i class="fas fa-save"></i> Save Vendor
             </button>

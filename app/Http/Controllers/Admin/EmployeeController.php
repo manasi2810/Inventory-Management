@@ -66,8 +66,7 @@ class EmployeeController extends Controller
                         $certificatesPaths[] = $file->store('employees/certificates','public');
                     }
                     $certificatesPaths = json_encode($certificatesPaths);
-                }
-    
+                } 
                 Employee::create([
                     'user_id' => $user->id,
                     'contact_no' => $request->contact_no,
