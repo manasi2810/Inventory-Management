@@ -30,8 +30,7 @@ class DeliveryChallan extends Model
         'total_amount',
 
         'created_by',
-
-        // tracking fields
+ 
         'approved_by',
         'dispatched_by',
         'dispatched_at',
@@ -43,10 +42,10 @@ class DeliveryChallan extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function items()
-    {
-        return $this->hasMany(DeliveryChallanItem::class);
-    }
+  public function items()
+{
+    return $this->hasMany(DeliveryChallanItem::class, 'delivery_challan_id', 'id');
+}
 
     public function approver()
     {

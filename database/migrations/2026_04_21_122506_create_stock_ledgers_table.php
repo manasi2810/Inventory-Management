@@ -12,7 +12,7 @@ return new class extends Migration {
 
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
  
-            $table->enum('movement_type', ['IN', 'OUT']);
+            $table->enum('movement_type', ['IN', 'OUT' , 'DC_IN']);
 
            $table->unsignedInteger('qty');
  

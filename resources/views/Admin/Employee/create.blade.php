@@ -22,43 +22,34 @@
 <form action="{{ route('Employee.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
-    <div class="row">
-  
+    <div class="row"> 
         <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Basic Info</h3>
-                </div>
-
-                <div class="card-body">
-
-                    <div class="row">
-
+                </div> 
+                <div class="card-body"> 
+                    <div class="row"> 
                         <div class="col-md-6 form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="name">
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Email</label>
                             <input type="email" class="form-control" name="email">
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Contact No</label>
                             <input type="text" class="form-control" name="contact_no">
-                        </div>
-
+                        </div> 
                         <div class="col-md-12 form-group">
                             <label>Address</label>
                             <textarea class="form-control" name="address"></textarea>
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Password</label>
                             <input type="password" class="form-control" name="password">
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Role</label>
                             <select name="role" class="form-control" required>
@@ -67,29 +58,22 @@
                                     <option value="{{ $role->name }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
-
+                        </div> 
                         <div class="col-md-12 form-group">
                             <label>Profile Photo</label>
                             <input type="file" class="form-control" name="profile_photo">
-                        </div>
-
-                    </div>
-
+                        </div> 
+                    </div> 
                 </div>
             </div>
-        </div>
- 
+        </div> 
         <div class="col-md-6">
             <div class="card card-secondary">
                 <div class="card-header">
                     <h3 class="card-title">Job & Documents</h3>
-                </div>
-
-                <div class="card-body">
-
-                    <div class="row">
-
+                </div> 
+                <div class="card-body"> 
+                    <div class="row"> 
                         <div class="col-md-6 form-group">
                             <label>Department</label>
                             <select name="department" class="form-control">
@@ -100,8 +84,7 @@
                                 <option>Admin</option>
                                 <option>IT</option>
                             </select>
-                        </div>
-
+                        </div>  
                         <div class="col-md-6 form-group">
                             <label>Designation</label>
                             <select name="designation" class="form-control">
@@ -112,55 +95,40 @@
                                 <option>Intern</option>
                                 <option>Ground Staff</option>
                             </select>
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Date of Joining</label>
                             <input type="date" class="form-control" name="date_of_join">
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Salary</label>
                             <input type="number" class="form-control" name="salary">
-                        </div>
-
-                    </div>
-
-                    <hr>
-
-                    <h5>Documents</h5>
-
-                    <div class="row">
-
+                        </div> 
+                    </div> 
+                    <hr>  
+                    <h5>Documents</h5> 
+                    <div class="row"> 
                         <div class="col-md-6 form-group">
                             <label>Resume</label>
                             <input type="file" class="form-control" name="resume">
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>Certificates</label>
                             <input type="file" class="form-control" name="certificates[]" multiple>
-                        </div>
-
+                        </div> 
                         <div class="col-md-6 form-group">
                             <label>ID Proof</label>
                             <input type="file" class="form-control" name="id_proof">
-                        </div>
-
-                    </div>
-
-                </div>
-
+                        </div> 
+                    </div> 
+                </div> 
                 <div class="card-footer">
                     <button type="submit" class="btn btn-success">Save Employee</button>
                     <a href="{{ route('Employee') }}" class="btn btn-secondary">Cancel</a>
-                </div>
-
+                </div> 
             </div>
-        </div>
-
-    </div>
-
+        </div> 
+    </div> 
 </form>
 
 @stop

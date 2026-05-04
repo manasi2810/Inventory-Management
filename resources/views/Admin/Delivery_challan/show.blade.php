@@ -92,9 +92,8 @@
                     </tr>
                 </table>
             </div>
-        </div>
-
-         
+        </div> 
+        
         <div class="mt-3 d-flex justify-content-between">
 
             <a href="{{ route('Delivery_challan') }}" class="btn btn-secondary">

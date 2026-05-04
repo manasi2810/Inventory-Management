@@ -15,4 +15,20 @@ class StockLedger extends Model
         'balance_after',
         'created_by'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class);
+    }
+
+    // Optional scopes
+    public function scopeIn($query)
+    {
+        return $query->where('movement_type', 'IN');
+    }
+
+    public function scopeOut($query)
+    {
+        return $query->where('movement_type', 'OUT');
+    }
 }

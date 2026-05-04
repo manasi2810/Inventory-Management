@@ -80,18 +80,22 @@
                                 @endif
                             </td>  
                           <td> 
-                        @if($challan->status == 'dispatched')
-                            <a href="{{ route('Delivery_challan.show', $challan->id) }}"
-                            class="btn btn-sm btn-info">
-                                View
-                            </a>
-                        @endif
+                       
   
                         @if($challan->status == 'dispatched')
                             <a href="{{ route('Delivery_challan.print', $challan->id) }}"
                             target="_blank"
                             class="btn btn-sm btn-secondary">
                                 Print
+                            </a>
+                            
+                              <a href="{{ route('Delivery_challan.show', $challan->id) }}"
+                            class="btn btn-sm btn-info">
+                                View
+                            </a>
+                              <a href="{{ route('dc_return.create', $challan->id) }}"
+                            class="btn btn-sm btn-dark">
+                                DC Return
                             </a>
                         @endif
  

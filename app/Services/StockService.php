@@ -3,177 +3,134 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\StockLedger;
 use App\Models\StockIn;
 use App\Models\StockOut;
-use App\Models\StockLedger;
 use Illuminate\Support\Facades\DB;
 
 class StockService
 {
-    /**
-     * Get live stock of a product
-     */
+     
     public function getStock($productId)
-    {
-        $product = Product::findOrFail($productId);
-
-        return $product->stock_quantity;
-    }
-
-    /**
-     * Increase stock (Purchase / Return / Stock In)
-     */
-   public function increaseStock($productId, $qty, $reference = null)
         {
-            return DB::transaction(function () use ($productId, $qty, $reference) {
-
-                $product = Product::where('id', $productId)
-                    ->lockForUpdate()
-                    ->first();
-
-                $product->stock_quantity = ($product->stock_quantity ?? 0) + $qty;
-                $product->save();
-
-              
-            StockIn::create([
-            'product_id' => $productId,
-            'qty'        => $qty,
-            'reference'  => is_array($reference) ? json_encode($reference) : $reference,
-            'created_by' => $reference['user_id'] ?? auth()->id(),
-        ]);
-                // STOCK LEDGER
-                StockLedger::create([
-                'product_id' => $productId,
-                'movement_type' => 'IN',
-                'qty' => $qty,
-                'reference_type' => is_array($reference) ? ($reference['type'] ?? null) : null,
-                'reference_id' => is_array($reference) ? ($reference['id'] ?? null) : null,
-                'balance_after' => $product->stock_quantity,
-                'created_by' => is_array($reference) 
-                ? ($reference['user_id'] ?? 1) 
-                : 1,
-            ]);
-            });
+            return Product::findOrFail($productId)->stock_quantity;
         }
 
-    /**
-     * Decrease stock (Delivery Challan / Sale / Damage)
-     */
-
-    
-    public function decreaseStock($productId, $qty, $reference = null)
+     
+    public function hasStock($productId, $qty)
         {
-            return DB::transaction(function () use ($productId, $qty, $reference) {
+            $product = Product::findOrFail($productId);
+            return ($product->stock_quantity ?? 0) >= $qty;
+        }
+ 
+
+
+    public function increaseStock($productId, $qty, $type = 'IN', $reference = [])
+        {
+            return DB::transaction(function () use ($productId, $qty, $type, $reference) {
 
                 $product = Product::where('id', $productId)
                     ->lockForUpdate()
                     ->first();
 
-                $currentStock = $product->stock_quantity ?? 0;
-
-                if ($currentStock < $qty) {
-                    throw new \Exception("Insufficient stock for product: " . $product->name);
-                }
-
-                $product->stock_quantity -= $qty;
+                $product->stock_quantity += $qty;
                 $product->save();
 
-                StockOut::create([
+                StockIn::create([
                     'product_id' => $productId,
-                    'qty'        => $qty, 
-                    'reference_type' => is_array($reference) ? ($reference['type'] ?? null) : null,
-                    'reference_id'   => is_array($reference) ? ($reference['id'] ?? null) : null, 
-                    'created_by' => is_array($reference)
-                        ? ($reference['user_id'] ?? auth()->id())
-                        : auth()->id(),
+                    'qty' => $qty,
+                    'reference' => json_encode($reference),
+                    'created_by' => auth()->id(),
                 ]);
 
-                //  STOCK LEDGER
                 StockLedger::create([
                     'product_id' => $productId,
-                    'movement_type' => 'OUT',
+                    'movement_type' => 'IN',
                     'qty' => $qty,
-                    'reference_type' => $reference['type'] ?? null,
+                    'reference_type' => $type,
                     'reference_id' => $reference['id'] ?? null,
                     'balance_after' => $product->stock_quantity,
-                    'created_by' => $reference['user_id'] ?? auth()->id() ?? null,
+                    'created_by' => auth()->id(),
                 ]);
             });
         }
+    
 
-    /**
-     * Validate stock before issuing (safe check)
-     */
-    public function updateStatus(Request $request, $id)
+
+   public function decreaseStock($productId, $qty, $type = 'OUT', $reference = [])
 {
-    DB::beginTransaction();
+    return DB::transaction(function () use ($productId, $qty, $type, $reference) {
 
-    try {
+        $product = Product::where('id', $productId)
+            ->lockForUpdate()
+            ->first();
 
-        $challan = DeliveryChallan::with('items.product')->findOrFail($id);
-        $stockService = new StockService();
-        $userId = auth()->id();
+        if (!$product) {
+            throw new \Exception("Product not found: {$productId}");
+        }
 
-        $newStatus = $request->status;
-        $oldStatus = $challan->status;
+        if (($product->stock_quantity ?? 0) < $qty) {
+            throw new \Exception("Insufficient stock for product: {$product->name}");
+        }
 
-        // 🚚 DISPATCH LOGIC (STOCK OUT)
-        if ($newStatus === 'dispatched' && $oldStatus !== 'dispatched') {
+        $product->stock_quantity -= $qty;
+        $product->save();
 
-            foreach ($challan->items as $item) {
+        StockOut::create([
+            'product_id' => $productId,
+            'qty' => $qty,
+            'reference_type' => $type,
+            'reference_id' => $reference['id'] ?? null,
+            'created_by' => $reference['user_id'] ?? auth()->id(),
+        ]);
 
-                if (!$stockService->hasStock($item->product_id, $item->qty)) {
-                    throw new \Exception("Stock not available for {$item->product->name}");
+        StockLedger::create([
+            'product_id' => $productId,
+            'movement_type' => 'OUT',
+            'qty' => $qty,
+            'reference_type' => $type,
+            'reference_id' => $reference['id'] ?? null,
+            'balance_after' => $product->stock_quantity,
+            'created_by' => $reference['user_id'] ?? auth()->id(),
+        ]);
+    });
+}
+ 
+
+
+    public function returnStock($productId, $qty, $condition, $reference = [])
+        {
+            return DB::transaction(function () use ($productId, $qty, $condition, $reference) {
+
+                $product = Product::where('id', $productId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($condition === 'good') {
+
+                    $product->stock_quantity += $qty;
+                    $type = 'RETURN_GOOD';
+
+                } elseif ($condition === 'damaged') {
+
+                    $type = 'RETURN_DAMAGED';
+
+                } else {
+
+                    $type = 'RETURN_SCRAP';
                 }
 
-                $stockService->decreaseStock(
-                    $item->product_id,
-                    $item->qty,
-                    [
-                        'type' => 'delivery_challan',
-                        'id' => $challan->id,
-                        'user_id' => $userId
-                    ]
-                );
-            }
+                $product->save();
+
+                StockLedger::create([
+                    'product_id' => $productId,
+                    'movement_type' => 'IN',
+                    'qty' => $qty,
+                    'reference_type' => $type,
+                    'reference_id' => $reference['id'] ?? null,
+                    'balance_after' => $product->stock_quantity,
+                    'created_by' => auth()->id(),
+                ]);
+            });
         }
-
-        // 🔄 CANCEL AFTER DISPATCH (STOCK RETURN)
-        if ($newStatus === 'cancelled' && $oldStatus === 'dispatched') {
-
-            foreach ($challan->items as $item) {
-
-                $stockService->increaseStock(
-                    $item->product_id,
-                    $item->qty,
-                    [
-                        'type' => 'dc_cancel',
-                        'id' => $challan->id,
-                        'user_id' => $userId
-                    ]
-                );
-            }
-        }
-
-        $challan->status = $newStatus;
-        $challan->save();
-
-        DB::commit();
-
-        return back()->with('success', 'Status updated successfully');
-
-    } catch (\Exception $e) {
-
-        DB::rollback();
-
-        return back()->with('error', $e->getMessage());
-    }
-}
-
-
-    public function hasStock($productId, $qty)
-    {
-        $product = Product::findOrFail($productId);
-
-return ($product->stock_quantity ?? 0) >= $qty;    }
 }

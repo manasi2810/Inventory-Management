@@ -89,8 +89,7 @@
             border: none;
             padding: 4px;
         }
-
-         
+ 
         .footer {
             margin-top: 20px;
             border-top: 1px solid #000;
@@ -122,35 +121,28 @@
     </style>
 </head>
 
-<body onload="window.print()">
-
-<button class="print-btn" onclick="window.print()">Print</button>
- 
+<body onload="window.print()"> 
+<button class="print-btn" onclick="window.print()">Print</button> 
 <div class="header">
     <h2>SMARTSTOCK PRIVATE LIMITED</h2>
     <p>DELIVERY CHALLAN</p>
-</div>
- 
-<div class="flex">
-
+</div> 
+<div class="flex"> 
     <div class="col">
         <h4>Customer Details</h4>
         <p><b>{{ $challan->customer->name ?? '-' }}</b></p>
         <p>{{ $challan->delivery_to ?? '-' }}</p>
         <p><b>Challan No:</b> {{ $challan->challan_no ?? '-' }}</p>
         <p><b>Date:</b> {{ $challan->challan_date ? date('d-m-Y', strtotime($challan->challan_date)) : '-' }}</p>
-    </div>
-
+    </div> 
     <div class="col">
         <h4>Transport Details</h4>
         <p><b>Mode:</b> {{ $challan->transport_mode ?? '-' }}</p>
         <p><b>Vehicle No:</b> {{ $challan->vehicle_no ?? '-' }}</p>
         <p><b>LR No:</b> {{ $challan->lr_no ?? '-' }}</p>
         <p><b>Dispatch From:</b> {{ $challan->dispatch_from ?? '-' }}</p>
-    </div>
-
-</div>
- 
+    </div> 
+</div> 
 <table>
     <thead>
         <tr>
@@ -160,8 +152,7 @@
             <th>Rate</th>
             <th>Total</th>
         </tr>
-    </thead>
-
+    </thead> 
     <tbody>
         @php $i = 1; @endphp
 
@@ -175,62 +166,49 @@
         </tr>
         @endforeach
     </tbody>
-</table>
- 
-<table class="totals">
-
+</table> 
+<table class="totals"> 
     <tr>
         <td class="right" style="width:70%;"><b>Subtotal (Taxable Value)</b></td>
         <td class="right">₹ {{ number_format($challan->sub_total ?? 0, 2) }}</td>
-    </tr>
-
+    </tr> 
     <tr>
         <td class="right"><b>GST Amount</b></td>
         <td class="right">₹ {{ number_format($challan->gst_amount ?? 0, 2) }}</td>
-    </tr>
-
+    </tr> 
     <tr>
         <td class="right"><b>Transport / Other Charges</b></td>
         <td class="right">₹ {{ number_format($challan->other_charges ?? 0, 2) }}</td>
-    </tr>
-
+    </tr> 
     <tr>
         <td class="right"><b>Round Off</b></td>
         <td class="right">₹ {{ number_format($challan->round_off ?? 0, 2) }}</td>
-    </tr>
-
+    </tr> 
     <tr>
         <td class="right" style="border-top:2px solid #000;"><b>Grand Total</b></td>
         <td class="right" style="border-top:2px solid #000;">
             <b>₹ {{ number_format($challan->total_amount ?? 0, 2) }}</b>
         </td>
-    </tr>
-
-</table>
- 
+    </tr> 
+</table> 
 <div class="footer">
     <p><b>Note:</b> Goods once issued cannot be returned without approval.</p>
     <p>This is a computer generated Delivery Challan.</p>
-</div>
- 
+</div> 
 <div class="signature">
 
     <div class="sign">
         ___________________<br>
         Prepared By
-    </div>
-
+    </div> 
     <div class="sign">
         ___________________<br>
         Authorized By
-    </div>
-
+    </div> 
     <div class="sign">
         ___________________<br>
         Receiver
-    </div>
-
-</div>
-
+    </div> 
+</div> 
 </body>
 </html>

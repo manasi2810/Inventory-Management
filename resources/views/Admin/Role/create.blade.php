@@ -3,19 +3,16 @@
 @section('title', 'Create Role')
 
 @section('content_header')
-    <div class="row">
-
+    <div class="row"> 
         <div class="col-sm-6">
             <h1>Create Role</h1>
-        </div>
-
+        </div> 
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active">Role</li>
             </ol>
-        </div>
-
+        </div> 
     </div>
 @stop
 
@@ -24,16 +21,12 @@
 <form action="{{ route('Role.store') }}" method="POST">
     @csrf
 
-    <div class="card">
- 
+    <div class="card"> 
         <div class="card-header">
             <h3 class="card-title">Role Details</h3>
-        </div>
- 
-        <div class="card-body">
- 
-            <div class="row">
-
+        </div> 
+        <div class="card-body"> 
+            <div class="row"> 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Role Name</label>
@@ -43,52 +36,37 @@
                                placeholder="Enter role name"
                                required>
                     </div>
-                </div>
-
-            </div>
-
-            <hr>
- 
-            <h5>Assign Permissions</h5>
-
-            <div class="row">
-
+                </div> 
+            </div> 
+            <hr>  
+            <h5>Assign Permissions</h5> 
+            <div class="row"> 
                 @foreach($permissions as $permission)
                 <div class="col-md-3">
-                    <div class="form-check">
-
+                    <div class="form-check"> 
                         <input type="checkbox"
                                name="permissions[]"
                                value="{{ $permission->name }}"
                                class="form-check-input"
-                               id="perm_{{ $permission->id }}">
-
+                               id="perm_{{ $permission->id }}"> 
                         <label class="form-check-label" for="perm_{{ $permission->id }}">
                             {{ $permission->name }}
-                        </label>
-
+                        </label> 
                     </div>
                 </div>
                 @endforeach
 
-            </div>
-
-        </div>
- 
-        <div class="card-footer text-right">
-
+            </div> 
+        </div> 
+        <div class="card-footer text-right"> 
             <a href="{{ route('Role') }}" class="btn btn-secondary">
                 Cancel
-            </a>
-
+            </a> 
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Save Role
-            </button>
-
-        </div>
-
-    </div>
-
+            </button> 
+        </div> 
+    </div> 
 </form>
 
 @stop

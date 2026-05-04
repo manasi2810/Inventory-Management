@@ -80,6 +80,12 @@
                 <textarea name="delivery_to" class="form-control"></textarea>
             </div>  
         </div> 
+        <div class="row mt-2">
+    <div class="col-md-12">
+        <label>Notes</label>
+        <textarea name="notes" class="form-control" placeholder="Enter remarks..."></textarea>
+    </div>
+</div>
     </div>
 </div>
 

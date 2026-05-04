@@ -14,15 +14,18 @@ class Product extends Model
         'page_title','alt_text','meta_keywords'
     ];
 
-    public function images() {
-        return $this->hasMany(ProductImage::class);
-    }
+    public function stockIns()
+{
+    return $this->hasMany(\App\Models\StockIn::class);
+}
 
-    public function mainImage() {
-        return $this->hasOne(ProductImage::class)->where('type','main');
-    }
-
-    public function category() {
-        return $this->belongsTo(Category::class);
-    }
+public function stockOuts()
+{
+    return $this->hasMany(\App\Models\StockOut::class);
+}
+public function stockLedgers()
+{
+    return $this->hasMany(\App\Models\StockLedger::class);
+}
+ 
 }

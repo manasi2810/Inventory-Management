@@ -3,8 +3,7 @@
 @section('title', 'Roles')
 
 @section('content_header')
-    <div class="d-flex justify-content-between align-items-center">
-
+    <div class="d-flex justify-content-between align-items-center"> 
         <h1 class="m-0">Role</h1> 
         <a href="{{ route('Role.create') }}" class="btn btn-primary btn-sm">
             + Create Role
