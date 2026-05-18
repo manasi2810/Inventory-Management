@@ -83,59 +83,6 @@ routes/
 
 ---
 
-# ⚙️ Installation
-
-## 1. Clone Repository
-
-```bash
-git clone https://github.com/manasi2810/Inventory-Management.git
-```
-
-## 2. Move into Project
-
-```bash
-cd your-repository-name
-```
-
-## 3. Install Dependencies
-
-```bash
-composer install
-```
-
-```bash
-npm install
-```
-
-## 4. Create Environment File
-
-```bash
-cp .env.example .env
-```
-
-## 5. Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-## 6. Run Migrations
-
-```bash
-php artisan migrate
-```
-
-## 7. Start Server
-
-```bash
-php artisan serve
-```
-
-## 8. Run Frontend Assets
-
-```bash
-npm run dev
-```
  
 
 # 🎯 Key Features
