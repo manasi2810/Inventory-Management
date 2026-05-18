@@ -10,11 +10,11 @@ class StockInController extends Controller
 {
    
     public function index()
-    {
-        $stockIns = StockIn::with('product')
-            ->orderBy('id', 'desc')
-            ->get();
+        {
+            $stockIns = StockIn::with('product')
+                ->orderBy('id', 'desc')
+                ->get();
 
-        return view('admin.Stock.stock-in', compact('stockIns'));
-    }
+            return view('admin.Stock.stock-in', compact('stockIns'));
+        }
 }

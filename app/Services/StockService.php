@@ -58,43 +58,43 @@ class StockService
 
 
    public function decreaseStock($productId, $qty, $type = 'OUT', $reference = [])
-{
-    return DB::transaction(function () use ($productId, $qty, $type, $reference) {
+        {
+            return DB::transaction(function () use ($productId, $qty, $type, $reference) {
 
-        $product = Product::where('id', $productId)
-            ->lockForUpdate()
-            ->first();
+                $product = Product::where('id', $productId)
+                    ->lockForUpdate()
+                    ->first();
 
-        if (!$product) {
-            throw new \Exception("Product not found: {$productId}");
+                if (!$product) {
+                    throw new \Exception("Product not found: {$productId}");
+                }
+
+                if (($product->stock_quantity ?? 0) < $qty) {
+                    throw new \Exception("Insufficient stock for product: {$product->name}");
+                }
+
+                $product->stock_quantity -= $qty;
+                $product->save();
+
+                StockOut::create([
+                    'product_id' => $productId,
+                    'qty' => $qty,
+                    'reference_type' => $type,
+                    'reference_id' => $reference['id'] ?? null,
+                    'created_by' => $reference['user_id'] ?? auth()->id(),
+                ]);
+
+                StockLedger::create([
+                    'product_id' => $productId,
+                    'movement_type' => 'OUT',
+                    'qty' => $qty,
+                    'reference_type' => $type,
+                    'reference_id' => $reference['id'] ?? null,
+                    'balance_after' => $product->stock_quantity,
+                    'created_by' => $reference['user_id'] ?? auth()->id(),
+                ]);
+            });
         }
-
-        if (($product->stock_quantity ?? 0) < $qty) {
-            throw new \Exception("Insufficient stock for product: {$product->name}");
-        }
-
-        $product->stock_quantity -= $qty;
-        $product->save();
-
-        StockOut::create([
-            'product_id' => $productId,
-            'qty' => $qty,
-            'reference_type' => $type,
-            'reference_id' => $reference['id'] ?? null,
-            'created_by' => $reference['user_id'] ?? auth()->id(),
-        ]);
-
-        StockLedger::create([
-            'product_id' => $productId,
-            'movement_type' => 'OUT',
-            'qty' => $qty,
-            'reference_type' => $type,
-            'reference_id' => $reference['id'] ?? null,
-            'balance_after' => $product->stock_quantity,
-            'created_by' => $reference['user_id'] ?? auth()->id(),
-        ]);
-    });
-}
  
 
 

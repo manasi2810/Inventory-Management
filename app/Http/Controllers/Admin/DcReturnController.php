@@ -16,38 +16,37 @@ class DcReturnController extends Controller
 {
      
 public function create($id)
-{
-    $dc = DeliveryChallan::with('items.product')->findOrFail($id);
+    {
+        $dc = DeliveryChallan::with('items.product')->findOrFail($id);
 
-    $dc->all_returned = true;
+        $dc->all_returned = true;
 
-    foreach ($dc->items as $item) {
+        foreach ($dc->items as $item) {
 
-        $returnItems = DcReturnItem::where('product_id', $item->product_id)
-            ->whereHas('dcReturn', function ($q) use ($id) {
-                $q->where('delivery_challan_id', $id);
-            })
-            ->get();
+            $returnItems = DcReturnItem::where('product_id', $item->product_id)
+                ->whereHas('dcReturn', function ($q) use ($id) {
+                    $q->where('delivery_challan_id', $id);
+                })
+                ->get();
 
-        $item->delivered_qty = $item->qty;
- 
-        $item->return_breakdown = $returnItems
-            ->groupBy('condition')
-            ->map(fn($g) => $g->sum('return_qty'));
- 
-        $item->returned_qty = $returnItems->sum('return_qty');
+            $item->delivered_qty = $item->qty;
+    
+            $item->return_breakdown = $returnItems
+                ->groupBy('condition')
+                ->map(fn($g) => $g->sum('return_qty'));
+    
+            $item->returned_qty = $returnItems->sum('return_qty');
 
-        $item->remaining_qty = max(0, $item->qty - $item->returned_qty);
- 
-        $item->can_return = $item->remaining_qty > 0;
+            $item->remaining_qty = max(0, $item->qty - $item->returned_qty);
+    
+            $item->can_return = $item->remaining_qty > 0;
 
-        if ($item->remaining_qty > 0) {
-            $dc->all_returned = false;
-        }
+            if ($item->remaining_qty > 0) {
+                $dc->all_returned = false;
+            }
+        } 
+        return view('admin.delivery_challan.return', compact('dc'));
     }
-
-    return view('admin.delivery_challan.return', compact('dc'));
-}
     
 
 
@@ -57,10 +56,8 @@ public function store(Request $request)
             'delivery_challan_id' => 'required|exists:delivery_challans,id',
             'return_qty' => 'required|array',
             'product_id' => 'required|array',
-        ]);
-
-        DB::beginTransaction();
-
+        ]); 
+        DB::beginTransaction(); 
         try {
 
             $stockService = new StockService(); 
@@ -72,28 +69,20 @@ public function store(Request $request)
                 'return_date' => now(),
                 'notes' => $request->notes ?? null,
                 'created_by' => auth()->id(),
-            ]);
-
+            ]); 
             $hasAnyReturn = false; 
             foreach ($request->return_qty as $itemId => $qty) {
 
-                $qty = (float) $qty;
-
-                if ($qty <= 0) continue;
-
-                $hasAnyReturn = true;
-
-                $dcItem = DeliveryChallanItem::findOrFail($itemId);
-
-                $productId = $dcItem->product_id;
-
-                $condition = $request->condition[$itemId] ?? 'good';
- 
+                $qty = (float) $qty; 
+                if ($qty <= 0) continue; 
+                $hasAnyReturn = true;   
+                $dcItem = DeliveryChallanItem::findOrFail($itemId); 
+                $productId = $dcItem->product_id; 
+                $condition = $request->condition[$itemId] ?? 'good';  
                 $alreadyReturned = DcReturnItem::where('dc_item_id', $itemId)
                     ->sum('return_qty');
 
-                $remaining = $dcItem->qty - $alreadyReturned;
-
+                $remaining = $dcItem->qty - $alreadyReturned; 
                 if ($qty > $remaining) {
                     throw new \Exception("Return qty exceeds remaining for {$dcItem->product->name}");
                 }
@@ -104,18 +93,15 @@ public function store(Request $request)
                     'product_id'   => $productId,
                     'return_qty'   => $qty,
                     'condition'    => $condition,
-                ]);
- 
+                ]); 
                 if ($condition === 'good') {
 
                     $stockService->increaseStock($productId, $qty, [
                         'type' => 'dc_return_good',
                         'id' => $dcReturn->id,
                         'user_id' => auth()->id()
-                    ]);
-
-                } else {
-
+                    ]); 
+                } else { 
                     StockLedger::create([
                         'product_id' => $productId,
                         'movement_type' => 'IN',
@@ -133,13 +119,10 @@ public function store(Request $request)
             }
  
             $totalQty = 0;
-            $returnedQty = 0;
-
-            foreach ($dc->items as $item) {
-
+            $returnedQty = 0; 
+            foreach ($dc->items as $item) { 
                 $itemReturned = DcReturnItem::where('dc_item_id', $item->id)
-                    ->sum('return_qty');
-
+                    ->sum('return_qty'); 
                 $totalQty += $item->qty;
                 $returnedQty += $itemReturned;
             }
@@ -152,10 +135,8 @@ public function store(Request $request)
                 $dc->status = 'closed';
             }
 
-            $dc->save();
-
-            DB::commit();
-
+            $dc->save(); 
+            DB::commit(); 
             return redirect()
                 ->route('Delivery_challan')
                 ->with('success', 'DC Return saved successfully');

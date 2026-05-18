@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
 
-    {{-- FILTER --}}
+ 
     <div class="card">
         <div class="card-header">
             <h3>Vendor Report</h3>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    {{-- SUMMARY --}}
+ 
     <div class="row mb-3">
 
         <div class="col-md-4">
@@ -63,15 +63,14 @@
 
     </div>
 
-    {{-- EXPORT --}}
+   
     <div class="text-right mb-2">
         <a href="{{ route('reports.vendor.export', request()->all()) }}"
            class="btn btn-success">
             Export Excel
         </a>
     </div>
-
-    {{-- TABLE --}}
+ 
     <div class="card">
         <div class="card-body">
 

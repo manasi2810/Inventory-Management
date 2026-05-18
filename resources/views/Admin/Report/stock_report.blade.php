@@ -15,8 +15,7 @@
 @section('content')
 
  
-
-{{-- ================= DASHBOARD CARDS ================= --}}
+ 
 <div class="row mb-3">
 
     <div class="col-md-3">
@@ -56,8 +55,7 @@
     </div>
 
 </div>
-
-{{-- ================= DATE FILTER ================= --}}
+ 
 <form method="GET" class="card mb-3">
     <div class="card-body">
         <div class="row">
@@ -86,7 +84,7 @@
     </div>
 </form>
 
-{{-- ================= SEARCH + FILTER ================= --}}
+ 
 <div class="card mb-3">
     <div class="card-body">
         <div class="row">
@@ -115,7 +113,7 @@
     </div>
 </div>
 
-{{-- ================= TABLE ================= --}}
+ 
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Stock Details</h3>
@@ -187,8 +185,7 @@
 
 @stop
 
-
-{{-- ================= JS ================= --}}
+ 
 @push('js')
 <script>
 $(function () {
@@ -203,13 +200,11 @@ $(function () {
         dom: 'Bfrtip',
         buttons: ["copy", "csv", "excel", "pdf", "print"]
     });
-
-    // SEARCH
+ 
     $('#searchProduct').on('keyup', function () {
         table.search(this.value).draw();
     });
-
-    // STOCK FILTER
+ 
     $('#stockFilter').on('change', function () {
         let val = $(this).val();
 
@@ -224,7 +219,7 @@ $(function () {
         }
     });
 
-    // RESET
+ 
     $('#resetFilters').on('click', function () {
         $('#searchProduct').val('');
         $('#stockFilter').val('');

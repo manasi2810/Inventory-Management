@@ -21,7 +21,7 @@
 
 <div class="container-fluid">
 
-    {{-- FILTER --}}
+     
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">Filter Ledger</h3>
@@ -73,7 +73,7 @@
         </form>
     </div>
 
-    {{-- EXPORT --}}
+     
     <div class="d-flex justify-content-end mb-2">
         <a href="{{ route('reports.ledger.export', request()->all()) }}"
            class="btn btn-success">
@@ -81,7 +81,7 @@
         </a>
     </div>
 
-    {{-- SUMMARY --}}
+     
     <div class="row mb-3">
 
         <div class="col-md-6">
@@ -105,8 +105,7 @@
         </div>
 
     </div>
-
-    {{-- TABLE --}}
+ 
     <div class="card">
 
         <div class="card-header">
@@ -160,7 +159,6 @@
 
                         <td>{{ $item->qty ?? 0 }}</td>
 
-                        {{-- 🔥 IMPORTANT FIX: NARRATION --}}
                         <td>
                             @php
                                 $ref = $item->reference_type ?? '';

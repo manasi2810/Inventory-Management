@@ -23,7 +23,7 @@ class VendorReportExport
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // HEADER
+         
         $sheet->setCellValue('A1', 'SR');
         $sheet->setCellValue('B1', 'Name');
         $sheet->setCellValue('C1', 'Company');

@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
-
+namespace App\Http\Controllers\Admin; 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -12,11 +11,7 @@ use Illuminate\Http\RedirectResponse;
 
 class RoleController extends Controller
 {
-    /**
-     * Constructor to apply middleware
-     */
-    
-
+  
     public function index(Request $request): View
         {
             $roles = Role::with('users')->orderBy('id', 'DESC')->get();
@@ -48,8 +43,7 @@ class RoleController extends Controller
     public function show($id): View
         {
             $role = Role::findOrFail($id);
-            $rolePermissions = $role->permissions()->get();
-
+            $rolePermissions = $role->permissions()->get();  
             return view('admin.role.show', compact('role', 'rolePermissions'));
         }
 
@@ -58,13 +52,11 @@ class RoleController extends Controller
             $role = Role::findOrFail($id);
             $permissions = Permission::all(); 
             $rolePermissions = $role->permissions->pluck('name')->toArray();
-
             return view('admin.role.edit', compact('role', 'permissions', 'rolePermissions'));
         }
 
     public function update(Request $request, $id)
-        {
-            
+        { 
             $request->validate([
                 'name' => 'required|string|unique:roles,name,' . $id, 
                 'permissions' => 'nullable|array',
@@ -72,7 +64,7 @@ class RoleController extends Controller
             ]); 
             $role = Role::findOrFail($id); 
             $role->name = $request->name;
-            $role->save(); 
+            $role->save();       
             $permissions = $request->permissions ?? [];  
             $role->syncPermissions($permissions);  
             return redirect()->route('Role')->with('success', 'Role updated successfully!');
@@ -85,4 +77,5 @@ class RoleController extends Controller
             return redirect()->route('roles.index')
                 ->with('success', 'Role deleted successfully');
         }
+        
 }

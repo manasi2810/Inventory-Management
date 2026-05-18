@@ -64,89 +64,89 @@ class DeliveryChallanController extends Controller
 
     
    public function store(Request $request)
-{
-    DB::beginTransaction();
+            {
+                DB::beginTransaction();
 
-    try {
+                try {
 
-        $request->validate([
-            'challan_no'   => 'required',
-            'customer_id'  => 'required',
-            'challan_date' => 'required|date',
-            'items'        => 'required|array|min:1',
-        ]);
+                    $request->validate([
+                        'challan_no'   => 'required',
+                        'customer_id'  => 'required',
+                        'challan_date' => 'required|date',
+                        'items'        => 'required|array|min:1',
+                    ]);
 
-        $userId = auth()->id();
+                    $userId = auth()->id();
 
-        $subTotal = 0;
-        $totalQty = 0;
+                    $subTotal = 0;
+                    $totalQty = 0;
 
-        foreach ($request->items as $item) {
+                    foreach ($request->items as $item) {
 
-            $qty  = (int) ($item['qty'] ?? 0);
-            $rate = (float) ($item['rate'] ?? 0);
+                        $qty  = (int) ($item['qty'] ?? 0);
+                        $rate = (float) ($item['rate'] ?? 0);
 
-            $subTotal += $qty * $rate;
-            $totalQty += $qty;
-        }
+                        $subTotal += $qty * $rate;
+                        $totalQty += $qty;
+                    }
 
-        $gstAmount  = $subTotal * 0.18;
-        $grandTotal = $subTotal + $gstAmount;
+                    $gstAmount  = $subTotal * 0.18;
+                    $grandTotal = $subTotal + $gstAmount;
 
-        $challan = DeliveryChallan::create([
-            'challan_no'     => $request->challan_no,
-            'customer_id'    => $request->customer_id,
-            'challan_date'   => $request->challan_date,
-            'status'         => 'draft',
+                    $challan = DeliveryChallan::create([
+                        'challan_no'     => $request->challan_no,
+                        'customer_id'    => $request->customer_id,
+                        'challan_date'   => $request->challan_date,
+                        'status'         => 'draft',
 
-            // SAFE INPUT MAPPING (IMPORTANT FIX)
-            'transport_mode' => $request->input('transport_mode'),
-            'vehicle_no'     => $request->input('vehicle_no'),
-            'lr_no'          => $request->input('lr_no'),
-            'dispatch_from'  => $request->input('dispatch_from', 'Main Warehouse'),
-            'delivery_to'    => $request->input('delivery_to'),
-            'notes'          => $request->input('notes'),
+                        // SAFE INPUT MAPPING (IMPORTANT FIX)
+                        'transport_mode' => $request->input('transport_mode'),
+                        'vehicle_no'     => $request->input('vehicle_no'),
+                        'lr_no'          => $request->input('lr_no'),
+                        'dispatch_from'  => $request->input('dispatch_from', 'Main Warehouse'),
+                        'delivery_to'    => $request->input('delivery_to'),
+                        'notes'          => $request->input('notes'),
 
-            'total_qty'      => $totalQty,
-            'sub_total'      => $subTotal,
-            'gst_amount'     => $gstAmount,
-            'total_amount'   => $grandTotal,
+                        'total_qty'      => $totalQty,
+                        'sub_total'      => $subTotal,
+                        'gst_amount'     => $gstAmount,
+                        'total_amount'   => $grandTotal,
 
-            'created_by'     => $userId,
-        ]);
+                        'created_by'     => $userId,
+                    ]);
 
-        foreach ($request->items as $item) {
+                    foreach ($request->items as $item) {
 
-            if (!isset($item['product_id'])) continue;
+                        if (!isset($item['product_id'])) continue;
 
-            $product = Product::find($item['product_id']);
+                        $product = Product::find($item['product_id']);
 
-            if (!$product) continue;
+                        if (!$product) continue;
 
-            DeliveryChallanItem::create([
-                'delivery_challan_id' => $challan->id,
-                'product_id'          => $product->id,
-                'qty'                 => (int) $item['qty'],
-                'rate'                => (float) $item['rate'],
-                'total'               => (int)$item['qty'] * (float)$item['rate'],
-            ]);
-        }
+                        DeliveryChallanItem::create([
+                            'delivery_challan_id' => $challan->id,
+                            'product_id'          => $product->id,
+                            'qty'                 => (int) $item['qty'],
+                            'rate'                => (float) $item['rate'],
+                            'total'               => (int)$item['qty'] * (float)$item['rate'],
+                        ]);
+                    }
 
-        DB::commit();
+                    DB::commit();
 
-        return redirect()
-            ->route('Delivery_challan')
-            ->with('success', 'Delivery Challan created successfully');
+                    return redirect()
+                        ->route('Delivery_challan')
+                        ->with('success', 'Delivery Challan created successfully');
 
-    } catch (\Exception $e) {
+                } catch (\Exception $e) {
 
-        DB::rollBack();
+                    DB::rollBack();
 
-        return back()
-            ->withInput()
-            ->with('error', $e->getMessage());
-    }
-}
+                    return back()
+                        ->withInput()
+                        ->with('error', $e->getMessage());
+                }
+            }
 
            
 
@@ -361,8 +361,8 @@ class DeliveryChallanController extends Controller
 
         public function trashed()
             {
-                $challans = DeliveryChallan::onlyTrashed()->with('customer')->get();
-
+                $challans = DeliveryChallan::onlyTrashed()->with('customer')->get(); 
+                
                 return view('admin.Delivery_challan.trashed', compact('challans'));
             }
 

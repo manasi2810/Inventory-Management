@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\ProfileController; 
 use App\Http\Controllers\Admin\IndexController;
 
 Route::middleware(['auth'])->group(function () {
@@ -20,11 +19,5 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    /*
-    | ACTIVITY LOGS 
-    */
-
-    Route::get('/activity-logs', [ActivityLogController::class, 'index'])
-        ->name('activity.logs');
+ 
 });

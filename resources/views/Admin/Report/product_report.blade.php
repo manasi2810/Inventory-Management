@@ -14,7 +14,7 @@
 
 <div class="container-fluid">
 
-    {{-- SUMMARY --}}
+ 
     <div class="row mb-3">
 
         <div class="col-md-3">
@@ -54,16 +54,14 @@
         </div>
 
     </div>
-
-    {{-- EXPORT BUTTON --}}
+ 
     <div class="d-flex justify-content-end mb-2">
         <a href="{{ route('reports.product.export', request()->all()) }}"
            class="btn btn-success">
             Export Excel
         </a>
     </div>
-
-    {{-- TABLE --}}
+ 
     <div class="card">
 
         <div class="card-header">
