@@ -67,52 +67,77 @@
                                     <span class="badge badge-warning">Pending</span>
                                 @endif
                             </td> 
-                            <td> 
-                                <a href="{{ route('Purchase.show', $purchase->id) }}"
-                                   class="btn btn-sm btn-info">
-                                    View
-                                </a> 
-                                <a href="{{ route('Purchase.print', $purchase->id) }}"
-                                   target="_blank"
-                                   class="btn btn-sm btn-secondary">
-                                    Print
-                                </a> 
-                                @php
-                                    $totalOrdered = $purchase->items->sum('qty');
-                                    $totalReceived = \App\Models\PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
-                                        $q->where('purchase_id', $purchase->id);
-                                    })->sum('received_qty');
-                                @endphp 
-                                @if($totalReceived < $totalOrdered && !in_array($purchase->status, ['received','short_closed']))
+                           <td>
 
-                                    <a href="{{ route('Purchase.receive', $purchase->id) }}"
-                                       class="btn btn-sm btn-success">
+                        {{-- VIEW --}}
+                        @can('purchase.view')
+                        <a href="{{ route('Purchase.show', $purchase->id) }}"
+                        class="btn btn-sm btn-info">
+                            View
+                        </a>
+                        @endcan
 
-                                        @if($purchase->status == 'partial')
-                                            Receive Remaining
-                                        @else
-                                            Receive
-                                        @endif
 
-                                    </a>
+                        {{-- PRINT --}}
+                        @can('purchase.print')
+                        <a href="{{ route('Purchase.print', $purchase->id) }}"
+                        target="_blank"
+                        class="btn btn-sm btn-secondary">
+                            Print
+                        </a>
+                        @endcan 
 
+                        @php
+                            $totalOrdered = $purchase->items->sum('qty');
+                            $totalReceived = \App\Models\PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
+                                $q->where('purchase_id', $purchase->id);
+                            })->sum('received_qty');
+                        @endphp
+
+
+                        {{-- RECEIVE --}}
+                        @if($totalReceived < $totalOrdered && !in_array($purchase->status, ['received','short_closed']))
+
+                            @can('purchase.receive')
+                            <a href="{{ route('Purchase.receive', $purchase->id) }}"
+                            class="btn btn-sm btn-success">
+
+                                @if($purchase->status == 'partial')
+                                    Receive Remaining
                                 @else
-                                    <span class="btn btn-sm btn-success">Completed</span>
-                                @endif 
-                                @if(!in_array($purchase->status, ['received', 'short_closed']))
+                                    Receive
+                                @endif
 
-                                    <form action="{{ route('purchase.shortClose', $purchase->id) }}"
-                                          method="POST"
-                                          style="display:inline-block;">
-                                        @csrf 
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure to short close this PO? Remaining qty will be cancelled.')">
-                                            Short Close
-                                        </button>
-                                    </form> 
-                                @endif 
-                            </td>
+                            </a>
+                            @endcan
+
+                        @else
+                            <span class="btn btn-sm btn-success">Completed</span>
+                        @endif
+
+
+                        {{-- SHORT CLOSE --}}
+                        @if(!in_array($purchase->status, ['received', 'short_closed']))
+
+                            @can('purchase.short-close')
+                            <form action="{{ route('purchase.shortClose', $purchase->id) }}"
+                                method="POST"
+                                style="display:inline-block;">
+
+                                @csrf
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure to short close this PO? Remaining qty will be cancelled.')">
+                                    Short Close
+                                </button>
+
+                            </form>
+                            @endcan
+
+                        @endif
+
+                        </td>
                         </tr>
                         @endforeach 
                     </tbody>
@@ -121,45 +146,45 @@
         </div>
     </div>
 </div> 
-@stop 
-@push('js')
-<script>
-$(document).ready(function () {
+        @stop 
+        @push('js')
+        <script>
+        $(document).ready(function () {
 
-    $('#purchaseTable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        dom: 'Bfrtip',
-        buttons: ["copy", "csv", "excel", "pdf", "print"]
-    });
+            $('#purchaseTable').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                dom: 'Bfrtip',
+                buttons: ["copy", "csv", "excel", "pdf", "print"]
+            });
 
-    $('#selectAll').on('click', function () {
-        $('.po-check').prop('checked', this.checked);
-    });
+            $('#selectAll').on('click', function () {
+                $('.po-check').prop('checked', this.checked);
+            });
 
-    // multiple print 
-    $('#printSelected').on('click', function () {
+            // multiple print 
+            $('#printSelected').on('click', function () {
 
-        let ids = [];
+                let ids = [];
 
-        $('.po-check:checked').each(function () {
-            ids.push($(this).val());
+                $('.po-check:checked').each(function () {
+                    ids.push($(this).val());
+                });
+
+                if (ids.length === 0) {
+                    alert('Please select at least one Purchase Order');
+                    return;
+                }
+
+                let url = "{{ route('Purchase.multiPrint') }}?ids=" + ids.join(',');
+
+                window.open(url, '_blank');
+            });
+
         });
-
-        if (ids.length === 0) {
-            alert('Please select at least one Purchase Order');
-            return;
-        }
-
-        let url = "{{ route('Purchase.multiPrint') }}?ids=" + ids.join(',');
-
-        window.open(url, '_blank');
-    });
-
-});
-</script>
-@endpush
+        </script>
+        @endpush

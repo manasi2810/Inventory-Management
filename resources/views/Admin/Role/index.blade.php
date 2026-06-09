@@ -26,22 +26,34 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $role->name }}</td> 
-                    <td>
-                        <a href="{{ route('Role.edit', $role->id) }}" class="btn btn-sm btn-info">
-                            Edit
-                        </a> 
-                        <form action="{{ route('Role.destroy', $role->id) }}"
-                              method="POST"
-                              style="display:inline-block;">  
-                            @csrf
-                            @method('DELETE') 
-                            <button type="submit"
-                                    class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure?')">
-                                Delete
-                            </button> 
-                        </form>
-                    </td>
+                  <td>
+
+    @can('role.edit')
+    <a href="{{ route('Role.edit', $role->id) }}" 
+       class="btn btn-sm btn-info">
+        Edit
+    </a>
+    @endcan
+
+
+    @can('role.delete')
+    <form action="{{ route('Role.destroy', $role->id) }}"
+          method="POST"
+          style="display:inline-block;">
+
+        @csrf
+        @method('DELETE')
+
+        <button type="submit"
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure?')">
+            Delete
+        </button>
+
+    </form>
+    @endcan
+
+</td>
                 </tr>
                 @endforeach 
             </tbody> 

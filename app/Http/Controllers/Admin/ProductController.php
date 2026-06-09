@@ -12,22 +12,46 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
-{
-     
+{   
+    public function __construct()
+        {
+            $this->middleware('permission:product.view')
+                ->only([
+                    'index'
+                ]);
+
+            $this->middleware('permission:product.create')
+                ->only([
+                    'create',
+                    'store'
+                ]);
+
+            $this->middleware('permission:product.edit')
+                ->only([
+                    'edit',
+                    'update'
+                ]);
+
+            $this->middleware('permission:product.delete')
+                ->only([
+                    'destroy'
+                ]);
+        }
+        // Product Index
     public function index()
         {
             $products = Product::with('category', 'images')->get();
             return view('admin.Product.index', compact('products'));
         }
 
-     
+    //  product Creation Page 
     public function create()
         {
             $categories = Category::all();
             return view('admin.product.create', compact('categories'));
         }
 
-     
+    //  Store created Product Data 
     public function store(Request $request)
         {
             $validator = Validator::make($request->all(),[
@@ -39,8 +63,7 @@ class ProductController extends Controller
                 'status' => 'required|in:active,inactive',
                 'main_image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
                 'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-                'description' => 'nullable|string',
-                'opening_stock' => 'nullable|integer',
+                'description' => 'nullable|string', 
                 'pack_size' => 'nullable|string|max:50',
                 'moq' => 'nullable|integer',
                 'feature_product' => 'nullable|boolean',
@@ -50,7 +73,7 @@ class ProductController extends Controller
             ]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     
             $product = Product::create($request->only([
-                'name','category_id','sku','description','opening_stock','pack_size',
+                'name','category_id','sku','description','pack_size',
                 'moq','uom','price','feature_product','status','page_title','alt_text','meta_keywords'
             ]));
             if ($request->hasFile('main_image')) {
@@ -73,7 +96,7 @@ class ProductController extends Controller
         ->with('success', 'Product created successfully'); 
         }
 
- 
+        // Edit Product
     public function edit(Product $Product)
         {
             $categories = Category::all();
@@ -81,25 +104,24 @@ class ProductController extends Controller
             return view('admin.Product.edit', compact('product', 'categories'));
         }
     
+        // Update Product
     public function update(Request $request, Product $Product)
             {
                 $request->validate([
                 'name' => 'required|string',
                 'category_id' => 'required|exists:categories,id',
-            'sku' => 'nullable',
+                'sku' => 'nullable',
                 'price' => 'required|numeric',
                 'uom' => 'required|string',
                 'status' => 'required',
                 'main_image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
                 'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-            ]);
-
+            ]); 
             $Product->update([
                 'name' => $request->name,
                 'category_id' => $request->category_id,
                 'sku' => $request->sku,
-                'description' => $request->description,
-                'opening_stock' => $request->opening_stock,
+                'description' => $request->description, 
                 'pack_size' => $request->pack_size,
                 'moq' => $request->moq,
                 'uom' => $request->uom,
@@ -109,8 +131,7 @@ class ProductController extends Controller
                 'page_title' => $request->page_title,
                 'alt_text' => $request->alt_text,
                 'meta_keywords' => $request->meta_keywords,
-            ]);
-
+            ]); 
             if ($request->hasFile('main_image')) {
                 $oldMain = $Product->images()->where('type', 'main')->first();
                 if ($oldMain) {
@@ -124,8 +145,7 @@ class ProductController extends Controller
                     'type' => 'main',
                     'image_path' => $path
                 ]);
-            }
-
+            } 
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $image) {
                     $filename = time().'_'.$image->getClientOriginalName();
@@ -140,7 +160,7 @@ class ProductController extends Controller
             ->with('success', 'Category created successfully');
         }
 
- 
+    // Delete Product
     public function destroy(Product $Product)
         {
             foreach($Product->images as $img){

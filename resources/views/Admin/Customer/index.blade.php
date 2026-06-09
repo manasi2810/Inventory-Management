@@ -55,10 +55,15 @@
                                 @endif
                             </td> 
                             <td> 
+                                 @can('customer.edit')
                                 <a href="{{ route('Customer.edit', $customer->id) }}" 
                                    class="btn btn-sm btn-info">
                                     Edit
                                 </a> 
+                                  @endcan
+
+
+                                @can('customer.delete')
                                 <form action="{{ route('Customer.destroy', $customer->id) }}" 
                                       method="POST" 
                                       style="display:inline;">
@@ -71,6 +76,7 @@
                                         Delete
                                     </button> 
                                 </form> 
+                                 @endcan
                             </td> 
                         </tr>
                         @endforeach 

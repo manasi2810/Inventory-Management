@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
-
+namespace App\Http\Controllers\Admin; 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DeliveryChallan;
@@ -17,89 +16,174 @@ use App\Models\User;
 
 class DeliveryChallanController extends Controller
 {
-     
-    public function index()
-        {
-            $challans = DeliveryChallan::withTrashed()   
-                ->with(['customer', 'items', 'approver', 'dispatcher'])
-                ->orderBy('id', 'desc')
-                ->get();  
-            return view('admin.Delivery_challan.index', compact('challans'));
-        }
-     
-    public function create()
-        {
-            $customers = Customer::all(); 
-            $products = Product::all()->map(function ($product) { 
-                $openingStock = $product->opening_stock ?? 0; 
-                $poReceived = StockIn::where('product_id', $product->id)
-                                ->sum('qty');
-
-                $stockOut = StockOut::where('product_id', $product->id)
-                                ->sum('qty');
-
-                $product->stock = $openingStock - $stockOut; 
-                return $product;
-            }); 
-
-            $lastChallan = DeliveryChallan::orderBy('id', 'desc')->first(); 
-            $year = date('Y'); 
-            if ($lastChallan) {
-
-                preg_match('/(\d{4})$/', $lastChallan->challan_no, $matches);
-
-                $lastNumber = isset($matches[1]) ? (int) $matches[1] : 0;
-                $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-
-            } else {
-                $newNumber = '0001';
-            } 
-            $challan_no = 'DC' . $year . '-' . $newNumber; 
-            return view('admin.Delivery_challan.create', compact(
-                'customers',
-                'products',
-                'challan_no'
-            ));
-        }
-
+        public function __construct()
+            { 
+                $this->middleware('permission:delivery.view')
+                    ->only([
+                        'index',
+                        'show'
+                    ]);
     
-   public function store(Request $request)
+                $this->middleware('permission:delivery.create')
+                    ->only([
+                        'create',
+                        'store'
+                    ]);
+    
+                $this->middleware('permission:delivery.edit')
+                    ->only([
+                        'edit',
+                        'update'
+                    ]);
+    
+                $this->middleware('permission:delivery.delete')
+                    ->only([
+                        'destroy'
+                    ]);
+    
+                $this->middleware('permission:delivery.print')
+                    ->only([
+                        'print'
+                    ]);
+    
+                $this->middleware('permission:delivery.bulk-print')
+                    ->only([
+                        'bulkPrint'
+                    ]);
+    
+                $this->middleware('permission:delivery.approve')
+                    ->only([
+                        'approve'
+                    ]);
+    
+                $this->middleware('permission:delivery.dispatch')
+                    ->only([
+                        'dispatch'
+                    ]);
+    
+                $this->middleware('permission:delivery.restore')
+                    ->only([
+                        'restore'
+                    ]);
+    
+                $this->middleware('permission:delivery.force-delete')
+                    ->only([
+                        'forceDelete'
+                    ]);
+    
+                $this->middleware('permission:delivery.trashed')
+                    ->only([
+                        'trashed'
+                    ]);
+            }
+    
+            // DC creation 
+        public function index()
+                {
+                    $challans = DeliveryChallan::withTrashed()   
+                        ->with(['customer', 'items', 'approver', 'dispatcher'])
+                        ->orderBy('id', 'desc')
+                        ->get();  
+                    return view('admin.Delivery_challan.index', compact('challans'));
+                }
+     
+        //public function create()
+        //     {
+        //         $customers = Customer::all(); 
+        //         $products = Product::all()->map(function ($product) { 
+        //             $openingStock = $product->opening_stock ?? 0; 
+        //             $poReceived = StockIn::where('product_id', $product->id)
+        //                             ->sum('qty'); 
+        //             $stockOut = StockOut::where('product_id', $product->id)
+        //                             ->sum('qty'); 
+        //             $product->stock = $openingStock - $stockOut; 
+        //             return $product;
+        //         });  
+        //         $lastChallan = DeliveryChallan::orderBy('id', 'desc')->first(); 
+        //         $year = date('Y'); 
+        //         if ($lastChallan) { 
+        //             preg_match('/(\d{4})$/', $lastChallan->challan_no, $matches); 
+        //             $lastNumber = isset($matches[1]) ? (int) $matches[1] : 0;
+        //             $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+
+        //         } else {
+        //             $newNumber = '0001';
+        //         } 
+        //         $challan_no = 'DC' . $year . '-' . $newNumber; 
+        //         return view('admin.Delivery_challan.create', compact(
+        //             'customers',
+        //             'products',
+        //             'challan_no'
+        //         ));
+        //     }
+        
+        // DC Creation
+        public function create()
             {
-                DB::beginTransaction();
+                $customers = Customer::all();
 
-                try {
+                $products = Product::all()->map(function ($product) {
 
+                    $stockIn = StockIn::where('product_id', $product->id)->sum('qty');
+
+                    $stockOut = StockOut::where('product_id', $product->id)->sum('qty');
+
+                    // FINAL ERP STOCK
+                    $product->stock = $stockIn - $stockOut;
+
+                    return $product;
+                });
+
+                $lastChallan = DeliveryChallan::orderBy('id', 'desc')->first();
+                $year = date('Y');
+
+                if ($lastChallan) {
+                    preg_match('/(\d{4})$/', $lastChallan->challan_no, $matches);
+                    $lastNumber = isset($matches[1]) ? (int) $matches[1] : 0;
+                    $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                } else {
+                    $newNumber = '0001';
+                }
+
+                $challan_no = 'DC' . $year . '-' . $newNumber;
+
+                return view('admin.Delivery_challan.create', compact(
+                    'customers',
+                    'products',
+                    'challan_no'
+                ));
+            }
+
+    // DC Store
+
+        public function store(Request $request)
+            {
+                DB::beginTransaction(); 
+                try { 
                     $request->validate([
                         'challan_no'   => 'required',
                         'customer_id'  => 'required',
                         'challan_date' => 'required|date',
                         'items'        => 'required|array|min:1',
-                    ]);
-
-                    $userId = auth()->id();
-
+                    ]); 
+                    $userId = auth()->id(); 
                     $subTotal = 0;
-                    $totalQty = 0;
-
+                    $totalQty = 0; 
                     foreach ($request->items as $item) {
 
                         $qty  = (int) ($item['qty'] ?? 0);
-                        $rate = (float) ($item['rate'] ?? 0);
-
+                        $rate = (float) ($item['rate'] ?? 0); 
                         $subTotal += $qty * $rate;
                         $totalQty += $qty;
-                    }
-
+                    } 
                     $gstAmount  = $subTotal * 0.18;
-                    $grandTotal = $subTotal + $gstAmount;
-
+                    $grandTotal = $subTotal + $gstAmount; 
                     $challan = DeliveryChallan::create([
                         'challan_no'     => $request->challan_no,
                         'customer_id'    => $request->customer_id,
                         'challan_date'   => $request->challan_date,
                         'status'         => 'draft',
-
-                        // SAFE INPUT MAPPING (IMPORTANT FIX)
+ 
                         'transport_mode' => $request->input('transport_mode'),
                         'vehicle_no'     => $request->input('vehicle_no'),
                         'lr_no'          => $request->input('lr_no'),
@@ -110,19 +194,13 @@ class DeliveryChallanController extends Controller
                         'total_qty'      => $totalQty,
                         'sub_total'      => $subTotal,
                         'gst_amount'     => $gstAmount,
-                        'total_amount'   => $grandTotal,
-
+                        'total_amount'   => $grandTotal, 
                         'created_by'     => $userId,
-                    ]);
-
-                    foreach ($request->items as $item) {
-
-                        if (!isset($item['product_id'])) continue;
-
-                        $product = Product::find($item['product_id']);
-
-                        if (!$product) continue;
-
+                    ]); 
+                    foreach ($request->items as $item) { 
+                        if (!isset($item['product_id'])) continue; 
+                        $product = Product::find($item['product_id']); 
+                        if (!$product) continue; 
                         DeliveryChallanItem::create([
                             'delivery_challan_id' => $challan->id,
                             'product_id'          => $product->id,
@@ -130,33 +208,26 @@ class DeliveryChallanController extends Controller
                             'rate'                => (float) $item['rate'],
                             'total'               => (int)$item['qty'] * (float)$item['rate'],
                         ]);
-                    }
-
-                    DB::commit();
-
+                    } 
+                    DB::commit(); 
                     return redirect()
                         ->route('Delivery_challan')
                         ->with('success', 'Delivery Challan created successfully');
 
-                } catch (\Exception $e) {
-
-                    DB::rollBack();
-
+                } catch (\Exception $e) { 
+                    DB::rollBack(); 
                     return back()
                         ->withInput()
                         ->with('error', $e->getMessage());
                 }
-            }
+            } 
 
-           
-
+        // Dispatch against DC
         public function dispatch($id)
             {
-                // dd('DISPATCH HIT');
-                DB::beginTransaction();
-
-                try {
-
+                // dd('dispatch hit');
+                DB::beginTransaction(); 
+                try {  
                     $challan = DeliveryChallan::with('items')->findOrFail($id);
 
                     if ($challan->status === 'dispatched') {
@@ -190,14 +261,12 @@ class DeliveryChallanController extends Controller
                     return back()->with('error', $e->getMessage());
                 }
             }
-
-
-
+ 
+        // DC approve
         public function approve($id)
             {
                 // dd('APPROVE HIT');
-                $challan = DeliveryChallan::findOrFail($id);
-                
+                $challan = DeliveryChallan::findOrFail($id); 
                 if ($challan->status != 'draft') {
                     return back()->with('error', 'Only draft can be approved');
                 } 
@@ -207,18 +276,16 @@ class DeliveryChallanController extends Controller
                 ]); 
                 return back()->with('success', 'Approved successfully');
             }
-
-
-
+  
+            // View DC
         public function show($id)
             {
                 $challan = DeliveryChallan::with(['items.product', 'customer'])
                     ->findOrFail($id); 
                 return view('admin.Delivery_challan.show', compact('challan'));
             }
- 
-
-
+  
+        // Edit Dc
         public function edit($id)
             {
                 $challan = DeliveryChallan::with('items.product')->findOrFail($id); 
@@ -231,18 +298,16 @@ class DeliveryChallanController extends Controller
                     'products'
                 ));
             }
-
-
-
+ 
+        // print Single DC
         public function print($id)
             {
                 $challan = DeliveryChallan::with(['items.product', 'customer'])
                     ->findOrFail($id); 
                 return view('Admin.Delivery_challan.print', compact('challan'));
             }
-
-
-
+ 
+        // Print Multiple DC
         public function bulkPrint(Request $request)
             {
                 try {
@@ -259,15 +324,12 @@ class DeliveryChallanController extends Controller
                     return back()->with('error', $e->getMessage());
                 }
             }
-  
-
-
+   
+        // Update DC
         public function update(Request $request, $id)
                 {
-                    DB::beginTransaction();
-
-                    try {
-
+                    DB::beginTransaction(); 
+                    try { 
                         $challan = DeliveryChallan::with('items')->findOrFail($id);
 
                         if ($challan->status == 'dispatched') {
@@ -283,19 +345,14 @@ class DeliveryChallanController extends Controller
                             'vehicle_no'     => $request->vehicle_no,
                             'lr_no'          => $request->lr_no,
                             'delivery_to'    => $request->delivery_to,
-                        ]);
-                
-                        DeliveryChallanItem::where('delivery_challan_id', $challan->id)->delete();
-    
-                        foreach ($request->items as $item) {
-
+                        ]); 
+                        DeliveryChallanItem::where('delivery_challan_id', $challan->id)->delete(); 
+                        foreach ($request->items as $item) { 
                             $product = Product::findOrFail($item['product_id']);
                             $qty = (int) $item['qty'];
-                            $rate = (float) $item['rate'];
-
+                            $rate = (float) $item['rate']; 
                             $subTotal += $qty * $rate;
-                            $totalQty += $qty;
-
+                            $totalQty += $qty; 
                             DeliveryChallanItem::create([
                                 'delivery_challan_id' => $challan->id,
                                 'product_id'          => $product->id,
@@ -303,100 +360,73 @@ class DeliveryChallanController extends Controller
                                 'rate'                => $rate,
                                 'total'               => $qty * $rate,
                             ]);
-                        }
-    
+                        } 
                         $gstAmount = ($subTotal * 18) / 100;
-                        $grandTotal = $subTotal + $gstAmount;
-
+                        $grandTotal = $subTotal + $gstAmount; 
                         $challan->update([
                             'total_qty'    => $totalQty,
                             'sub_total'    => $subTotal,
                             'gst_amount'   => $gstAmount,
                             'total_amount' => $grandTotal,
-                        ]);
-
-                        DB::commit();
-
+                        ]); 
+                        DB::commit(); 
                         return redirect()
                             ->route('Delivery_challan')
-                            ->with('success', 'Challan updated successfully');
-
-                    } catch (\Exception $e) {
-
-                        DB::rollBack();
-
+                            ->with('success', 'Challan updated successfully'); 
+                    } catch (\Exception $e) { 
+                        DB::rollBack(); 
                         return back()->with('error', $e->getMessage());
                     }
                 } 
-
-     
-
+ 
+        // Soft Delete Dc and move to trash 
         public function destroy(string $id)
                 {
-                    DB::beginTransaction();
-
+                    DB::beginTransaction(); 
                     try {
 
-                        $challan = DeliveryChallan::with('items')->findOrFail($id);
-
+                        $challan = DeliveryChallan::with('items')->findOrFail($id); 
                         if ($challan->status !== 'draft') {
                             return back()->with('error', 'Only draft challan can be deleted');
-                        }
-                
-                        $challan->delete();
-
-                        DB::commit();
-
-                        return back()->with('success', 'Challan moved to trash successfully');
-
+                        } 
+                        $challan->delete(); 
+                        DB::commit(); 
+                        return back()->with('success', 'Challan moved to trash successfully'); 
                     } catch (\Exception $e) {
 
-                        DB::rollBack();
-
+                        DB::rollBack(); 
                         return back()->with('error', $e->getMessage());
                     }
                 }
-    
-
+     
 
         public function trashed()
             {
                 $challans = DeliveryChallan::onlyTrashed()->with('customer')->get(); 
-                
                 return view('admin.Delivery_challan.trashed', compact('challans'));
             }
 
-
-
+            // Restore Soft Deleted Data (Only Admin can do that)
         public function restore($id)
             {
                 if (auth()->user()->role !== 'admin') {
                     return back()->with('error', 'Only admin can restore');
-                }
-
-                $challan = DeliveryChallan::onlyTrashed()->findOrFail($id);
-
-                $challan->restore();
-
+                } 
+                $challan = DeliveryChallan::onlyTrashed()->findOrFail($id); 
+                $challan->restore(); 
                 return back()->with('success', 'Challan restored successfully');
             }
-
-
-
+  
+        // Delete the data which can't restore(Only Admin Can do that)
         public function forceDelete($id)
             {
                 if (auth()->user()->role !== 'admin') {
                     return back()->with('error', 'Only admin can permanently delete');
-                }
-
-                $challan = DeliveryChallan::onlyTrashed()->findOrFail($id);
-
-                DeliveryChallanItem::where('delivery_challan_id', $challan->id)->delete();
-
-                $challan->forceDelete();
-
+                }  
+                $challan = DeliveryChallan::onlyTrashed()->findOrFail($id); 
+                DeliveryChallanItem::where('delivery_challan_id', $challan->id)->delete(); 
+                $challan->forceDelete(); 
                 return back()->with('success', 'Permanently deleted');
-            }
-
+            } 
 
     }

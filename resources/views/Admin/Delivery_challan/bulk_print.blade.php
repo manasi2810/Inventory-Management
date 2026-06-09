@@ -56,66 +56,52 @@
             font-size: 13px;
             border-bottom: 1px solid #000;
             padding-bottom: 3px;
-        }
-
+        } 
         .box p {
             margin: 2px 0;
             font-size: 12px;
-        }
- 
+        } 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-        }
-
+        } 
         table, th, td {
             border: 1px solid #000;
-        }
-
+        } 
         th, td {
             padding: 6px;
             font-size: 12px;
             text-align: center;
-        }
-
+        } 
         th {
             background: #f2f2f2;
-        }
-
+        } 
         .right {
             text-align: right;
-        }
- 
+        } 
         .total-table {
             margin-top: 10px;
-        }
-
+        } 
         .total-table td {
             padding: 5px;
-        }
- 
+        } 
         .footer {
             margin-top: 15px;
             font-size: 11px;
-        }
- 
+        } 
         .signature {
             margin-top: 40px;
             display: flex;
             justify-content: space-between;
-        }
-
+        } 
         .sign {
             width: 180px;
             text-align: center;
-        }
-
-        
+        } 
         .print-btn {
             margin-bottom: 10px;
-        }
-
+        } 
         @media print {
             .print-btn {
                 display: none;
@@ -124,10 +110,8 @@
     </style>
 </head>
 
-<body onload="window.print()">
-
-<button class="print-btn" onclick="window.print()">Print</button>
- 
+<body onload="window.print()"> 
+<button class="print-btn" onclick="window.print()">Print</button> 
 @foreach($challans as $challan)
 
 <div class="dc-page">

@@ -57,19 +57,33 @@
                             <td>{{ $employee->user->role ?? '-' }}</td>
                             <td>{{ $employee->date_of_join ?? '-' }}</td> 
                             <td>
-                                <a href="{{ route('Employee.edit', $employee->id) }}" class="btn btn-sm btn-info">
-                                    Edit
-                                </a> 
-                                <form action="#" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
 
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
+                        @can('employee.edit')
+                        <a href="{{ route('Employee.edit', $employee->id) }}" 
+                        class="btn btn-sm btn-info">
+                            Edit
+                        </a>
+                        @endcan
+
+
+                        @can('employee.delete')
+                        <form action="{{ route('Employee.destroy', $employee->id) }}" 
+                            method="POST" 
+                            style="display:inline;">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit" 
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure?')">
+                                Delete
+                            </button>
+
+                        </form>
+                        @endcan
+
+                    </td>
                         </tr>
                         @endforeach
                     </tbody> 

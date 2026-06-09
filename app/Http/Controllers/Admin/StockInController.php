@@ -8,7 +8,12 @@ use App\Models\StockIn;
 
 class StockInController extends Controller
 {
-   
+    public function __construct()
+        {
+            $this->middleware('permission:stock.view')
+                ->only(['index']);
+        }
+
     public function index()
         {
             $stockIns = StockIn::with('product')

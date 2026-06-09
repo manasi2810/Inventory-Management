@@ -9,15 +9,34 @@ use App\Models\Product;
 use App\Exports\DcReturnExport;
 use App\Exports\StockReportExport;
 use App\Exports\StockLedgerExport;
-use App\Exports\ProductReportExport;
+use App\Exports\ProductReportExport; 
 
 class ReportController extends Controller
 {
-    protected $reportService;
-
+    protected $reportService; 
         public function __construct(ReportService $reportService)
             {
-                $this->reportService = $reportService;
+                $this->reportService = $reportService; 
+                $this->middleware('permission:report.stock')
+                    ->only(['stockReport']);
+
+                $this->middleware('permission:report.product')
+                    ->only(['productReport']);
+
+                $this->middleware('permission:report.vendor')
+                    ->only(['vendorReport']);
+
+                $this->middleware('permission:report.customer')
+                    ->only(['customerReport']);
+
+                $this->middleware('permission:report.dc')
+                    ->only(['dcReport']);
+
+                $this->middleware('permission:report.dcreturn')
+                    ->only(['dcreturnReport']);
+
+                $this->middleware('permission:report.ledger')
+                    ->only(['stockLedgerReport']);
             }
 
     /* ================= STOCK REPORT ================= */
@@ -35,12 +54,10 @@ class ReportController extends Controller
     /* ================= DC RETURN ================= */
         public function dcreturnReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $returns = $this->reportService->getDcReturnReport($filters);
                 $summary = $this->reportService->getDcReturnSummary($filters);
-                $products = Product::orderBy('name')->get();
-
+                $products = Product::orderBy('name')->get(); 
                 return view('admin.report.dc_return_report', compact(
                     'returns', 'summary', 'products'
                 ));
@@ -51,36 +68,30 @@ class ReportController extends Controller
                 return (new DcReturnExport($request->all()))
                     ->download('dc_return_report.xlsx');
             }
-
-
+ 
     /* ================= DC REPORT ================= */
         public function dcReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $dcList = $this->reportService->getDcReport($filters);
-                $summary = $this->reportService->getDcReportSummary($filters);
-
+                $summary = $this->reportService->getDcReportSummary($filters); 
                 return view('admin.report.dc_report', compact('dcList', 'summary'));
             }
+
         public function exportDcMainReport(Request $request)
             {
                 return (new \App\Exports\DcReportExport($request->all()))
                     ->download('dc_report.xlsx');
             }
 
-
-
-
+    
     /* ================= STOCK LEDGER ================= */
         public function stockLedgerReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $ledger = $this->reportService->getStockLedgerReport($filters);
                 $summary = $this->reportService->getStockLedgerSummary($filters);
-                $products = Product::orderBy('name')->get();
-
+                $products = Product::orderBy('name')->get(); 
                 return view('admin.report.stock_ledger_report', compact(
                     'ledger', 'summary', 'products'
                 ));
@@ -92,17 +103,13 @@ class ReportController extends Controller
                     ->download('stock_ledger_report.xlsx');
             }
 
-
-
-
+ 
     /* ================= PRODUCT REPORT ================= */
         public function productReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $products = $this->reportService->getProductReport($filters);
-                $summary = $this->reportService->getProductSummary($filters);
-
+                $summary = $this->reportService->getProductSummary($filters); 
                 return view('admin.report.product_report', compact('products', 'summary'));
             }
 
@@ -112,17 +119,13 @@ class ReportController extends Controller
                     ->download('product_report.xlsx');
             }
 
-
-
-
+  
     /* ================= CUSTOMER REPORT ================= */
         public function customerReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $customers = $this->reportService->getCustomerReport($filters);
-                $summary   = $this->reportService->getCustomerSummary($filters);
-
+                $summary   = $this->reportService->getCustomerSummary($filters); 
                 return view('admin.report.customer_report', compact('customers', 'summary'));
             }
 
@@ -133,8 +136,7 @@ class ReportController extends Controller
                     ->download('customer_report.xlsx');
             }
  
-
-
+  
     /* ================= VENDOR REPORT ================= */
         public function getVendorReport($filters = [])
             {
@@ -154,25 +156,20 @@ class ReportController extends Controller
                     ->get()
                     ->map(function ($vendor) {
 
-                        $purchases = \App\Models\Purchase::where('vendor_id', $vendor->id);
-
+                        $purchases = \App\Models\Purchase::where('vendor_id', $vendor->id); 
                         $vendor->total_purchases = $purchases->count();
                         $vendor->total_amount = $purchases->sum('total_amount');
 
                         return $vendor;
                     });
             }
-
- 
-
+   
     //* ================= VENDOR REPORT ================= */
         public function vendorReport(Request $request)
             {
-                $filters = $request->all();
-
+                $filters = $request->all(); 
                 $vendors = $this->reportService->getVendorReport($filters);
-                $summary = $this->reportService->getVendorSummary($filters);
-
+                $summary = $this->reportService->getVendorSummary($filters);  
                 return view('admin.report.vendor_report', compact('vendors', 'summary'));
             }
 

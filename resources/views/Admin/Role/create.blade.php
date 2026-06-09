@@ -22,51 +22,70 @@
     @csrf
 
     <div class="card"> 
-        <div class="card-header">
-            <h3 class="card-title">Role Details</h3>
-        </div> 
-        <div class="card-body"> 
-            <div class="row"> 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Role Name</label>
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               placeholder="Enter role name"
-                               required>
-                    </div>
-                </div> 
-            </div> 
-            <hr>  
-            <h5>Assign Permissions</h5> 
-            <div class="row"> 
-                @foreach($permissions as $permission)
-                <div class="col-md-3">
-                    <div class="form-check"> 
-                        <input type="checkbox"
-                               name="permissions[]"
-                               value="{{ $permission->name }}"
-                               class="form-check-input"
-                               id="perm_{{ $permission->id }}"> 
-                        <label class="form-check-label" for="perm_{{ $permission->id }}">
-                            {{ $permission->name }}
-                        </label> 
-                    </div>
-                </div>
-                @endforeach
+
+    <div class="card-header">
+        <h3 class="card-title">Role Details</h3>
+    </div> 
+
+    <div class="card-body"> 
+
+        <div class="row"> 
+
+            <div class="col-md-6">
+
+                <x-input
+                    label="Role Name"
+                    name="name"
+                    placeholder="Enter role name"
+                />
 
             </div> 
+
         </div> 
-        <div class="card-footer text-right"> 
-            <a href="{{ route('Role') }}" class="btn btn-secondary">
-                Cancel
-            </a> 
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Save Role
-            </button> 
+
+        <hr>  
+
+        <h5>Assign Permissions</h5> 
+
+        <div class="row"> 
+
+            @foreach($permissions as $permission)
+
+                <div class="col-md-3">
+
+                    <x-checkbox
+                        label="{{ $permission->name }}"
+                        name="permissions[]"
+                        value="{{ $permission->name }}"
+                        id="perm_{{ $permission->id }}"
+                    />
+
+                </div>
+
+            @endforeach
+
         </div> 
+
     </div> 
+
+    <div class="card-footer text-right"> 
+
+        <a href="{{ route('Role') }}" class="btn btn-secondary">
+            Cancel
+        </a> 
+
+        <x-button
+            type="submit"
+            color="success"
+            icon="fas fa-save">
+
+            Save Role
+
+        </x-button>
+
+    </div> 
+
+</div>
 </form>
 
 @stop

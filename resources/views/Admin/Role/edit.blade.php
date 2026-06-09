@@ -22,54 +22,72 @@
     @csrf
     @method('PUT')
 
-    <div class="card"> 
-        <div class="card-header">
-            <h3 class="card-title">Edit Role</h3>
-        </div> 
-        <div class="card-body">
-            <div class="row"> 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Role Name</label>
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               value="{{ $role->name }}"
-                               required>
-                    </div>
-                </div> 
-            </div> 
-            <hr> 
-            <h5>Assign Permissions</h5> 
-            <div class="row"> 
-                @foreach($permissions as $permission)
-                <div class="col-md-3">
-                    <div class="form-check"> 
-                        <input type="checkbox"
-                               name="permissions[]"
-                               value="{{ $permission->name }}"
-                               class="form-check-input"
-                               id="perm_{{ $permission->id }}"
-                               {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+   <div class="card"> 
 
-                        <label class="form-check-label" for="perm_{{ $permission->id }}">
-                            {{ $permission->name }}
-                        </label> 
-                    </div>
-                </div>
-                @endforeach
-
-            </div>
-        </div> 
-        <div class="card-footer text-right"> 
-            <a href="{{ route('Role') }}" class="btn btn-secondary">
-                Cancel
-            </a> 
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Update Role
-            </button> 
-        </div> 
+    <div class="card-header">
+        <h3 class="card-title">Edit Role</h3>
     </div> 
+
+    <div class="card-body">
+
+        <div class="row"> 
+
+            <div class="col-md-6">
+
+                <x-input
+                    label="Role Name"
+                    name="name"
+                    :value="$role->name"
+                />
+
+            </div> 
+
+        </div> 
+
+        <hr> 
+
+        <h5>Assign Permissions</h5> 
+
+        <div class="row"> 
+
+            @foreach($permissions as $permission)
+
+                <div class="col-md-3">
+
+                    <x-checkbox
+                        label="{{ $permission->name }}"
+                        name="permissions[]"
+                        value="{{ $permission->name }}"
+                        id="perm_{{ $permission->id }}"
+                        :checked="in_array($permission->name, $rolePermissions)"
+                    />
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+    </div> 
+
+    <div class="card-footer text-right"> 
+
+        <a href="{{ route('Role') }}" class="btn btn-secondary">
+            Cancel
+        </a> 
+
+        <x-button
+            type="submit"
+            color="success"
+            icon="fas fa-save">
+
+            Update Role
+
+        </x-button>
+
+    </div> 
+
+</div>
 </form>
 
 @stop

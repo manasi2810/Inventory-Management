@@ -43,8 +43,7 @@
                 <p>Total Stock Out</p>
             </div>
         </div>
-    </div>
-
+    </div> 
     <div class="col-md-3">
         <div class="small-box bg-warning">
             <div class="inner">
@@ -52,76 +51,60 @@
                 <p>Low Stock</p>
             </div>
         </div>
-    </div>
-
-</div>
- 
+    </div> 
+</div> 
 <form method="GET" class="card mb-3">
     <div class="card-body">
-        <div class="row">
-
+        <div class="row"> 
             <div class="col-md-5">
                 <label>From Date</label>
                 <input type="date" name="from_date"
                        class="form-control"
                        value="{{ request('from_date') }}">
-            </div>
-
+            </div> 
             <div class="col-md-5">
                 <label>To Date</label>
                 <input type="date" name="to_date"
                        class="form-control"
                        value="{{ request('to_date') }}">
-            </div>
-
+            </div> 
             <div class="col-md-2 d-flex align-items-end">
                 <button class="btn btn-primary btn-block">
                     Filter
                 </button>
-            </div>
-
+            </div> 
         </div>
     </div>
-</form>
-
- 
+</form>  
 <div class="card mb-3">
     <div class="card-body">
-        <div class="row">
-
+        <div class="row"> 
             <div class="col-md-6">
                 <input type="text" id="searchProduct"
                        class="form-control"
                        placeholder="Search Product / SKU">
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <select id="stockFilter" class="form-control">
                     <option value="">All Stock</option>
                     <option value="low">Low Stock (<=10)</option>
                     <option value="out">Out of Stock</option>
                 </select>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <button class="btn btn-secondary btn-block" id="resetFilters">
                     Reset
                 </button>
-            </div>
-
+            </div> 
         </div>
     </div>
-</div>
-
- 
+</div>  
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Stock Details</h3>
-    </div>
-
+    </div> 
     <div class="card-body">
-        <table id="stockTable" class="table table-bordered table-striped">
-
+        <table id="stockTable" class="table table-bordered table-striped">  
             <thead>
                 <tr>
                     <th>#</th>
@@ -133,38 +116,29 @@
                     <th>Closing Stock</th>
                     <th>Status</th>
                 </tr>
-            </thead>
-
+            </thead> 
             <tbody>
             @foreach($stock as $item)
-                <tr>
-
-                    <td>{{ $loop->iteration }}</td>
-
-                    <td><strong>{{ $item->name }}</strong></td>
-
-                    <td>{{ $item->sku ?? '-' }}</td>
-
-                    <td>{{ $item->opening_stock ?? 0 }}</td>
-
+                <tr> 
+                    <td>{{ $loop->iteration }}</td> 
+                    <td><strong>{{ $item->name }}</strong></td> 
+                    <td>{{ $item->sku ?? '-' }}</td> 
+                    <td>{{ $item->opening_stock ?? 0 }}</td> 
                     <td>
                         <span class="badge badge-success">
                             {{ $item->purchase_qty ?? 0 }}
                         </span>
-                    </td>
-
+                    </td> 
                     <td>
                         <span class="badge badge-danger">
                             {{ $item->sale_qty ?? 0 }}
                         </span>
-                    </td>
-
+                    </td> 
                     <td>
                         <strong class="{{ $item->closing_stock <= 0 ? 'text-danger' : '' }}">
                             {{ $item->closing_stock }}
                         </strong>
-                    </td>
-
+                    </td>  
                     <td>
                         @if($item->closing_stock <= 0)
                             <span class="badge badge-danger">Out of Stock</span>
@@ -173,16 +147,13 @@
                         @else
                             <span class="badge badge-success">In Stock</span>
                         @endif
-                    </td>
-
+                    </td> 
                 </tr>
             @endforeach
-            </tbody>
-
+            </tbody> 
         </table>
     </div>
-</div>
-
+</div> 
 @stop
 
  

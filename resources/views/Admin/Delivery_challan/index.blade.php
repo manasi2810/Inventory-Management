@@ -20,10 +20,11 @@
                     <h3 class="card-title mb-0">Delivery Challan List</h3>
 
                     <div>
+                         
                         <button class="btn btn-dark btn-sm" id="printSelected">
                             Print Selected (Dispatched Only)
-                        </button>
-
+                        </button> 
+                        
                         <a href="{{ route('Delivery_challan.create') }}"
                            class="btn btn-primary btn-sm">
                             + Create Challan
@@ -34,10 +35,8 @@
             </div>
 
             {{-- BODY --}}
-            <div class="card-body">
-
-                <table class="table table-bordered table-striped" id="challanTable">
-
+            <div class="card-body"> 
+                <table class="table table-bordered table-striped" id="challanTable"> 
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="selectAll"></th>
@@ -51,8 +50,7 @@
                             <th width="250">Actions</th>
                         </tr>
                     </thead> 
-                    <tbody> 
-
+                    <tbody>   
                     @foreach($challans as $challan)
                         <tr> 
                             <td>
@@ -79,91 +77,108 @@
                                     <span class="badge badge-danger">Cancelled</span>
                                 @endif
                             </td>  
-                          <td> 
-                       
-  
-                        @if($challan->status == 'dispatched')
+                        <td> 
+                        {{-- PRINT / VIEW / RETURN (only dispatched) --}}
+                        @if($challan->status == 'dispatched') 
+                            @can('delivery.print')
                             <a href="{{ route('Delivery_challan.print', $challan->id) }}"
                             target="_blank"
                             class="btn btn-sm btn-secondary">
                                 Print
                             </a>
-                            
-                              <a href="{{ route('Delivery_challan.show', $challan->id) }}"
+                            @endcan
+
+                            @can('delivery.view')
+                            <a href="{{ route('Delivery_challan.show', $challan->id) }}"
                             class="btn btn-sm btn-info">
                                 View
                             </a>
-                              <a href="{{ route('dc_return.create', $challan->id) }}"
+                            @endcan
+
+                            @can('dc-return.create')
+                            <a href="{{ route('dc_return.create', $challan->id) }}"
                             class="btn btn-sm btn-dark">
                                 DC Return
                             </a>
-                        @endif
- 
+                            @endcan
+
+                        @endif 
+
+                        {{-- APPROVE --}}
                         @if($challan->status == 'draft')
+                            @can('delivery.approve')
                             <form action="{{ route('delivery_challan.approve', $challan->id) }}"
                                 method="POST"
                                 style="display:inline-block;">
-                                @csrf
+                                @csrf 
                                 <button type="submit"
                                         class="btn btn-sm btn-success"
                                         onclick="return confirm('Approve this challan?')">
                                     Approve
                                 </button>
                             </form>
+                            @endcan
                         @endif
- 
+
+
+                        {{-- EDIT --}}
                         @if($challan->status != 'dispatched')
+                            @can('delivery.edit')
                             <a href="{{ route('Delivery_challan.edit', $challan->id) }}"
                             class="btn btn-sm btn-primary">
                                 Edit
                             </a>
+                            @endcan
                         @endif
- 
+
+
+                        {{-- DISPATCH --}}
                         @if($challan->status == 'approved')
+                            @can('delivery.dispatch')
                             <form action="{{ route('Delivery_challan.dispatch', $challan->id) }}"
                                 method="POST"
                                 style="display:inline-block;">
                                 @csrf
+
                                 <button type="submit"
                                         class="btn btn-sm btn-warning"
                                         onclick="return confirm('Dispatch this challan? Stock will be reduced.')">
                                     Dispatch
                                 </button>
                             </form>
+                            @endcan
                         @endif
- 
-                        @if(
-                        !$challan->deleted_at &&
-                        in_array($challan->status, ['draft', 'approved']) &&
-                        strtolower(auth()->user()->role) == 'admin'
-                    )
-                        <form action="{{ route('Delivery_challan.destroy', $challan->id) }}"
-                            method="POST"
-                            style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
+  
+                        {{-- DELETE (ONLY ADMIN ROLE SHOULD BE HANDLED VIA PERMISSION NOW) --}}
+                        @if($challan->status != 'dispatched')
+                            @can('delivery.delete')
+                            <form action="{{ route('Delivery_challan.destroy', $challan->id) }}"
+                                method="POST"
+                                style="display:inline-block;">
+                                @csrf
+                                @method('DELETE') 
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this challan?')">
+                                    Delete
+                                </button>
+                            </form>
+                            @endcan
+                        @endif  
+                        {{-- RESTORE (SOFT DELETE) --}}
+                        @if($challan->deleted_at)
+                            @can('delivery.restore')
+                            <form action="{{ route('Delivery_challan.restore', $challan->id) }}"
+                                method="POST"
+                                style="display:inline-block;">
+                                @csrf
 
-                            <button type="submit"
-                                    class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure you want to delete this challan?')">
-                                Delete
-                            </button>
-                        </form>
-                    @endif 
-                        @if($challan->deleted_at && strtolower(auth()->user()->role) == 'admin')
-
-                        <form action="{{ route('Delivery_challan.restore', $challan->id) }}"
-                            method="POST"
-                            style="display:inline-block;">
-                            @csrf
-
-                            <button class="btn btn-sm btn-success">
-                                Restore
-                            </button>
-                        </form>
-
-                    @endif
-
+                                <button class="btn btn-sm btn-success">
+                                    Restore
+                                </button>
+                            </form>
+                            @endcan
+                        @endif 
                     </td>
                         </tr>
                     @endforeach

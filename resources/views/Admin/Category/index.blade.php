@@ -39,10 +39,15 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $category->name }}</td> 
                             <td>
+                                 @can('category.edit')
                                 <a href="{{ route('Category.edit', $category->id) }}" 
                                    class="btn btn-sm btn-info">
                                     Edit
                                 </a> 
+                                  @endcan
+
+
+                                @can('category.delete')
                                 <form action="{{ route('Category.destroy', $category->id) }}" 
                                       method="POST" 
                                       style="display:inline;">
@@ -55,6 +60,7 @@
                                         Delete
                                     </button>
                                 </form>
+                                  @endcan
                             </td>
                         </tr>
                         @endforeach

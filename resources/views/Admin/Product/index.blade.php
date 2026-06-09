@@ -54,9 +54,14 @@
                         </span>
                     </td> 
                     <td>
+                         @can('product.edit')
                         <a href="{{ route('Product.edit', $product->id) }}" class="btn btn-sm btn-warning">
                             Edit
                         </a> 
+                          @endcan
+
+
+                        @can('product.delete')
                         <form action="{{ route('Product.destroy', $product->id) }}"
                               method="POST"
                               style="display:inline-block;">
@@ -67,6 +72,7 @@
                                 Delete
                             </button>
                         </form>
+                         @endcan
                     </td>
                 </tr>
                 @empty

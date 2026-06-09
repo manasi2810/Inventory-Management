@@ -319,19 +319,23 @@ return [
         'text' => 'Dashboard',
         'url'  => '/dashboard',
         'icon' => 'fas fa-th',
+          'can'  => 'dashboard.view',
     ],
  
     [
         'text' => 'USER MANAGEMENT',
         'icon' => 'fas fa-copy',
+        'can_any' => ['employee.view', 'role.view'],
         'submenu' => [
             [
                 'text' => 'Roles & Permissions',
                 'route' => 'Role',
+                 'can'   => 'role.view',
             ],
             [
                 'text' => 'Employees',
                 'route' => 'Employee',
+                'can'   => 'employee.view',
             ],
         ],
     ],
@@ -340,23 +344,28 @@ return [
         'text' => 'CUSTOMER MASTER',
         'route'  => 'Customer',
         'icon' => 'fas fa-copy',
+         'can'   => 'customer.view',
     ],
  
     [
         'text' => 'MASTER DATA',
         'icon' => 'fas fa-chart-pie',
+         'can_any' => ['category.view', 'product.view', 'vendor.view'],
         'submenu' => [
-            [
+          [
             'text' => 'Categories',
             'route' => 'Category',
-        ],
+            'can' => 'category.view',
+            ],
             [
                 'text' => 'Products',
                 'route' => 'Product',
+                 'can'   => 'product.view',
             ],
             [
                 'text' => 'Vendors',
                  'route' => 'Vendors',
+                  'can'   => 'vendor.view',
             ],
         ],
     ],
@@ -364,14 +373,17 @@ return [
     [
         'text' => 'STOCK MANAGEMENT',
         'icon' => 'fas fa-tree',
+         'can_any' => ['stock.view', 'stock.in', 'stock.out'],
         'submenu' => [
             [
                 'text' => 'Stock In',
                 'route' => 'stock-in',
+                'can'   => 'stock.in',
             ],
             [
                 'text' => 'Stock Out',
                 'url' => '/stock-out',
+                  'can'   => 'stock.out',
             ],
         ],
     ],
@@ -379,10 +391,12 @@ return [
     [
         'text' => 'PURCHASE',
         'icon' => 'fas fa-edit',
+         'can'  => 'purchase.view',
         'submenu' => [
             [
                 'text' => 'Purchase Orders',
                 'route' => 'Purchase',
+                 'can'   => 'purchase.view',
             ],
         ],
     ],
@@ -390,31 +404,38 @@ return [
     [
         'text' => 'SALES',
         'icon' => 'fas fa-edit',
+         'can'  => 'delivery.view',
         'submenu' => [
             [
                 'text' => 'Delivery Challan',
                 'route' => 'Delivery_challan',
+                'can'   => 'delivery.view',
             ],
         ],
     ],
  
     [
     'text' => 'REPORTS',
-    'submenu' => [
-
-        ['text' => 'Stock Report', 'route' => 'reports.stock'],
-        ['text' => 'Stock Ledger', 'route' => 'reports.ledger'],
-        ['text' => 'DC Report', 'route' => 'reports.dc'],
-        ['text' => 'DC Return Report', 'route' => 'reports.dcreturn'],
-        ['text' => 'Product Report', 'route' => 'reports.product'],
-        ['text' => 'Customer Report', 'route' => 'reports.customer'],
-         ['text' => 'Vendor Report', 'route' => 'reports.vendor'],
-
-    ],
+       'can_any' => [
+            'report.stock',
+            'report.ledger',
+            'report.dc',
+            'report.dcreturn',
+            'report.product',
+            'report.customer',
+            'report.vendor',
+        ],
+     'submenu' => [
+            ['text' => 'Stock Report', 'route' => 'reports.stock', 'can' => 'report.stock'],
+            ['text' => 'Stock Ledger', 'route' => 'reports.ledger', 'can' => 'report.ledger'],
+            ['text' => 'DC Report', 'route' => 'reports.dc', 'can' => 'report.dc'],
+            ['text' => 'DC Return Report', 'route' => 'reports.dcreturn', 'can' => 'report.dcreturn'],
+            ['text' => 'Product Report', 'route' => 'reports.product', 'can' => 'report.product'],
+            ['text' => 'Customer Report', 'route' => 'reports.customer', 'can' => 'report.customer'],
+            ['text' => 'Vendor Report', 'route' => 'reports.vendor', 'can' => 'report.vendor'],
+        ],
 ],
-  
-        
-
+    
 ],
 
     /*

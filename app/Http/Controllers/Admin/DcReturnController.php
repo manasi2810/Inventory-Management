@@ -14,7 +14,22 @@ use DB;
 
 class DcReturnController extends Controller
 {
-     
+public function __construct()
+    {
+        $this->middleware('permission:dc-return.view')
+            ->only(['index', 'create']);
+
+        $this->middleware('permission:dc-return.create')
+            ->only(['store']);
+
+        $this->middleware('permission:dc-return.edit')
+            ->only(['edit', 'update']);
+
+        $this->middleware('permission:dc-return.delete')
+            ->only(['destroy']);
+    }
+
+    // DC return create 
 public function create($id)
     {
         $dc = DeliveryChallan::with('items.product')->findOrFail($id);
@@ -49,7 +64,7 @@ public function create($id)
     }
     
 
-
+// DC return store
 public function store(Request $request)
     {
         $request->validate([

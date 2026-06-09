@@ -118,10 +118,8 @@
                         <th>Status</th>
                     </tr>
                 </thead> 
-                <tbody>
-
-                @forelse($dcList as $dc)
-
+                <tbody> 
+                @forelse($dcList as $dc) 
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $dc->challan_no }}</td>
@@ -138,30 +136,23 @@
                                     'dispatched' => 'success',
                                     default => 'dark'
                                 };
-                            @endphp
-
+                            @endphp 
                             <span class="badge badge-{{ $badge }}">
                                 {{ ucfirst($dc->status) }}
                             </span>
                         </td>
-                    </tr>
-
+                    </tr> 
                 @empty
                     <tr>
                         <td colspan="7" class="text-center">No records found</td>
                     </tr>
                 @endforelse
 
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
+                </tbody> 
+            </table> 
+        </div> 
+    </div> 
+</div> 
 @stop
 
 @push('js')

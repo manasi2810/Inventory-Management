@@ -9,16 +9,40 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
+
+    public function __construct()
+        {
+            // View Permission
+            $this->middleware('permission:category.view')
+                ->only(['index']);
+
+            // Create Permission
+            $this->middleware('permission:category.create')
+                ->only(['create', 'store']);
+
+            // Edit Permission
+            $this->middleware('permission:category.edit')
+                ->only(['edit', 'update']);
+
+            // Delete Permission
+            $this->middleware('permission:category.delete')
+                ->only(['destroy']);
+        }
+        // Category index page 
+
     public function index(Request $request)
         {
             $categories = Category::latest()->get(); 
             return view('admin.category.index', compact('categories'));
         }
 
+        // Category cretation
     public function create()
         {
             return view('admin.category.create');
         }
+
+        // Store Category
     public function store(Request $request)
         {
             $request->validate([
@@ -33,12 +57,14 @@ class CategoryController extends Controller
             ->with('success', 'Category created successfully');
         }
 
+        // edit Created Category
     public function edit($id)
         {
             $category = Category::findOrFail($id);
             return view('admin.category.edit', compact('category'));
         }
 
+        // Update created Category
     public function update(Request $request, Category $Category)
         {
             $request->validate([
@@ -54,6 +80,8 @@ class CategoryController extends Controller
             return redirect()->route('Category')
                 ->with('success', 'Category updated successfully!');
         }
+
+        // Delete Category
     public function destroy(Category $category)
         {
             $category->delete();

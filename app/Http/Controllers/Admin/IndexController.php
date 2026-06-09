@@ -9,6 +9,13 @@ use App\Models\StockIn;
 
 class IndexController extends Controller
 {
+ 
+    public function __construct()
+        {
+            $this->middleware('permission:dashboard.view')
+                ->only(['index']);
+        }
+        
     public function index()
         {
             $totalProducts = Product::count();

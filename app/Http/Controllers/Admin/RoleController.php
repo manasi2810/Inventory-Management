@@ -12,34 +12,44 @@ use Illuminate\Http\RedirectResponse;
 class RoleController extends Controller
 {
   
+    public function __construct()
+        {
+            $this->middleware('permission:role.view')->only(['index', 'show']);
+            $this->middleware('permission:role.create')->only(['create', 'store']);
+            $this->middleware('permission:role.edit')->only(['edit', 'update']);
+            $this->middleware('permission:role.delete')->only(['destroy']);
+        }
+    
+        // Role index
     public function index(Request $request): View
         {
             $roles = Role::with('users')->orderBy('id', 'DESC')->get();
             return view('admin.role.index', compact('roles'));
         }
 
+        // Role creation
     public function create()
         { 
             $permissions = Permission::all(); 
             return view('admin.role.create', compact('permissions'));
         }
 
+        // Role store
     public function store(Request $request)
         {
             $request->validate([
                 'name' => 'required|string|unique:roles,name',
                 'permissions' => 'nullable|array',
                 'permissions.*' => 'string|exists:permissions,name',  
-            ]);
- 
-            $role = Role::create(['name' => $request->name]);
- 
+            ]);  
+            $role = Role::create(['name' => $request->name]); 
             if($request->has('permissions')) {
                 $role->syncPermissions($request->permissions);  
             }
             return redirect('/Role')->with('success', 'Role created successfully');
         }
 
+        // show saved data                                                                                                                           
     public function show($id): View
         {
             $role = Role::findOrFail($id);
@@ -47,6 +57,7 @@ class RoleController extends Controller
             return view('admin.role.show', compact('role', 'rolePermissions'));
         }
 
+        // Edit Role
     public function edit($id)
         {
             $role = Role::findOrFail($id);
@@ -55,6 +66,7 @@ class RoleController extends Controller
             return view('admin.role.edit', compact('role', 'permissions', 'rolePermissions'));
         }
 
+        // Update Created Role 
     public function update(Request $request, $id)
         { 
             $request->validate([
@@ -69,12 +81,12 @@ class RoleController extends Controller
             $role->syncPermissions($permissions);  
             return redirect()->route('Role')->with('success', 'Role updated successfully!');
         }
-
+        // Delete Role 
     public function destroy($id): RedirectResponse
         {
             $role = Role::findOrFail($id);
             $role->delete(); 
-            return redirect()->route('roles.index')
+            return redirect()->route('Role')
                 ->with('success', 'Role deleted successfully');
         }
         

@@ -18,8 +18,7 @@
             <div class="card mb-3">
                 <div class="card-header bg-primary text-white">
                     Purchase Details
-                </div>
-
+                </div> 
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
@@ -35,16 +34,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </div> 
             {{-- ITEMS TABLE --}}
             <div class="card">
                 <div class="card-header bg-success text-white">
                     Receive Items
-                </div>
-
-                <div class="card-body">
-
+                </div> 
+                <div class="card-body"> 
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -55,40 +51,33 @@
                                 <th>Price</th>
                                 <th>Short</th>
                             </tr>
-                        </thead>
-
-                        <tbody>
-
+                        </thead> 
+                        <tbody> 
                             @foreach($purchase->items as $index => $item)
 
-                            <tr>
-
+                            <tr> 
                                 {{-- PRODUCT --}}
                                 <td>
                                     {{ $item->product->name }}
                                     <input type="hidden" name="items[{{ $index }}][product_id]" value="{{ $item->product_id }}">
-                                </td>
-
+                                </td> 
                                 {{-- ORDERED QTY --}}
                                 <td>
                                     <input type="number"
                                            class="form-control ordered"
                                            value="{{ $item->qty }}"
-                                           readonly>
-
+                                           readonly> 
                                     <input type="hidden"
                                            name="items[{{ $index }}][ordered_qty]"
                                            value="{{ $item->qty }}">
-                                </td>
-
+                                </td> 
                                 {{-- ALREADY RECEIVED --}}
                                 <td>
                                     <input type="number"
                                            class="form-control already-received"
                                            value="{{ $item->already_received ?? 0 }}"
                                            readonly>
-                                </td>
-
+                                </td> 
                                 {{-- RECEIVE NOW --}}
                                 <td>
                                     <input type="number"
@@ -98,8 +87,7 @@
                                            max="{{ $item->remaining_qty }}"
                                            value="0"
                                            required>
-                                </td>
-
+                                </td> 
                                 {{-- PRICE --}}
                                 <td>
                                     <input type="number"
@@ -107,18 +95,15 @@
                                            class="form-control"
                                            value="{{ $item->price }}"
                                            readonly>
-                                </td>
-
+                                </td> 
                                 {{-- SHORT --}}
                                 <td>
                                     <input type="number"
                                            class="form-control short"
                                            value="{{ $item->remaining_qty }}"
                                            readonly>
-                                </td>
-
-                            </tr>
-
+                                </td> 
+                            </tr> 
                             @endforeach
 
                         </tbody>
@@ -126,16 +111,12 @@
 
                     <button type="submit" class="btn btn-primary mt-3">
                         Save Receive
-                    </button>
-
+                    </button> 
                 </div>
-            </div>
-
-        </form>
-
+            </div> 
+        </form> 
     </div>
-</div>
-
+</div> 
 @stop
 
 @push('js')

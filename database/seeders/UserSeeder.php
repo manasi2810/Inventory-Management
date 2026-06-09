@@ -1,30 +1,25 @@
 <?php
-
-namespace Database\Seeders;
-
+namespace Database\Seeders; 
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\DB; 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
         DB::beginTransaction();
-
         try { 
 
             $adminUser = User::create([
                 'name' => 'Super Admin',
-                'email' => 'admin@hr.com',
+                'email' => 'admin@123.com',
                 'contact_no' => '9876543210',
                 'address' => 'Admin Address',
                 'password' => Hash::make('12345678'),
                 'role' => 'Admin',
-            ]);
-
+            ]); 
             Employee::create([
                 'user_id' => $adminUser->id,
                 'contact_no' => '9876543210',
@@ -37,17 +32,15 @@ class UserSeeder extends Seeder
                 'resume' => null,
                 'certificates' => null,
                 'id_proof' => null,
-            ]);
- 
+            ]); 
             $hrUser = User::create([
                 'name' => 'HR Manager',
-                'email' => 'hr@hr.com',
+                'email' => 'manager@123.com',
                 'contact_no' => '9876500000',
                 'address' => 'HR Address',
                 'password' => Hash::make('12345678'),
                 'role' => 'HR',
-            ]);
-
+            ]); 
             Employee::create([
                 'user_id' => $hrUser->id,
                 'contact_no' => '9876500000',
@@ -60,17 +53,15 @@ class UserSeeder extends Seeder
                 'resume' => null,
                 'certificates' => null,
                 'id_proof' => null,
-            ]);
- 
+            ]); 
             $employeeUser = User::create([
                 'name' => 'Test Employee',
                 'email' => 'employee@hr.com',
                 'contact_no' => '9000000000',
                 'address' => 'Employee Address',
                 'password' => Hash::make('12345678'),
-                'role' => 'Employee',
-            ]);
-
+                'role' => 'Staff',
+            ]); 
             Employee::create([
                 'user_id' => $employeeUser->id,
                 'contact_no' => '9000000000',
@@ -83,8 +74,7 @@ class UserSeeder extends Seeder
                 'resume' => null,
                 'certificates' => null,
                 'id_proof' => null,
-            ]);
-
+            ]); 
             DB::commit();
             $this->command->info('Users and Employees seeded successfully!');
         } catch (\Exception $e) {

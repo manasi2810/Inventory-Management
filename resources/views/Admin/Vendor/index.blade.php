@@ -55,23 +55,34 @@
                                     <span class="badge badge-danger">Inactive</span>
                                 @endif
                             </td> 
-                            <td> 
-                                <a href="{{ route('Vendors.edit', $vendor->id) }}"
-                                   class="btn btn-sm btn-info">
-                                    Edit
-                                </a> 
-                                <form action="{{ route('Vendors.destroy', $vendor->id) }}"
-                                      method="POST"
-                                      style="display:inline;"> 
-                                    @csrf
-                                    @method('DELETE') 
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this vendor?')"> 
-                                        Delete
-                                    </button> 
-                                </form> 
-                            </td>
+                            <td>
+
+                            @can('vendor.edit')
+                            <a href="{{ route('Vendors.edit', $vendor->id) }}"
+                            class="btn btn-sm btn-info">
+                                Edit
+                            </a>
+                            @endcan
+
+
+                            @can('vendor.delete')
+                            <form action="{{ route('Vendors.destroy', $vendor->id) }}"
+                                method="POST"
+                                style="display:inline;">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this vendor?')">
+                                    Delete
+                                </button>
+
+                            </form>
+                            @endcan
+
+                        </td>
                         </tr> 
                         @endforeach 
                     </tbody> 

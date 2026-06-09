@@ -7,17 +7,31 @@ use Illuminate\Http\Request;
 
 class VendorController extends Controller
 {
+    public function __construct()
+        {
+            $this->middleware('permission:vendor.view')->only(['index']); 
+            $this->middleware('permission:vendor.create')
+                ->only(['create', 'store']); 
+            $this->middleware('permission:vendor.edit')
+                ->only(['edit', 'update']); 
+            $this->middleware('permission:vendor.delete')
+                ->only(['destroy']);
+        }
+
+
+        // Vendor index
     public function index()
         {
             $vendors = Vendor::latest()->get();
             return view('admin.vendor.index', compact('vendors'));
         }
     
+        // Vendor Create
     public function create()
         {
             return view('admin.vendor.create');
         }
-
+        // Vendor Store
     public function store(Request $request)
         {
             $request->validate([
@@ -44,12 +58,14 @@ class VendorController extends Controller
                 ->with('success', 'Vendor created successfully');
         }
 
+        // Vendor Edit
     public function edit($id)
         {
             $vendor = Vendor::findOrFail($id);
             return view('admin.vendor.edit', compact('vendor'));
         }
 
+        // Update Created Vendor
     public function update(Request $request, $id)
         {
             $vendor = Vendor::findOrFail($id);
@@ -58,6 +74,7 @@ class VendorController extends Controller
                 ->with('success', 'Vendor updated successfully');
         }
 
+        // Delete Vendor
     public function destroy($id)
         {
             Vendor::destroy($id); 

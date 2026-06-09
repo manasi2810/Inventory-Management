@@ -8,6 +8,21 @@ use App\Models\Customer;
 
 class CustomerController extends Controller
 {
+ 
+    public function __construct()
+        {
+            $this->middleware('permission:customer.view')
+                ->only(['index']);
+
+            $this->middleware('permission:customer.create')
+                ->only(['create', 'store']);
+
+            $this->middleware('permission:customer.edit')
+                ->only(['edit', 'update']);
+
+            $this->middleware('permission:customer.delete')
+                ->only(['destroy']);
+        }
     /**
      * Show all customers
      */

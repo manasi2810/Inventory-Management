@@ -8,22 +8,39 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;       
 use App\Models\Employee;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Role; 
 
 class EmployeeController extends Controller
 {
+ 
+    public function __construct()
+        {
+            $this->middleware('permission:employee.view')
+                ->only(['index']);
+
+            $this->middleware('permission:employee.create')
+                ->only(['create', 'store']);
+
+            $this->middleware('permission:employee.edit')
+                ->only(['edit', 'update']);
+
+            $this->middleware('permission:employee.delete')
+                ->only(['destroy']);
+        }
+
+        // Employee index
     public function index()
         {
             $employees = \App\Models\Employee::with('user')->get();
             return view('admin.employee.index', compact('employees'));
         }
-
+        // Employee Create Page Open
     public function create()
-        { 
+        {  
             $roles = Role::all();  
             return view('Admin.Employee.create', compact('roles'));
         }
-
+        // Employee creation (Save)
     public function store(Request $request)
         {
             $request->validate([
@@ -42,7 +59,7 @@ class EmployeeController extends Controller
                 'certificates.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
                 'id_proof' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             ]);
-
+            // dd('STORE METHOD HIT', $request->all());
             DB::beginTransaction();
             try { 
                 $user = User::create([
@@ -83,18 +100,26 @@ class EmployeeController extends Controller
 
                 DB::commit();
                 return redirect('/Employee')->with('success', 'Employee created successfully'); 
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
-            }
-        }
-
-    public function edit($id)
-        {
-            $employee = Employee::with('user')->findOrFail($id);
-            return view('admin.employee.edit', compact('employee'));
+            } 
+            // catch (\Exception $e) {
+            //     DB::rollBack();
+            //     return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
+            // }
+            catch (\Exception $e) {
+                DB::rollBack(); 
+                dd($e->getMessage());
+            } 
         }
  
+        // Edit Emplyeee
+    public function edit($id)
+        {
+            $employee = Employee::with('user')->findOrFail($id); 
+            $roles = Role::all(); 
+            return view('admin.employee.edit', compact('employee', 'roles'));
+        }
+
+        // Update Created Emplyee Details 
     public function update(Request $request, $id)
         {
             $employee = Employee::with('user')->findOrFail($id);
@@ -116,13 +141,14 @@ class EmployeeController extends Controller
             DB::beginTransaction();
             try { 
                 $employee->user->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'contact_no' => $request->contact_no,
-                    'address' => $request->address,
-                    'role' => $request->role,
-                ]); 
-                if ($request->hasFile('profile_photo')) {
+                'name' => $request->name,
+                'email' => $request->email,
+                'contact_no' => $request->contact_no,
+                'address' => $request->address,
+            ]);
+
+            $employee->user->syncRoles([$request->role]);
+                    if ($request->hasFile('profile_photo')) {
                     $employee->profile_photo = $request->file('profile_photo')->store('employees/profile_photos','public');
                 }
                 if ($request->hasFile('resume')) {
@@ -152,4 +178,28 @@ class EmployeeController extends Controller
                 return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
             }
         }
+        
+            // Delete Employee delete
+        public function destroy($id)
+            {
+                DB::beginTransaction();
+
+                try {
+                    $employee = Employee::findOrFail($id);
+
+                    User::where('id', $employee->user_id)->delete();
+                    $employee->delete();
+
+                    DB::commit();
+
+                    return redirect('/Employee')
+                        ->with('success', 'Employee deleted successfully');
+
+                } catch (\Exception $e) {
+                    DB::rollBack();
+
+                    return redirect('/Employee')
+                        ->with('error', $e->getMessage());
+                }
+            }
 }

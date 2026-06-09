@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\PurchaseController;
 Route::resource('/Purchase', PurchaseController::class)->names([
     'index' => 'Purchase',
     'create' => 'Purchase.create',
-    'store' => 'Purchase.store',
+    // 'store' => 'Purchase.store',
     'edit' => 'Purchase.edit',
     'update' => 'Purchase.update',
     'destroy' => 'Purchase.destroy',

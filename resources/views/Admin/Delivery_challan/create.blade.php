@@ -14,20 +14,16 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Challan Details</h3>
-    </div>
-
-    <div class="card-body">
-
-        <div class="row">
-
+    </div> 
+    <div class="card-body"> 
+        <div class="row"> 
             <div class="col-md-3">
                 <label>Challan No</label>
                 <input type="text" name="challan_no"
                        class="form-control"
                        value="{{ $challan_no }}"
                        readonly>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <label>Customer</label>
                 <select name="customer_id" class="form-control" required>
@@ -148,8 +144,7 @@
             </tbody> 
         </table> 
     </div>
-</div>
- 
+</div>  
 <div class="card"> 
     <div class="card-body text-right"> 
         <h4>Subtotal: ₹ <span id="subTotal">0.00</span></h4>
@@ -160,16 +155,13 @@
         <input type="hidden" name="gst_amount" id="gstInput">
         <input type="hidden" name="grand_total" id="grandTotalInput"> 
     </div>
-</div> 
-
+</div>  
 <div class="text-right mb-3">
     <button type="submit" class="btn btn-primary" id="submitBtn">
         Save Draft Challan
     </button>
-</div>
-
-</form>
-
+</div> 
+</form> 
 @stop
 
  

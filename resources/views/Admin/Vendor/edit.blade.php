@@ -22,11 +22,11 @@
 @section('content')
 
 <div class="card">
- 
+
     <div class="card-header">
         <h3 class="card-title">Update Vendor</h3>
     </div>
- 
+
     <form action="{{ route('Vendors.update', $vendor->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -34,90 +34,86 @@
         <div class="card-body">
 
             <div class="row">
-  
+
                 <div class="col-md-6">
 
-                    <div class="form-group">
-                        <label>Vendor Name *</label>
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               value="{{ old('name', $vendor->name) }}"
-                               required>
-                    </div>
+                    <x-input
+                        label="Vendor Name *"
+                        name="name"
+                        :value="old('name', $vendor->name)"
+                    />
 
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               value="{{ old('email', $vendor->email) }}">
-                    </div>
+                    <x-input
+                        label="Email"
+                        name="email"
+                        type="email"
+                        :value="old('email', $vendor->email)"
+                    />
 
-                    <div class="form-group">
-                        <label>Contact</label>
-                        <input type="text"
-                               name="contact"
-                               class="form-control"
-                               value="{{ old('contact', $vendor->contact) }}">
-                    </div>
+                    <x-input
+                        label="Contact"
+                        name="contact"
+                        :value="old('contact', $vendor->contact)"
+                    />
 
                 </div>
- 
+
                 <div class="col-md-6">
 
-                    <div class="form-group">
-                        <label>Company Name</label>
-                        <input type="text"
-                               name="company_name"
-                               class="form-control"
-                               value="{{ old('company_name', $vendor->company_name) }}">
-                    </div>
+                    <x-input
+                        label="Company Name"
+                        name="company_name"
+                        :value="old('company_name', $vendor->company_name)"
+                    />
 
-                    <div class="form-group">
-                        <label>GST Number</label>
-                        <input type="text"
-                               name="gst_number"
-                               class="form-control"
-                               value="{{ old('gst_number', $vendor->gst_number) }}">
-                    </div>
+                    <x-input
+                        label="GST Number"
+                        name="gst_number"
+                        :value="old('gst_number', $vendor->gst_number)"
+                    />
 
-                    <div class="form-group">
-                        <label>City</label>
-                        <input type="text"
-                               name="city"
-                               class="form-control"
-                               value="{{ old('city', $vendor->city) }}">
-                    </div>
+                    <x-input
+                        label="City"
+                        name="city"
+                        :value="old('city', $vendor->city)"
+                    />
 
-                    <div class="form-group">
-                        <label>State</label>
-                        <input type="text"
-                               name="state"
-                               class="form-control"
-                               value="{{ old('state', $vendor->state) }}">
-                    </div>
+                    <x-input
+                        label="State"
+                        name="state"
+                        :value="old('state', $vendor->state)"
+                    />
 
                 </div>
 
             </div>
- 
+
             <div class="form-group mt-2">
-                <label>Address</label>
-                <textarea name="address" class="form-control">{{ old('address', $vendor->address) }}</textarea>
+
+                <x-textarea
+                    label="Address"
+                    name="address"
+                    :value="old('address', $vendor->address)"
+                />
+
             </div>
 
         </div>
- 
+
         <div class="card-footer text-right">
 
             <a href="{{ route('Vendors') }}" class="btn btn-secondary">
                 Cancel
             </a>
 
-            <button type="submit" id="saveBtn" class="btn btn-success">
-                <i class="fas fa-save"></i> Update Vendor
-            </button>
+            <x-button
+                type="submit"
+                color="success"
+                icon="fas fa-save">
+
+                Update Vendor
+
+            </x-button>
 
         </div>
 
