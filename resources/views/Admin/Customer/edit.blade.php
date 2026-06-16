@@ -8,16 +8,13 @@
 
 @section('content')
 
-<div class="card">
-
-    <div class="card-body">
-
+<div class="card"> 
+    <div class="card-body">  
         <form action="{{ route('Customer.update', $customer->id) }}" method="POST">
             @csrf
             @method('PUT')
 
-            <div class="row">
- 
+            <div class="row">  
                 <div class="col-md-6">
                      <x-input
                         label="Name *"
@@ -32,6 +29,14 @@
                         :value="$customer->company_name"
                     />
                 </div> 
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Customer Code"
+                        name="customer_code"
+                        :value="$customer->customer_code"
+                        readonly
+                    />
+                </div>
                 <div class="col-md-6 mt-2">
                      <x-input
                         label="Mobile"
@@ -55,19 +60,19 @@
                     />  
                 </div> 
                 <div class="col-md-6 mt-2">
-                      <x-textarea
+                    <x-textarea
                         label="Billing Address"
                         name="billing_address"
                         :value="$customer->billing_address"
                     />
                 </div> 
                 <div class="col-md-6 mt-2">
-                     <x-textarea
+                    <x-textarea
                         label="Shipping Address"
                         name="shipping_address"
                         :value="$customer->shipping_address"
                     />
-                </div>  
+                </div>
                 <div class="col-md-4 mt-2">
                     <x-input
                         label="City"
@@ -95,8 +100,7 @@
                         name="country"
                         :value="$customer->country"
                     /> 
-                </div>  
-                 
+                </div>   
                 <div class="col-md-6 mt-2">
                     <x-input
                         label="GST Number"
@@ -112,6 +116,24 @@
                     /> 
                 </div>  
                 <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Credit Limit"
+                        name="credit_limit"
+                        type="number"
+                        step="0.01"
+                        :value="$customer->credit_limit"
+                    />
+                </div> 
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Opening Balance"
+                        name="opening_balance"
+                        type="number"
+                        step="0.01"
+                        :value="$customer->opening_balance"
+                    />
+                </div>
+                <div class="col-md-6 mt-2">
                       <x-select
                     label="Customer Type"
                     name="customer_type"
@@ -122,31 +144,35 @@
                     :selected="$customer->customer_type"
                     /> 
                 </div> 
-                <div class="col-md-6 mt-2">
-                      <x-select
-                        label="Status"
-                        name="status"
-                        :options="[
-                            '1' => 'Active',
-                            '0' => 'Inactive'
-                        ]"
-                        :selected="$customer->status"
-                    />
+                    <div class="col-md-6 mt-2">
+                        <x-select
+                            label="Status"
+                            name="status"
+                            :options="[
+                                '1' => 'Active',
+                                '0' => 'Inactive'
+                            ]"
+                            :selected="$customer->status"
+                        />
+                    </div> 
+                    <div class="col-md-12 mt-2">
+                        <x-textarea
+                            label="Notes"
+                            name="notes"
+                            :value="$customer->notes"
+                        />
+                    </div>
                 </div> 
-                <div class="col-md-12 mt-2">
-                   <x-textarea
-                    label="Notes"
-                    name="notes"
-                    :value="$customer->notes"
-                />
-                </div> 
-            </div> 
-            <br> 
-           <x-button
+                <br> 
+                    <a href="{{ route('Customer') }}"
+                        class="btn btn-secondary">
+                        Cancel
+                    </a> 
+                <x-button
                 type="submit"
                 color="primary"
-                icon="fas fa-save"> 
-                Update Customer 
+                icon="fas fa-save">
+                Update Customer
             </x-button>
         </form> 
     </div> 

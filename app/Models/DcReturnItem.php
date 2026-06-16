@@ -20,6 +20,18 @@ class DcReturnItem extends Model
         'reason'
     ];
 
+    /* ================= CASTS ================= */
+
+    protected $casts = [
+        'return_qty'    => 'decimal:2',
+        'accepted_qty'  => 'decimal:2',
+        'damaged_qty'   => 'decimal:2',
+        'scrap_qty'     => 'decimal:2',
+        'unit_price'    => 'decimal:2',
+    ];
+
+    /* ================= RELATIONS ================= */
+
     public function dcReturn()
     {
         return $this->belongsTo(DcReturn::class);
@@ -30,14 +42,14 @@ class DcReturnItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    /* ======================
-       ERP CALCULATIONS
-    ====================== */
+    /* ================= ERP CALCULATIONS ================= */
 
     public function getTotalValueAttribute()
     {
-        return $this->return_qty * $this->unit_price;
+        return (float) $this->return_qty * (float) $this->unit_price;
     }
+
+    /* ================= SAFE ACCESSORS ================= */
 
     public function getCustomerNameAttribute()
     {
@@ -51,11 +63,28 @@ class DcReturnItem extends Model
 
     public function getReturnDateAttribute()
     {
-        return $this->dcReturn->return_date ?? '-';
+        return optional($this->dcReturn)->return_date ?? '-';
     }
 
     public function getProductNameAttribute()
     {
         return $this->product->name ?? '-';
+    }
+
+    /* ================= OPTIONAL ERP HELPERS ================= */
+
+    public function isGoodCondition()
+    {
+        return $this->condition === 'good';
+    }
+
+    public function isDamaged()
+    {
+        return $this->condition === 'damaged';
+    }
+
+    public function isScrap()
+    {
+        return $this->condition === 'scrap';
     }
 }

@@ -29,12 +29,19 @@
                         name="company_name"
                     />
                 </div> 
-                <div class="col-md-6 mt-2">
-                        <x-input
+               <div class="col-md-6 mt-2">
+                    <x-input
                         label="Mobile"
                         name="mobile"
-                    /> 
-                </div> 
+                        type="tel"
+                    />
+                </div>
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Alternate Mobile"
+                        name="alternate_mobile"
+                    />
+                </div>
                 <div class="col-md-6 mt-2">
                        <x-input
                         label="Email"
@@ -54,7 +61,7 @@
                     name="shipping_address"
                 />
                 </div> 
-                <div class="col-md-4 mt-2">
+                <div class="col-md-6 mt-2">
                     <x-input
                         label="City"
                         name="city"
@@ -72,6 +79,13 @@
                     name="pincode"
                 />
                 </div> 
+                <div class="col-md-4 mt-2">
+                <x-input
+                    label="Country"
+                    name="country"
+                    value="India"
+                />
+            </div>
                 <div class="col-md-6 mt-2">
                      <x-input
                     label="GST Number"
@@ -84,6 +98,25 @@
                     name="pan_number"
                 />   
                 </div> 
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Credit Limit"
+                        name="credit_limit"
+                        type="number"
+                        step="0.01"
+                        value="0"
+                    />
+                </div>
+
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Opening Balance"
+                        name="opening_balance"
+                        type="number"
+                        step="0.01"
+                        value="0"
+                    />
+                </div>
                 <div class="col-md-6 mt-2">
                       <x-select
                         label="Customer Type"
@@ -112,12 +145,18 @@
                     </div> 
                 </div> 
                 <br> 
+               <div class="mt-3"> 
+                <a href="{{ route('Customer') }}"
+                class="btn btn-secondary">
+                    Cancel
+                </a> 
                 <x-button
                     type="submit"
                     color="primary"
-                    icon="fas fa-save"> 
-                    Save Customer 
-                </x-button>
+                    icon="fas fa-save">
+                    Save Customer
+                </x-button> 
+            </div>
         </form> 
     </div> 
 </div>

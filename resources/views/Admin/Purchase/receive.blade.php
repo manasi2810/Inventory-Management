@@ -6,11 +6,22 @@
     <h1>Receive Purchase Order</h1>
 @stop
 
+
 @section('content')
 
 <div class="row">
     <div class="col-12">
+        @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
 
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
         <form action="{{ route('Purchase.receive.store', $purchase->id) }}" method="POST">
             @csrf
 
@@ -80,13 +91,13 @@
                                 </td> 
                                 {{-- RECEIVE NOW --}}
                                 <td>
-                                    <input type="number"
-                                           name="items[{{ $index }}][received_qty]"
-                                           class="form-control receive-input"
-                                           min="0"
-                                           max="{{ $item->remaining_qty }}"
-                                           value="0"
-                                           required>
+                                  <input type="number"
+                                    name="items[{{ $index }}][received_qty]"
+                                    class="form-control receive-input"
+                                    min="0"
+                                    max="{{ $item->remaining_qty }}"
+                                    value="{{ $item->remaining_qty }}"
+                                    required>
                                 </td> 
                                 {{-- PRICE --}}
                                 <td>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PurchaseController;
+use App\Http\Controllers\Admin\PurchaseReturnController;
 
 Route::resource('/Purchase', PurchaseController::class)->names([
     'index' => 'Purchase',
@@ -26,3 +27,9 @@ Route::get('/purchase/multi-print', [PurchaseController::class, 'multiPrint'])
 
 Route::post('/purchase/{id}/short-close', [PurchaseController::class, 'shortClose'])
     ->name('purchase.shortClose');
+
+Route::get('/purchase/{id}/return', [PurchaseReturnController::class, 'create'])
+->name('purchase.return.create');
+
+Route::post('/purchase/{id}/return', [PurchaseReturnController::class, 'store'])
+->name('purchase.return.store');
