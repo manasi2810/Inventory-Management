@@ -21,8 +21,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable()->index();
             $table->timestamps();
         });
-    }
-
+    } 
     /**
      * Reverse the migrations.
      */

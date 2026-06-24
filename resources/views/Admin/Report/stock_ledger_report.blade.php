@@ -17,34 +17,27 @@
 </div>
 @stop
 
-@section('content')
-
-<div class="container-fluid">
-
-     
+@section('content') 
+<div class="container-fluid">  
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">Filter Ledger</h3>
-        </div>
-
+        </div> 
         <form method="GET">
             <div class="card-body">
-                <div class="row">
-
+                <div class="row"> 
                     <div class="col-md-3">
                         <label>From Date</label>
                         <input type="date" name="from_date"
                                value="{{ request('from_date') }}"
                                class="form-control">
-                    </div>
-
+                    </div> 
                     <div class="col-md-3">
                         <label>To Date</label>
                         <input type="date" name="to_date"
                                value="{{ request('to_date') }}"
                                class="form-control">
-                    </div>
-
+                    </div> 
                     <div class="col-md-3">
                         <label>Product</label>
                         <select name="product_id" class="form-control">
@@ -56,13 +49,11 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-
+                    </div> 
                     <div class="col-md-3 d-flex align-items-end">
                         <button class="btn btn-primary mr-2">
                             🔍 Filter
-                        </button>
-
+                        </button> 
                         <a href="{{ route('reports.ledger') }}" class="btn btn-secondary">
                             Reset
                         </a>
@@ -71,19 +62,14 @@
                 </div>
             </div>
         </form>
-    </div>
-
-     
+    </div>  
     <div class="d-flex justify-content-end mb-2">
         <a href="{{ route('reports.ledger.export', request()->all()) }}"
            class="btn btn-success">
             📥 Export Excel
         </a>
-    </div>
-
-     
-    <div class="row mb-3">
-
+    </div> 
+    <div class="row mb-3"> 
         <div class="col-md-6">
             <div class="small-box bg-success">
                 <div class="inner">
@@ -102,20 +88,14 @@
                 </div>
                 <div class="icon"><i class="fas fa-arrow-up"></i></div>
             </div>
-        </div>
-
-    </div>
- 
-    <div class="card">
-
+        </div> 
+    </div> 
+    <div class="card"> 
         <div class="card-header">
             <h3 class="card-title">Stock Ledger Entries</h3>
-        </div>
-
-        <div class="card-body">
-
-            <table id="ledgerTable" class="table table-bordered table-striped">
-
+        </div> 
+        <div class="card-body"> 
+            <table id="ledgerTable" class="table table-bordered table-striped"> 
                 <thead>
                     <tr>
                         <th>#</th>
@@ -127,25 +107,19 @@
                         <th>Reference ID</th>
                         <th>Balance After</th>
                     </tr>
-                </thead>
-
-                <tbody>
-
-                @forelse($ledger as $item)
-
+                </thead> 
+                <tbody> 
+                @forelse($ledger as $item) 
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-
+                        <td>{{ $loop->iteration }}</td> 
                         <td>
                             {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}
-                        </td>
-
+                        </td> 
                         <td>
                             <strong>{{ $item->product->name ?? '-' }}</strong>
                             <br>
                             <small class="text-muted">{{ $item->product->sku ?? '-' }}</small>
-                        </td>
-
+                        </td> 
                         <td>
                             @php
                                 $type = strtolower($item->movement_type ?? '');
@@ -155,8 +129,7 @@
                             <span class="badge badge-{{ $badge }}">
                                 {{ strtoupper($item->movement_type ?? '-') }}
                             </span>
-                        </td>
-
+                        </td> 
                         <td>{{ $item->qty ?? 0 }}</td>
 
                         <td>
@@ -179,10 +152,8 @@
                             @endphp
 
                             {{ $text }} #{{ $id }}
-                        </td>
-
-                        <td>{{ $item->reference_id ?? '-' }}</td>
-
+                        </td> 
+                        <td>{{ $item->reference_id ?? '-' }}</td> 
                         <td>
                             <strong>{{ $item->balance_after ?? 0 }}</strong>
                         </td>
@@ -194,15 +165,11 @@
                     </tr>
                 @endforelse
 
-                </tbody>
-
-            </table>
-
+                </tbody> 
+            </table> 
         </div>
-    </div>
-
-</div>
-
+    </div> 
+</div> 
 @stop
 
 @push('js')

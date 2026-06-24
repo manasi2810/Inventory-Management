@@ -6,29 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations
-     */
     public function up(): void
     {
         Schema::create('customers', function (Blueprint $table) {
 
-            // Primary Key
             $table->id();
 
-            // Basic Details
-            $table->string('name'); 
+            // Basic Info
+            $table->string('name');
             $table->string('company_name')->nullable();
+            $table->string('customer_code')->unique();
 
-            // Contact Details
+            // Contact
             $table->string('mobile')->nullable();
             $table->string('alternate_mobile')->nullable();
             $table->string('email')->nullable();
 
-            // Address Details
+            // Address
             $table->text('billing_address')->nullable();
             $table->text('shipping_address')->nullable();
-
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('pincode')->nullable();
@@ -38,24 +34,27 @@ return new class extends Migration
             $table->string('gst_number')->nullable();
             $table->string('pan_number')->nullable();
 
-            // Business Type
-            $table->enum('customer_type', ['individual', 'business'])
-                  ->default('business');
+            // Business Info
+            $table->enum('customer_type', ['individual', 'business'])->default('business');
 
-            // Status
-            $table->boolean('status')->default(1);  
+            // Finance
+            $table->decimal('credit_limit', 12, 2)->default(0);
+            $table->decimal('opening_balance', 12, 2)->default(0);
 
-            // Extra Notes
+            // Status (IMPORTANT: use boolean)
+            $table->boolean('status')->default(1);
+
             $table->text('notes')->nullable();
 
-            // Timestamps
+            // Audit
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations
-     */
     public function down(): void
     {
         Schema::dropIfExists('customers');

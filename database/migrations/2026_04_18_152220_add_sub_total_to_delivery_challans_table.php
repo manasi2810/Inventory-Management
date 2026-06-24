@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::table('delivery_challans', function (Blueprint $table) {
-            $table->decimal('sub_total', 10, 2)->default(0)->after('total_qty');
-        });
-    }
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                $table->decimal('sub_total', 10, 2)->default(0)->after('total_qty');
+            });
+        }
 
     public function down(): void
-    {
-        Schema::table('delivery_challans', function (Blueprint $table) {
-            $table->dropColumn('sub_total');
-        });
-    }
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                $table->dropColumn('sub_total');
+            });
+        }
 };

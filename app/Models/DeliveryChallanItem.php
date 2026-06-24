@@ -14,15 +14,30 @@ class DeliveryChallanItem extends Model
         'total'
     ];
 
-    // Challan relation
+    /* ================= CASTS ================= */
+
+    protected $casts = [
+        'qty'   => 'integer',
+        'rate'  => 'decimal:2',
+        'total' => 'decimal:2',
+    ];
+
+    /* ================= RELATIONS ================= */
+
     public function challan()
     {
         return $this->belongsTo(DeliveryChallan::class);
     }
 
-    // Product relation
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /* ================= ERP HELPER ================= */
+
+    public function getLineTotalAttribute()
+    {
+        return (float) $this->qty * (float) $this->rate;
     }
 }

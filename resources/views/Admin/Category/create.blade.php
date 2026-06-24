@@ -13,32 +13,24 @@
 
     <div class="card card-primary">
         <div class="card-body"> 
- 
-            <div class="form-group">
-                <label>Category Name</label>
-                <input type="text" name="name" class="form-control"> 
-                
-                @error('name')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div> 
- 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" class="form-control"></textarea>
-            </div> 
- 
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Save Category
-            </button> 
-
+            <x-input
+                label="Category Name"
+                name="name"
+            /> 
+                <x-textarea
+            label="Description"
+            name="description"
+        />  
+            <x-button
+            type="submit"
+            color="success"
+            icon="fas fa-save"> 
+            Save Category 
+        </x-button> 
             <a href="{{ route('Category') }}" class="btn btn-secondary">
                 Cancel
-            </a> 
-
+            </a>  
         </div>
-    </div> 
-
-</form>
-
+    </div>  
+</form> 
 @stop

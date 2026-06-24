@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('product_images', function (Blueprint $table) {
+    Schema::create('product_images', function (Blueprint $table) {
     $table->id();
     $table->unsignedBigInteger('product_id');
     $table->enum('type', ['main','gallery'])->default('gallery');

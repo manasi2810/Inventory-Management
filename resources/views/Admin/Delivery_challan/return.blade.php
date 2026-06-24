@@ -8,8 +8,7 @@
 
 @section('content')
 
-<div class="card">
-
+<div class="card"> 
     <div class="card-header bg-warning">
         <h4 class="mb-0">
             DC Return - {{ $dc->challan_no }}
@@ -44,12 +43,10 @@
                             <th>Condition</th>
                         </tr>
                     </thead>  
-           <tbody>
-
+           <tbody> 
 @foreach($dc->items as $item)
 
-<tr>
- 
+<tr> 
     <td>
         {{ $item->product->name }}
         <input type="hidden" name="product_id[{{ $item->id }}]" value="{{ $item->product_id }}">
@@ -94,14 +91,12 @@
             -
         @endif
     </td> 
-</tr>
-
+</tr> 
 @endforeach
 
 </tbody>
                 </table>
-            </div>  
- 
+            </div>   
             @if(!$dc->all_returned)
 
                 <div class="form-group mt-3">
@@ -110,8 +105,7 @@
                 </div>  
                 <button type="submit" class="btn btn-success">
                     Save DC Return
-                </button> 
-
+                </button>  
             @else
                 <div class="alert alert-success mt-3">
                     All products have already been fully returned.
@@ -123,8 +117,7 @@
             </a>  
         </form>  
     </div>
-</div> 
-
+</div>  
 @stop
 
 @push('js')

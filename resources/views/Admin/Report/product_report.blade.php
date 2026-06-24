@@ -12,11 +12,8 @@
 
 @section('content')
 
-<div class="container-fluid">
-
- 
-    <div class="row mb-3">
-
+<div class="container-fluid"> 
+    <div class="row mb-3"> 
         <div class="col-md-3">
             <div class="small-box bg-info">
                 <div class="inner">
@@ -24,8 +21,7 @@
                     <p>Total Products</p>
                 </div>
             </div>
-        </div>
-
+        </div> 
         <div class="col-md-3">
             <div class="small-box bg-success">
                 <div class="inner">
@@ -33,8 +29,7 @@
                     <p>Total Stock In</p>
                 </div>
             </div>
-        </div>
-
+        </div> 
         <div class="col-md-3">
             <div class="small-box bg-danger">
                 <div class="inner">
@@ -42,8 +37,7 @@
                     <p>Total Stock Out</p>
                 </div>
             </div>
-        </div>
-
+        </div>  
         <div class="col-md-3">
             <div class="small-box bg-warning">
                 <div class="inner">
@@ -51,27 +45,20 @@
                     <p>Available Stock</p>
                 </div>
             </div>
-        </div>
-
-    </div>
- 
+        </div> 
+    </div> 
     <div class="d-flex justify-content-end mb-2">
         <a href="{{ route('reports.product.export', request()->all()) }}"
            class="btn btn-success">
             Export Excel
         </a>
-    </div>
- 
-    <div class="card">
-
+    </div> 
+    <div class="card">  
         <div class="card-header">
             <h3 class="card-title">Product List</h3>
-        </div>
-
-        <div class="card-body">
-
-            <table id="productTable" class="table table-bordered table-striped">
-
+        </div>  
+        <div class="card-body"> 
+            <table id="productTable" class="table table-bordered table-striped"> 
                 <thead>
                     <tr>
                         <th>#</th>
@@ -82,10 +69,8 @@
                         <th>Stock Out</th>
                         <th>Available</th>
                     </tr>
-                </thead>
-
-                <tbody>
-
+                </thead> 
+                <tbody> 
                 @foreach($products as $p)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -98,16 +83,11 @@
                     </tr>
                 @endforeach
 
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
+                </tbody> 
+            </table> 
+        </div> 
+    </div> 
+</div> 
 @stop
 
 @push('js')

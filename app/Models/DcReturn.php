@@ -17,6 +17,14 @@ class DcReturn extends Model
         'approved_by'
     ];
 
+    /* ================= CASTS ================= */
+
+    protected $casts = [
+        'return_date' => 'date',
+    ];
+
+    /* ================= RELATIONS ================= */
+
     public function deliveryChallan()
     {
         return $this->belongsTo(DeliveryChallan::class);
@@ -32,16 +40,31 @@ class DcReturn extends Model
         return $this->hasMany(DcReturnItem::class);
     }
 
-    // ERP SUMMARY HELPERS
+    /* ================= ERP HELPERS ================= */
+
     public function getTotalQtyAttribute()
     {
-        return $this->items->sum('return_qty');
+        return $this->items ? $this->items->sum('return_qty') : 0;
     }
 
     public function getTotalValueAttribute()
     {
-        return $this->items->sum(function ($item) {
-            return $item->return_qty * $item->unit_price;
-        });
+        return $this->items
+            ? $this->items->sum(function ($item) {
+                return $item->return_qty * ($item->unit_price ?? 0);
+            })
+            : 0;
+    }
+
+    /* ================= STATUS HELPERS (OPTIONAL BUT USEFUL) ================= */
+
+    public function isClosed()
+    {
+        return $this->status === 'closed';
+    }
+
+    public function isPartiallyReturned()
+    {
+        return $this->status === 'partially_returned';
     }
 }

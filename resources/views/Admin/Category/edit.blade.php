@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
 
         <div class="card card-primary">
             <div class="card-body">
@@ -18,41 +18,28 @@
                     @csrf
                     @method('PUT')
  
-                    <div class="form-group">
-                        <label>Category Name</label>
-                        <input type="text" 
-                               name="name" 
-                               class="form-control"
-                               value="{{ old('name', $category->name) }}" 
-                               required>
-
-                        @error('name')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
- 
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea name="description" class="form-control">{{ old('description', $category->description) }}</textarea>
-
-                        @error('description')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
- 
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i> Update Category
-                    </button>
-
+                        <x-input
+                                label="Category Name"
+                                name="name"
+                                :value="old('name', $category->name)"
+                        /> 
+                        <x-textarea
+                            label="Description"
+                            name="description"
+                            :value="old('description', $category->description)"
+                        /> 
+                        <x-button
+                            type="submit"
+                            color="success"
+                            icon="fas fa-save"> 
+                            Update Category 
+                        </x-button> 
                     <a href="{{ route('Category') }}" class="btn btn-secondary">
                         Cancel
-                    </a>
-
-                </form>
-
+                    </a> 
+                </form> 
             </div>
-        </div>
-
+        </div> 
     </div>
 </div>
 

@@ -6,8 +6,7 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <h1>Employee</h1>
-        </div>
-
+        </div> 
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
@@ -17,11 +16,14 @@
     </div>
 @stop
 
-@section('content')
-
+@section('content') 
 <form action="{{ route('Employee.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
-
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
     <div class="row"> 
         <div class="col-md-6">
             <div class="card card-primary">
@@ -30,26 +32,40 @@
                 </div> 
                 <div class="card-body"> 
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="name">
+                      <div class="col-md-6">
+            <x-input
+                label="Name"
+                name="name"
+                type="text"
+            />
                         </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" name="email">
+                        <div class="col-md-6">
+                            <x-input
+                                label="Email"
+                                name="email"
+                                type="email"
+                            />
                         </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Contact No</label>
-                            <input type="text" class="form-control" name="contact_no">
+                        <div class="col-md-6">
+                            <x-input
+                                label="Contact No"
+                                name="contact_no"
+                                type="text"
+                            />
                         </div> 
-                        <div class="col-md-12 form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" name="address"></textarea>
+                        <div class="col-md-12">
+                            <x-textarea
+                                label="Address"
+                                name="address"
+                            />
                         </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Password</label>
-                            <input type="password" class="form-control" name="password">
-                        </div> 
+                        <div class="col-md-6">
+                            <x-input
+                                label="Password"
+                                name="password"
+                                type="password"
+                            />
+                        </div>
                         <div class="col-md-6 form-group">
                             <label>Role</label>
                             <select name="role" class="form-control" required>
@@ -74,57 +90,75 @@
                 </div> 
                 <div class="card-body"> 
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Department</label>
-                            <select name="department" class="form-control">
-                                <option disabled selected>Select Department</option>
-                                <option>HR</option>
-                                <option>Sales</option>
-                                <option>Production</option>
-                                <option>Admin</option>
-                                <option>IT</option>
-                            </select>
-                        </div>  
-                        <div class="col-md-6 form-group">
-                            <label>Designation</label>
-                            <select name="designation" class="form-control">
-                                <option disabled selected>Select Designation</option>
-                                <option>Manager</option>
-                                <option>Team Lead</option>
-                                <option>Staff</option>
-                                <option>Intern</option>
-                                <option>Ground Staff</option>
-                            </select>
+                        <div class="col-md-6">
+                        <x-select
+                            label="Department"
+                            name="department"
+                            :options="[
+                                'HR' => 'HR',
+                                'Sales' => 'Sales',
+                                'Production' => 'Production',
+                                'Admin' => 'Admin',
+                                'IT' => 'IT'
+                            ]"
+                        />
+                    </div> 
+                       <div class="col-md-6"> 
+                            <x-select
+                                label="Designation"
+                                name="designation"
+                                :options="[
+                                    'Manager' => 'Manager',
+                                    'Team Lead' => 'Team Lead',
+                                    'Staff' => 'Staff',
+                                    'Intern' => 'Intern',
+                                    'Ground Staff' => 'Ground Staff'
+                                ]"
+                            /> 
                         </div> 
                         <div class="col-md-6 form-group">
-                            <label>Date of Joining</label>
-                            <input type="date" class="form-control" name="date_of_join">
+                               <x-input
+                                label="Date of Joining"
+                                name="date_of_join"
+                                type="date"
+                            />
                         </div> 
                         <div class="col-md-6 form-group">
-                            <label>Salary</label>
-                            <input type="number" class="form-control" name="salary">
+                              <x-input
+                                label="Salary"
+                                name="salary"
+                                type="number"
+                            />
                         </div> 
                     </div> 
                     <hr>  
                     <h5>Documents</h5> 
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Resume</label>
-                            <input type="file" class="form-control" name="resume">
+                        <div class="col-md-6 ">
+                            <x-file-input
+                                label="Resume"
+                                name="resume"
+                            />
                         </div> 
                         <div class="col-md-6 form-group">
-                            <label>Certificates</label>
-                            <input type="file" class="form-control" name="certificates[]" multiple>
+                           <x-file-input
+                            label="Certificates"
+                            name="certificates[]"
+                            :multiple="true"
+                        />
                         </div> 
                         <div class="col-md-6 form-group">
-                            <label>ID Proof</label>
-                            <input type="file" class="form-control" name="id_proof">
+                           <x-file-input
+                            label="ID Proof"
+                            name="id_proof"
+                        />
                         </div> 
                     </div> 
                 </div> 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-success">Save Employee</button>
-                    <a href="{{ route('Employee') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+    Save Employee
+</button>
                 </div> 
             </div>
         </div> 

@@ -148,8 +148,7 @@
                                     'scrap' => 'danger',
                                     default => 'secondary'
                                 };
-                            @endphp
-
+                            @endphp 
                             <span class="badge badge-{{ $badge }}">
                                 {{ ucfirst($condition ?: 'N/A') }}
                             </span>

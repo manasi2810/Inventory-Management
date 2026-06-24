@@ -19,83 +19,64 @@
 @endphp
 
 <div class="row">
-    <div class="col-12">
-
+    <div class="col-12"> 
         {{-- PURCHASE INFO --}}
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">
                 Purchase Information
-            </div>
-
+            </div> 
             <div class="card-body">
-                <div class="row">
-
+                <div class="row"> 
                     <div class="col-md-3">
                         <strong>PO No:</strong><br>
                         {{ $purchase->invoice_no }}
-                    </div>
-
+                    </div> 
                     <div class="col-md-3">
                         <strong>Vendor:</strong><br>
                         {{ $purchase->vendor->name ?? '-' }}
-                    </div>
-
+                    </div> 
                     <div class="col-md-3">
                         <strong>Date:</strong><br>
                         {{ $purchase->purchase_date }}
-                    </div>
-
+                    </div> 
                     <div class="col-md-3">
-                        <strong>Status:</strong><br>
-
+                        <strong>Status:</strong><br> 
                         @if($purchase->status == 'received')
                             <span class="badge badge-success">Completed</span>
                         @elseif($purchase->status == 'partial')
                             <span class="badge badge-warning">Partial</span>
                         @else
                             <span class="badge badge-danger">Pending</span>
-                        @endif
-
-                    </div>
-
+                        @endif 
+                    </div> 
                 </div>
             </div>
-        </div>
-
+        </div> 
         {{-- SUMMARY --}}
         <div class="card mb-3">
-            <div class="card-body">
-
-                <div class="row text-center">
-
+            <div class="card-body"> 
+                <div class="row text-center"> 
                     <div class="col-md-4">
                         <h5>Total Ordered</h5>
                         <h3>{{ $totalOrdered }}</h3>
-                    </div>
-
+                    </div> 
                     <div class="col-md-4">
                         <h5>Total Received</h5>
                         <h3 class="text-success">{{ $totalReceived }}</h3>
-                    </div>
-
+                    </div> 
                     <div class="col-md-4">
                         <h5>Remaining</h5>
                         <h3 class="text-danger">{{ $remaining }}</h3>
-                    </div>
-
-                </div>
-
+                    </div> 
+                </div> 
             </div>
-        </div>
-
+        </div> 
         {{-- ITEMS TABLE --}}
         <div class="card">
             <div class="card-header bg-success text-white">
                 Product Details
-            </div>
-
-            <div class="card-body">
-
+            </div> 
+            <div class="card-body"> 
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -104,10 +85,8 @@
                             <th>Price</th>
                             <th>Total</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
-
+                    </thead> 
+                    <tbody> 
                         @foreach($purchase->items as $item)
 
                         @php
@@ -121,8 +100,7 @@
                         @endphp
 
                         <tr>
-                            <td>{{ $item->product->name }}</td>
-
+                            <td>{{ $item->product->name }}</td> 
                             <td>
                                 {{ $item->qty }}
                                 <br>
@@ -133,22 +111,17 @@
                                 <small class="text-danger">
                                     Remaining: {{ $remainingQty }}
                                 </small>
-                            </td>
-
+                            </td> 
                             <td>₹ {{ number_format($item->price, 2) }}</td>
 
                             <td>₹ {{ number_format($item->qty * $item->price, 2) }}</td>
-                        </tr>
-
+                        </tr> 
                         @endforeach
 
-                    </tbody>
-
-                </table>
-
+                    </tbody> 
+                </table> 
             </div>
-        </div>
-
+        </div> 
     </div>
 </div>
 

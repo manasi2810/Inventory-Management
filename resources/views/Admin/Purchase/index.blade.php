@@ -9,119 +9,158 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-        <div class="card"> 
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">Purchase List</h3> 
-                    <div>
-                        <button class="btn btn-dark btn-sm" id="printSelected">
-                            Print Selected
-                        </button> 
-                        <a href="{{ route('Purchase.create') }}" class="btn btn-primary btn-sm">
-                            + Create Purchase
-                        </a>
-                    </div>
-                </div>
-            </div> 
-            <div class="card-body"> 
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif 
-                <table class="table table-bordered table-striped" id="purchaseTable"> 
-                    <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" id="selectAll">
-                            </th>
-                            <th>#</th>
-                            <th>Invoice No</th>
-                            <th>Vendor</th>
-                            <th>Date</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th width="300">Actions</th>
-                        </tr>
-                    </thead> 
-                    <tbody> 
-                        @foreach($purchases as $purchase)
-                        <tr> 
-                            <td>
-                                <input type="checkbox" class="po-check" value="{{ $purchase->id }}">
-                            </td> 
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $purchase->invoice_no ?? '-' }}</td>
-                            <td>{{ $purchase->vendor->name ?? '-' }}</td>
-                            <td>{{ $purchase->purchase_date }}</td>
-                            <td>₹ {{ number_format($purchase->total_amount, 2) }}</td> 
-                            <td>
-                                @if($purchase->status == 'received')
-                                    <span class="badge badge-success">Received</span> 
-                                @elseif($purchase->status == 'partial')
-                                    <span class="badge badge-info">Partial</span> 
-                                @elseif($purchase->status == 'short_closed')
-                                    <span class="badge badge-danger">Short Closed</span> 
-                                @else
-                                    <span class="badge badge-warning">Pending</span>
-                                @endif
-                            </td> 
-                            <td> 
-                                <a href="{{ route('Purchase.show', $purchase->id) }}"
-                                   class="btn btn-sm btn-info">
-                                    View
-                                </a> 
-                                <a href="{{ route('Purchase.print', $purchase->id) }}"
-                                   target="_blank"
-                                   class="btn btn-sm btn-secondary">
-                                    Print
-                                </a> 
-                                @php
-                                    $totalOrdered = $purchase->items->sum('qty');
-                                    $totalReceived = \App\Models\PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
-                                        $q->where('purchase_id', $purchase->id);
-                                    })->sum('received_qty');
-                                @endphp 
-                                @if($totalReceived < $totalOrdered && !in_array($purchase->status, ['received','short_closed']))
-
-                                    <a href="{{ route('Purchase.receive', $purchase->id) }}"
-                                       class="btn btn-sm btn-success">
-
-                                        @if($purchase->status == 'partial')
-                                            Receive Remaining
-                                        @else
-                                            Receive
-                                        @endif
-
-                                    </a>
-
-                                @else
-                                    <span class="btn btn-sm btn-success">Completed</span>
-                                @endif 
-                                @if(!in_array($purchase->status, ['received', 'short_closed']))
-
-                                    <form action="{{ route('purchase.shortClose', $purchase->id) }}"
-                                          method="POST"
-                                          style="display:inline-block;">
-                                        @csrf 
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure to short close this PO? Remaining qty will be cancelled.')">
-                                            Short Close
-                                        </button>
-                                    </form> 
-                                @endif 
-                            </td>
-                        </tr>
-                        @endforeach 
-                    </tbody>
-                </table> 
-            </div>
+<div class="col-12">  
+<div class="card"> 
+<div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="card-title mb-0">Purchase List</h3> 
+        <div>
+            <button class="btn btn-dark btn-sm" id="printSelected">
+                Print Selected
+            </button> 
+            <a href="{{ route('Purchase.create') }}" class="btn btn-primary btn-sm">
+                + Create Purchase
+            </a>
         </div>
     </div>
 </div> 
-@stop 
+<div class="card-body"> 
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+<table class="table table-bordered table-striped" id="purchaseTable"> 
+<thead>
+<tr>
+    <th><input type="checkbox" id="selectAll"></th>
+    <th>#</th>
+    <th>Invoice No</th>
+    <th>Vendor</th>
+    <th>Date</th>
+    <th>Total Amount</th>
+    <th>Status</th>
+    <th width="380">Actions</th>
+</tr>
+</thead> 
+<tbody> 
+@foreach($purchases as $purchase)
+
+@php
+    // ORDERED
+    $totalOrdered = $purchase->items->sum('qty');
+
+    // RECEIVED (correct ERP way)
+    $totalReceived = \App\Models\PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
+        $q->where('purchase_id', $purchase->id);
+    })->sum('received_qty');
+
+    // RETURNED
+    $totalReturned = \App\Models\PurchaseReturnItem::whereHas('purchaseReturn', function ($q) use ($purchase) {
+        $q->where('purchase_id', $purchase->id);
+    })->sum('qty');
+
+    // AVAILABLE FOR RETURN
+    $availableForReturn = $totalReceived - $totalReturned;
+@endphp
+
+<tr> 
+<td>
+    <input type="checkbox" class="po-check" value="{{ $purchase->id }}">
+</td> 
+<td>{{ $loop->iteration }}</td> 
+<td>{{ $purchase->invoice_no ?? '-' }}</td> 
+<td>{{ $purchase->vendor->name ?? '-' }}</td> 
+<td>{{ $purchase->purchase_date }}</td> 
+<td>₹ {{ number_format($purchase->total_amount, 2) }}</td> 
+<td>
+    @if($purchase->status == 'received')
+        <span class="badge badge-success">Received</span>
+    @elseif($purchase->status == 'partial')
+        <span class="badge badge-info">Partial</span>
+    @elseif($purchase->status == 'short_closed')
+        <span class="badge badge-danger">Short Closed</span>
+    @else
+        <span class="badge badge-warning">Pending</span>
+    @endif
+</td> 
+<td class="text-nowrap"> 
+    {{-- VIEW --}}
+    @can('purchase.view')
+        <a href="{{ route('Purchase.show', $purchase->id) }}"
+           class="btn btn-sm btn-info"
+           title="View Purchase">
+            <i class="fas fa-eye"></i>
+        </a>
+    @endcan 
+    {{-- PRINT --}}
+    @can('purchase.print')
+        <a href="{{ route('Purchase.print', $purchase->id) }}"
+           target="_blank"
+           class="btn btn-sm btn-secondary"
+           title="Print Purchase">
+            <i class="fas fa-print"></i>
+        </a>
+    @endcan 
+    {{-- RECEIVE --}}
+    @if($totalReceived < $totalOrdered && !in_array($purchase->status, ['received','short_closed'])) 
+        @can('purchase.receive')
+            <a href="{{ route('Purchase.receive', $purchase->id) }}"
+               class="btn btn-sm btn-success"
+               title="Receive Purchase">
+
+                <i class="fas fa-truck-loading"></i>
+
+                {{ $purchase->status == 'partial' ? 'Remaining' : '' }}
+            </a>
+        @endcan 
+    @else
+        <span class="btn btn-sm btn-success disabled">
+            <i class="fas fa-check-circle"></i> Done
+        </span>
+    @endif 
+    {{-- SHORT CLOSE --}}
+    @if(!in_array($purchase->status, ['received','short_closed']))
+
+        @can('purchase.short-close')
+            <form action="{{ route('purchase.shortClose', $purchase->id) }}"
+                  method="POST"
+                  style="display:inline-block;">
+                @csrf 
+                <button type="submit"
+                        class="btn btn-sm btn-danger"
+                        title="Short Close Purchase"
+                        onclick="return confirm('Are you sure you want to short close this PO?')"> 
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </form>
+        @endcan 
+    @endif
+ 
+   {{-- RETURN --}}
+            @if(
+                $availableForReturn > 0
+                && in_array($purchase->status, ['partial', 'received'])
+            )
+
+                <a href="{{ route('purchase.return.create', $purchase->id) }}"
+                class="btn btn-sm btn-warning"
+                title="{{ $totalReturned > 0 ? 'Return More Items' : 'Return Items' }}"> 
+                    <i class="fas fa-undo-alt"></i> 
+                </a> 
+            @endif
+            </td> 
+</tr> 
+@endforeach 
+</tbody> 
+</table> 
+</div>
+</div>  
+</div>
+</div> 
+@stop
+
 @push('js')
 <script>
 $(document).ready(function () {
@@ -141,7 +180,6 @@ $(document).ready(function () {
         $('.po-check').prop('checked', this.checked);
     });
 
-    // multiple print 
     $('#printSelected').on('click', function () {
 
         let ids = [];

@@ -8,82 +8,150 @@
 
 @section('content')
 
-<div class="card">
-
-    <div class="card-body">
-
+<div class="card"> 
+    <div class="card-body"> 
         <form action="{{ route('Customer.store') }}" method="POST">
-            @csrf
-
-            <div class="row">
- 
+            @csrf 
+            <div class="row"> 
+                <div class="col-md-6"> 
+                    <x-input
+                        label="Name *"
+                        name="name"
+                    /> 
+                </div>
                 <div class="col-md-6">
-                    <label>Name *</label>
-                    <input type="text" name="name" class="form-control" required>
+                     <x-input
+                        label="Company Name"
+                        name="company_name"
+                    />
                 </div> 
-                <div class="col-md-6">
-                    <label>Company Name</label>
-                    <input type="text" name="company_name" class="form-control">
+               <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Mobile"
+                        name="mobile"
+                        type="tel"
+                    />
+                </div>
+                <div class="col-md-6 mt-2">
+                    <x-input
+                        label="Alternate Mobile"
+                        name="alternate_mobile"
+                    />
+                </div>
+                <div class="col-md-6 mt-2">
+                       <x-input
+                        label="Email"
+                        name="email"
+                        type="email"
+                    />
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>Mobile</label>
-                    <input type="text" name="mobile" class="form-control">
+                     <x-textarea
+                    label="Billing Address"
+                    name="billing_address"
+                />
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control">
+                        <x-textarea
+                    label="Shipping Address"
+                    name="shipping_address"
+                />
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>Billing Address</label>
-                    <textarea name="billing_address" class="form-control"></textarea>
-                </div> 
-                <div class="col-md-6 mt-2">
-                    <label>Shipping Address</label>
-                    <textarea name="shipping_address" class="form-control"></textarea>
+                    <x-input
+                        label="City"
+                        name="city"
+                        />
                 </div> 
                 <div class="col-md-4 mt-2">
-                    <label>City</label>
-                    <input type="text" name="city" class="form-control">
+                    <x-input
+                    label="State"
+                    name="state"
+                />
                 </div> 
                 <div class="col-md-4 mt-2">
-                    <label>State</label>
-                    <input type="text" name="state" class="form-control">
+                   <x-input
+                    label="Pincode"
+                    name="pincode"
+                />
                 </div> 
                 <div class="col-md-4 mt-2">
-                    <label>Pincode</label>
-                    <input type="text" name="pincode" class="form-control">
+                <x-input
+                    label="Country"
+                    name="country"
+                    value="India"
+                />
+                </div>
+                <div class="col-md-6 mt-2">
+                     <x-input
+                    label="GST Number"
+                    name="gst_number"
+                />  
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>GST Number</label>
-                    <input type="text" name="gst_number" class="form-control">
+                     <x-input
+                    label="PAN Number"
+                    name="pan_number"
+                />   
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>PAN Number</label>
-                    <input type="text" name="pan_number" class="form-control">
+                    <x-input
+                        label="Credit Limit"
+                        name="credit_limit"
+                        type="number"
+                        step="0.01"
+                        value="0"
+                    />
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>Customer Type</label>
-                    <select name="customer_type" class="form-control">
-                        <option value="business">Business</option>
-                        <option value="individual">Individual</option>
-                    </select>
+                    <x-input
+                        label="Opening Balance"
+                        name="opening_balance"
+                        type="number"
+                        step="0.01"
+                        value="0"
+                    />
+                </div>
+                <div class="col-md-6 mt-2">
+                      <x-select
+                        label="Customer Type"
+                        name="customer_type"
+                        :options="[
+                            'business' => 'Business',
+                            'individual' => 'Individual'
+                        ]"
+                    />
                 </div> 
                 <div class="col-md-6 mt-2">
-                    <label>Status</label>
-                    <select name="status" class="form-control">
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </select>
+                       <x-select
+                        label="Status"
+                        name="status"
+                        :options="[
+                            '1' => 'Active',
+                            '0' => 'Inactive'
+                        ]"
+                    />
                 </div> 
                 <div class="col-md-12 mt-2">
-                    <label>Notes</label>
-                    <textarea name="notes" class="form-control"></textarea>
+                       <x-textarea
+                        label="Notes"
+                        name="notes"
+                        />
+                    </div> 
                 </div> 
-            </div> 
-            <br> 
-            <button class="btn btn-primary">
-                Save Customer
-            </button> 
+                <br> 
+               <div class="mt-3"> 
+                <a href="{{ route('Customer') }}"
+                class="btn btn-secondary">
+                    Cancel
+                </a> 
+                <x-button
+                    type="submit"
+                    color="primary"
+                    icon="fas fa-save">
+                    Save Customer
+                </x-button> 
+            </div>
         </form> 
     </div> 
 </div>

@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
 {
     Schema::create('purchase_items', function (Blueprint $table) {
-        $table->id();
-
+        $table->id(); 
         $table->foreignId('purchase_id')->constrained()->onDelete('cascade');
         $table->foreignId('product_id')->constrained(); 
         $table->integer('qty');

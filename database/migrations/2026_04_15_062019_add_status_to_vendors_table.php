@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->string('status')->default('active')->after('state');
-        });
-    }
+        {
+            Schema::table('vendors', function (Blueprint $table) {
+                $table->string('status')->default('active')->after('state');
+            });
+        }
 
     public function down(): void
-    {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
-    }
+        {
+            Schema::table('vendors', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
 }; 

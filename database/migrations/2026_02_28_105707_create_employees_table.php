@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('profile_photo')->nullable();
             $table->string('resume')->nullable();
             $table->json('certificates')->nullable();
-            $table->string('id_proof')->nullable();
-
+            $table->string('id_proof')->nullable(); 
             $table->timestamps();
         });
     }
@@ -29,5 +28,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('employees');
+    }
+
+     public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 };

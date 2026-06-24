@@ -30,37 +30,56 @@
                 </div>  
                 <div class="card-body"> 
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="name"
-                                value="{{ old('name', $employee->user->name ?? '') }}">
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" name="email"
-                                value="{{ old('email', $employee->user->email ?? '') }}">
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Contact No</label>
-                            <input type="text" class="form-control" name="contact_no"
-                                value="{{ old('contact_no', $employee->contact_no) }}">
-                        </div> 
-                        <div class="col-md-12 form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" name="address">{{ old('address', $employee->address) }}</textarea>
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Role</label>
-                            <select class="form-control" name="role">
-                                <option value="Admin" {{ $employee->role == 'Admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="HR" {{ $employee->role == 'HR' ? 'selected' : '' }}>HR</option>
-                                <option value="Employee" {{ $employee->role == 'Employee' ? 'selected' : '' }}>Employee</option>
+                        <div class="col-md-6"> 
+                        <x-input
+                            label="Name"
+                            name="name"
+                            :value="old('name', $employee->user->name ?? '')"
+                        /> 
+                        </div>
+                       <div class="col-md-6"> 
+                        <x-input
+                            label="Email"
+                            name="email"
+                            type="email"
+                            :value="old('email', $employee->user->email ?? '')"
+                        /> 
+                        </div>
+                       <div class="col-md-6"> 
+                        <x-input
+                            label="Contact No"
+                            name="contact_no"
+                            :value="old('contact_no', $employee->contact_no)"
+                        /> 
+                        </div>
+                       <div class="col-md-12"> 
+                        <x-textarea
+                            label="Address"
+                            name="address"
+                            :value="old('address', $employee->address)"
+                        /> 
+                        </div>
+                       <div class="col-md-6 form-group">
+                            <label>Role</label> 
+                            <select class="form-control" name="role" required> 
+                                <option value="">Select Role</option> 
+                                @foreach($roles as $role) 
+                                    <option value="{{ $role->name }}"
+                                        {{ $employee->user->hasRole($role->name) ? 'selected' : '' }}>
+
+                                        {{ $role->name }}
+
+                                    </option>  
+                                @endforeach 
                             </select>
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Password <small>(Leave blank to keep current)</small></label>
-                            <input type="password" class="form-control" name="password">
-                        </div> 
+                        </div>
+                        <div class="col-md-6"> 
+                        <x-input
+                            label="Password"
+                            name="password"
+                            type="password"
+                        /> 
+                        </div>
                         <div class="col-md-12 form-group">
                             <label>Profile Photo</label>
                             <input type="file" class="form-control" name="profile_photo"> 
@@ -79,73 +98,108 @@
                 </div> 
                 <div class="card-body"> 
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Department</label>
-                            <select class="form-control" name="department">
-                                <option value="HR" {{ $employee->department == 'HR' ? 'selected' : '' }}>HR</option>
-                                <option value="Sales" {{ $employee->department == 'Sales' ? 'selected' : '' }}>Sales</option>
-                                <option value="Production" {{ $employee->department == 'Production' ? 'selected' : '' }}>Production</option>
-                                <option value="Admin" {{ $employee->department == 'Admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="IT" {{ $employee->department == 'IT' ? 'selected' : '' }}>IT</option>
-                            </select>
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Designation</label>
-                            <select class="form-control" name="designation">
-                                <option value="Manager" {{ $employee->designation == 'Manager' ? 'selected' : '' }}>Manager</option>
-                                <option value="Team Lead" {{ $employee->designation == 'Team Lead' ? 'selected' : '' }}>Team Lead</option>
-                                <option value="Staff" {{ $employee->designation == 'Staff' ? 'selected' : '' }}>Staff</option>
-                                <option value="Intern" {{ $employee->designation == 'Intern' ? 'selected' : '' }}>Intern</option>
-                                <option value="Ground Staff" {{ $employee->designation == 'Ground Staff' ? 'selected' : '' }}>Ground Staff</option>
-                            </select>
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Date of Joining</label>
-                            <input type="date" class="form-control" name="date_of_join"
-                                value="{{ old('date_of_join', $employee->date_of_join) }}">
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>Salary</label>
-                            <input type="number" class="form-control" name="salary"
-                                value="{{ old('salary', $employee->salary) }}">
-                        </div> 
-                    </div> 
+                       <div class="col-md-6"> 
+                        <x-select
+                            label="Department"
+                            name="department"
+                            :options="[
+                                'HR' => 'HR',
+                                'Sales' => 'Sales',
+                                'Production' => 'Production',
+                                'Admin' => 'Admin',
+                                'IT' => 'IT'
+                            ]"
+                            :selected="$employee->department"
+                        /> 
+                        </div>
+                       <div class="col-md-6"> 
+                        <x-select
+                            label="Designation"
+                            name="designation"
+                            :options="[
+                                'Manager' => 'Manager',
+                                'Team Lead' => 'Team Lead',
+                                'Staff' => 'Staff',
+                                'Intern' => 'Intern',
+                                'Ground Staff' => 'Ground Staff'
+                            ]"
+                            :selected="$employee->designation"
+                        /> 
+                        </div>
+                       <div class="col-md-6"> 
+                        <x-input
+                            label="Date of Joining"
+                            name="date_of_join"
+                            type="date"
+                            :value="old('date_of_join', $employee->date_of_join)"
+                        /> 
+                    </div>
+                       <div class="col-md-6"> 
+                        <x-input
+                            label="Salary"
+                            name="salary"
+                            type="number"
+                            :value="old('salary', $employee->salary)"
+                        /> 
+                    </div>
                     <hr> 
                     <h5>Documents</h5>  
                     <div class="row"> 
-                        <div class="col-md-6 form-group">
-                            <label>Resume</label>
-                            <input type="file" class="form-control" name="resume"> 
-                            @if($employee->resume)
-                                <a href="{{ asset('storage/'.$employee->resume) }}" target="_blank">View</a>
-                            @endif
-                        </div>
+                       <div class="col-md-6"> 
+                        <x-file-input
+                            label="Resume"
+                            name="resume"
+                        /> 
+                        @if($employee->resume) 
+                            <a href="{{ asset('storage/'.$employee->resume) }}"
+                            target="_blank"> 
+                            View 
+                            </a> 
+                        @endif 
+                    </div>
 
-                        <div class="col-md-6 form-group">
-                            <label>Certificates</label>
-                            <input type="file" class="form-control" name="certificates[]" multiple> 
-                            @if($employee->certificates)
-                                @foreach(json_decode($employee->certificates) as $cert)
-                                    <a href="{{ asset('storage/'.$cert) }}" target="_blank" class="d-block">View</a>
-                                @endforeach
-                            @endif
-                        </div> 
-                        <div class="col-md-6 form-group">
-                            <label>ID Proof</label>
-                            <input type="file" class="form-control" name="id_proof"> 
-                            @if($employee->id_proof)
-                                <a href="{{ asset('storage/'.$employee->id_proof) }}" target="_blank">View</a>
-                            @endif
-                        </div> 
+                       <div class="col-md-6"> 
+                        <x-file-input
+                            label="Certificates"
+                            name="certificates[]"
+                            :multiple="true"
+                        /> 
+                        @if($employee->certificates) 
+                            @foreach(json_decode($employee->certificates) as $cert) 
+                                <a href="{{ asset('storage/'.$cert) }}"
+                                target="_blank"
+                                class="d-block"> 
+                                View 
+                                </a> 
+                            @endforeach
+
+                        @endif 
+                    </div>
+                       <div class="col-md-6"> 
+                        <x-file-input
+                            label="ID Proof"
+                            name="id_proof"
+                        /> 
+                        @if($employee->id_proof) 
+                            <a href="{{ asset('storage/'.$employee->id_proof) }}"
+                            target="_blank"> 
+                            View 
+                            </a> 
+                        @endif
+
+                    </div>
                     </div> 
                 </div>  
                 <div class="card-footer">
-                    <button class="btn btn-success">Update Employee</button>
-                    <a href="{{ route('Employee') }}" class="btn btn-secondary">Cancel</a>
+                   <x-button
+                    type="submit"
+                    color="success"
+                    icon="fas fa-save"> 
+                    Update Employee 
+                </x-button>
                 </div> 
             </div> 
         </div> 
     </div> 
-</form>
-
+</form>  
 @stop
