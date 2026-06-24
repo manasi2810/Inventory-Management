@@ -8,35 +8,27 @@
     <div class="card-header">
         <h3>{{ $vendor->name }} - Payments</h3>
         <h5>Outstanding: ₹ {{ $outstanding }}</h5>
-    </div>
-
-    <div class="card-body">
-
+    </div> 
+    <div class="card-body"> 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
+        @endif 
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
+        @endif 
         {{-- PAYMENT FORM --}}
         <form method="POST" action="{{ route('vendor.payments.store', $vendor->id) }}">
-            @csrf
-
+            @csrf 
             <div class="row">
                 <div class="col-md-4">
                     <input type="number" name="amount" class="form-control" placeholder="Enter amount">
-                </div>
-
+                </div> 
                 <div class="col-md-2">
                     <button class="btn btn-primary">Pay</button>
                 </div>
             </div>
-        </form>
-
-        <hr>
-
+        </form> 
+        <hr>  
         {{-- PAYMENT HISTORY --}}
         <table class="table table-bordered">
             <thead>
@@ -46,8 +38,7 @@
                     <th>Note</th>
                     <th>Date</th>
                 </tr>
-            </thead>
-
+            </thead> 
             <tbody>
                 @foreach($payments as $key => $payment)
                     <tr>
@@ -58,8 +49,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
-
+        </table> 
     </div>
 </div>
 

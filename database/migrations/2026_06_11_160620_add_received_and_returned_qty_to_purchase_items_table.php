@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::table('purchase_items', function (Blueprint $table) {
             //
         });
-    }
-
+    } 
     /**
      * Reverse the migrations.
      */

@@ -6,6 +6,11 @@
 .env.production
 .env.*
 
+.git.zip
+Inventory-Management (6).zip
+php.ini
+.user.ini
+
 # --- Laravel Cache ---
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore

@@ -9,107 +9,88 @@
             font-size: 13px;
             margin: 20px;
             color: #000;
-        }
-
+        }  
         /* EACH PO PAGE */
         .po-page {
             page-break-after: always;
             padding: 10px;
-        }
-
+        } 
         .po-page:last-child {
             page-break-after: auto;
-        }
-
+        } 
         /* HEADER */
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
-        }
-
+        } 
         .header h2 {
             margin: 0;
             font-size: 20px;
             text-transform: uppercase;
-        }
-
+        }  
         .header p {
             margin: 2px 0;
             font-size: 12px;
-        }
-
+        } 
         /* FLEX BOX */
         .flex {
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
             gap: 20px;
-        }
-
+        } 
         .box {
             width: 48%;
-        }
-
+        } 
         .box h4 {
             margin-bottom: 5px;
             font-size: 13px;
             border-bottom: 1px solid #000;
             padding-bottom: 3px;
-        }
-
+        } 
         .box p {
             margin: 2px 0;
             font-size: 12px;
-        }
-
+        } 
         /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-        }
-
+        } 
         table, th, td {
             border: 1px solid #000;
-        }
-
+        } 
         th, td {
             padding: 6px;
             font-size: 12px;
-        }
-
+        } 
         th {
             background: #f2f2f2;
-        }
-
+        } 
         .right {
             text-align: right;
-        }
-
+        } 
         /* FOOTER */
         .footer {
             margin-top: 15px;
             font-size: 11px;
-        }
-
+        } 
         /* SIGNATURE */
         .signature {
             margin-top: 40px;
             display: flex;
             justify-content: space-between;
-        }
-
+        } 
         .sign {
             width: 180px;
             text-align: center;
-        }
-
+        } 
         /* PRINT BUTTON */
         .print-btn {
             margin-bottom: 10px;
-        }
-
+        } 
         @media print {
             .print-btn {
                 display: none;
@@ -122,8 +103,7 @@
 <button class="print-btn" onclick="window.print()">Print</button> 
 @foreach($purchases as $purchase)
 
-<div class="po-page">
-
+<div class="po-page"> 
     {{-- HEADER --}}
     <div class="header">
         <h2>SMARTSTOCK PRIVATE LIMITED</h2>
@@ -195,10 +175,8 @@
         <div class="sign">Prepared By</div>
         <div class="sign">Approved By</div>
         <div class="sign">Vendor Signature</div>
-    </div>
-
-</div>
-
+    </div> 
+</div> 
 @endforeach
 
 </body>

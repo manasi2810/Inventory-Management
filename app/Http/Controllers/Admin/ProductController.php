@@ -41,14 +41,14 @@ class ProductController extends Controller
     public function index()
         {
             $products = Product::with('category', 'images')->get();
-            return view('admin.Product.index', compact('products'));
+            return view('Admin.Product.index', compact('products'));
         }
 
     //  product Creation Page 
     public function create()
         {
             $categories = Category::all();
-            return view('admin.product.create', compact('categories'));
+            return view('Admin.Product.create', compact('categories'));
         }
 
     //  Store created Product Data 
@@ -101,7 +101,7 @@ class ProductController extends Controller
         {
             $categories = Category::all();
             $product = $Product->load('images');
-            return view('admin.Product.edit', compact('product', 'categories'));
+            return view('Admin.Product.edit', compact('product', 'categories'));
         }
     
         // Update Product

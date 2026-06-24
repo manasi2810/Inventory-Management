@@ -6,8 +6,7 @@
     <h1>Stock In History</h1>
 @stop
 
-@section('content')
-
+@section('content')   
 <div class="card"> 
     <div class="card-body"> 
         <table class="table table-bordered table-striped">
@@ -20,7 +19,7 @@
                      <th>PO No</th> 
                     <th>Date</th>
                 </tr>
-            </thead> 
+            </thead>  
             <tbody>
                 @foreach($stockIns as $key => $stock)
                     <tr>
@@ -47,6 +46,5 @@
             </tbody> 
         </table> 
     </div>
-</div>
-
+</div> 
 @stop

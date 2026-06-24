@@ -9,31 +9,23 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-
-        <div class="card">
-
+    <div class="col-12"> 
+        <div class="card">  
             {{-- HEADER --}}
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h3 class="card-title mb-0">Delivery Challan List</h3>
-
-                    <div>
-                         
+                <div class="d-flex justify-content-between align-items-center"> 
+                    <h3 class="card-title mb-0">Delivery Challan List</h3> 
+                    <div> 
                         <button class="btn btn-dark btn-sm" id="printSelected">
                             Print Selected (Dispatched Only)
-                        </button> 
-                        
+                        </button>    
                         <a href="{{ route('Delivery_challan.create') }}"
                            class="btn btn-primary btn-sm">
                             + Create Challan
                         </a>
-                    </div>
-
+                    </div> 
                 </div>
-            </div>
-
+            </div> 
             {{-- BODY --}}
             <div class="card-body"> 
                 <table class="table table-bordered table-striped" id="challanTable"> 
@@ -93,17 +85,14 @@
                             class="btn btn-sm btn-info">
                                 View
                             </a>
-                            @endcan
-
+                            @endcan 
                             @can('dc-return.create')
                             <a href="{{ route('dc_return.create', $challan->id) }}"
                             class="btn btn-sm btn-dark">
                                 DC Return
                             </a>
-                            @endcan
-
-                        @endif 
-
+                            @endcan 
+                        @endif  
                         {{-- APPROVE --}}
                         @if($challan->status == 'draft')
                             @can('delivery.approve')
@@ -118,8 +107,7 @@
                                 </button>
                             </form>
                             @endcan
-                        @endif
-
+                        @endif 
 
                         {{-- EDIT --}}
                         @if($challan->status != 'dispatched')
@@ -129,17 +117,14 @@
                                 Edit
                             </a>
                             @endcan
-                        @endif
-
-
+                        @endif 
                         {{-- DISPATCH --}}
                         @if($challan->status == 'approved')
                             @can('delivery.dispatch')
                             <form action="{{ route('Delivery_challan.dispatch', $challan->id) }}"
                                 method="POST"
                                 style="display:inline-block;">
-                                @csrf
-
+                                @csrf 
                                 <button type="submit"
                                         class="btn btn-sm btn-warning"
                                         onclick="return confirm('Dispatch this challan? Stock will be reduced.')">
@@ -147,8 +132,7 @@
                                 </button>
                             </form>
                             @endcan
-                        @endif
-  
+                        @endif 
                         {{-- DELETE (ONLY ADMIN ROLE SHOULD BE HANDLED VIA PERMISSION NOW) --}}
                         @if($challan->status != 'dispatched')
                             @can('delivery.delete')
@@ -181,8 +165,7 @@
                         @endif 
                     </td>
                         </tr>
-                    @endforeach
-
+                    @endforeach 
                     </tbody> 
                 </table> 
             </div>

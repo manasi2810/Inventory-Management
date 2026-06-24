@@ -89,16 +89,16 @@
                                            value="{{ $item->already_received ?? 0 }}"
                                            readonly>
                                 </td> 
-                                {{-- RECEIVE NOW --}}
+                              {{-- RECEIVE NOW --}}
                                 <td>
                                   <input type="number"
                                     name="items[{{ $index }}][received_qty]"
                                     class="form-control receive-input"
                                     min="0"
                                     max="{{ $item->remaining_qty }}"
-                                    value="{{ $item->remaining_qty }}"
+                                    placeholder="Enter qty"
                                     required>
-                                </td> 
+                                </td>
                                 {{-- PRICE --}}
                                 <td>
                                     <input type="number"

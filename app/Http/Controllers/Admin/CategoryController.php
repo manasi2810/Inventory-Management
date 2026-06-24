@@ -33,13 +33,13 @@ class CategoryController extends Controller
     public function index(Request $request)
         {
             $categories = Category::latest()->get(); 
-            return view('admin.category.index', compact('categories'));
+            return view('Admin.Category.index', compact('categories'));
         }
 
         // Category cretation
     public function create()
         {
-            return view('admin.category.create');
+            return view('Admin.Category.create');
         }
 
         // Store Category
@@ -61,7 +61,7 @@ class CategoryController extends Controller
     public function edit($id)
         {
             $category = Category::findOrFail($id);
-            return view('admin.category.edit', compact('category'));
+            return view('Admin.Category.edit', compact('category'));
         }
 
         // Update created Category

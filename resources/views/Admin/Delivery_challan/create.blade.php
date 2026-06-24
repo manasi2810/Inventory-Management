@@ -34,8 +34,7 @@
                         </option>
                     @endforeach
                 </select>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <label>Challan Date</label>
                 <input type="date"
@@ -43,10 +42,8 @@
                        class="form-control"
                        value="{{ date('Y-m-d') }}">
             </div> 
-            <input type="hidden" name="status" value="draft">
-
-        </div>
-
+            <input type="hidden" name="status" value="draft"> 
+        </div> 
         <div class="row mt-2"> 
             <div class="col-md-4">
                 <label>Transport Mode</label>
@@ -60,8 +57,7 @@
                 <label>LR No</label>
                 <input type="text" name="lr_no" class="form-control">
             </div> 
-        </div>
-
+        </div> 
         <div class="row mt-2"> 
             <div class="col-md-6">
                 <label>Dispatch From</label>
@@ -83,9 +79,7 @@
     </div>
 </div>
     </div>
-</div>
-
- 
+</div> 
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Products</h3> 
@@ -162,9 +156,7 @@
     </button>
 </div> 
 </form> 
-@stop
-
- 
+@stop  
 @push('js')
 <script>
 
@@ -185,36 +177,28 @@ $('#addRow').click(function () {
                     </option>
                 @endforeach
             </select>
-        </td>
-
-        <td class="stock-info">0</td>
-
+        </td> 
+        <td class="stock-info">0</td> 
         <td>
             <input type="number" name="items[${rowIndex}][qty]" class="form-control qty" value="1">
-        </td>
-
+        </td> 
         <td>
             <input type="number" name="items[${rowIndex}][rate]" class="form-control rate" step="0.01">
-        </td>
-
+        </td> 
         <td>
             <input type="text" class="form-control total" readonly>
-        </td>
-
+        </td> 
         <td>
             <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
         </td>
-    </tr>`;
-
+    </tr>`; 
     $('#productTable tbody').append(row);
     rowIndex++;
-});
- 
+}); 
 $(document).on('click', '.removeRow', function () {
     $(this).closest('tr').remove();
     calculateTotal();
-});
- 
+}); 
 $(document).on('change', '.product', function () {
 
     let selected = $(this).find(':selected');

@@ -26,67 +26,51 @@
                     </div>
                 @endif 
                 <table class="table table-bordered table-striped" id="customerTable">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Customer Code</th>
-                <th>Name</th>
-                <th>Company</th>
-                <th>Mobile</th>
-                <th>City</th>
-                <th>GST</th>
-                <th>Status</th>
-                <th width="250">Actions</th>
-            </tr>
-        </thead>
-
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Customer Code</th>
+                    <th>Name</th>
+                    <th>Company</th>
+                    <th>Mobile</th>
+                    <th>City</th>
+                    <th>GST</th>
+                    <th>Status</th>
+                    <th width="250">Actions</th>
+                </tr>
+            </thead> 
         <tbody>
         @foreach($customers as $customer)
-        <tr>
-
-            <td>{{ $loop->iteration }}</td>
-
-            <td>{{ $customer->customer_code ?? '-' }}</td>
-
-            <td>{{ $customer->name }}</td>
-
-            <td>{{ $customer->company_name ?? '-' }}</td>
-
-            <td>{{ $customer->mobile ?? '-' }}</td>
-
-            <td>{{ $customer->city ?? '-' }}</td>
-
-            <td>{{ $customer->gst_number ?? '-' }}</td>
-
+        <tr> 
+            <td>{{ $loop->iteration }}</td> 
+            <td>{{ $customer->customer_code ?? '-' }}</td> 
+            <td>{{ $customer->name }}</td>   
+            <td>{{ $customer->company_name ?? '-' }}</td> 
+            <td>{{ $customer->mobile ?? '-' }}</td> 
+            <td>{{ $customer->city ?? '-' }}</td> 
+            <td>{{ $customer->gst_number ?? '-' }}</td> 
             <td>
             <span class="status-badge badge {{ $customer->status ? 'badge-success' : 'badge-danger' }}"
                 id="status-{{ $customer->id }}">
                 {{ $customer->status ? 'Active' : 'Inactive' }}
             </span>
-        </td>
-
-            <td>
-
+        </td> 
+            <td> 
                 @can('customer.edit')
                     <a href="{{ route('Customer.edit', $customer->id) }}"
                     class="btn btn-sm btn-info">
                         Edit
-                    </a>
-
-                @endcan
-                    
+                    </a> 
+                @endcan 
                     <a href="{{ route('customer.ledger', $customer->id) }}"
                     class="btn btn-dark btn-sm">
                     Ledger
-                    </a>
-
-                @can('customer.delete')
-
+                    </a> 
+                @can('customer.delete') 
                     <form action="{{ route('Customer.toggleStatus', $customer->id) }}"
                           method="POST"
                           style="display:inline;">
-                        @csrf
-
+                        @csrf  
                         @if($customer->status) 
                             <button type="submit"
                                     class="btn btn-sm btn-warning"
@@ -111,8 +95,7 @@
         </div> 
     </div>
 </div>  
-@stop
-
+@stop 
 @push('js')
 <script>
 

@@ -4,19 +4,15 @@
 
 @section('content')
 
-<div class="card">
-
+<div class="card"> 
     <div class="card-header">
         <h3 class="mb-0">
             {{ $vendor->name }} - Ledger
         </h3>
-    </div>
-
-    <div class="card-body">
-
+    </div> 
+    <div class="card-body"> 
         {{-- Summary Cards --}}
-        <div class="row mb-4">
-
+        <div class="row mb-4"> 
             <div class="col-md-3">
                 <div class="card border-primary shadow-sm">
                     <div class="card-body text-center">
@@ -26,8 +22,7 @@
                         </h4>
                     </div>
                 </div>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <div class="card border-warning shadow-sm">
                     <div class="card-body text-center">
@@ -37,8 +32,7 @@
                         </h4>
                     </div>
                 </div>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <div class="card border-success shadow-sm">
                     <div class="card-body text-center">
@@ -48,8 +42,7 @@
                         </h4>
                     </div>
                 </div>
-            </div>
-
+            </div> 
             <div class="col-md-3">
                 <div class="card border-dark shadow-sm">
                     <div class="card-body text-center">
@@ -59,10 +52,8 @@
                         </h4>
                     </div>
                 </div>
-            </div>
-
-        </div>
-
+            </div> 
+        </div> 
         {{-- Ledger Table --}}
         <table class="table table-bordered table-striped">
             <thead>
@@ -74,16 +65,11 @@
                     <th>Note</th>
                     <th>Balance</th>
                 </tr>
-            </thead>
-
-            <tbody>
-
-                @forelse($ledgers as $ledger)
-
-                <tr>
-
-                    <td>{{ $ledger->created_at->format('d-m-Y') }}</td>
-
+            </thead> 
+            <tbody> 
+                @forelse($ledgers as $ledger) 
+                <tr>  
+                    <td>{{ $ledger->created_at->format('d-m-Y') }}</td> 
                     <td>
                         @if($ledger->entry_type == 'DEBIT')
                             <span class="badge badge-danger">
@@ -94,43 +80,32 @@
                                 CREDIT
                             </span>
                         @endif
-                    </td>
-
+                    </td> 
                     <td>
                         ₹ {{ number_format($ledger->amount, 2) }}
-                    </td>
-
+                    </td> 
                     <td>
                         {{ $ledger->reference_type ?? '-' }}
-                    </td>
-
+                    </td> 
                     <td>
                         {{ $ledger->note ?? '-' }}
-                    </td>
-
+                    </td> 
                     <td>
                         <strong>
                             ₹ {{ number_format($ledger->balance_after, 2) }}
                         </strong>
-                    </td>
-
-                </tr>
-
-                @empty
-
+                    </td> 
+                </tr> 
+                @empty 
                 <tr>
                     <td colspan="6" class="text-center">
                         No Ledger Entries Found
                     </td>
-                </tr>
-
-                @endforelse
-
+                </tr> 
+                @endforelse 
             </tbody>
-        </table>
-
-    </div>
-
+        </table> 
+    </div> 
 </div>
 
 @stop

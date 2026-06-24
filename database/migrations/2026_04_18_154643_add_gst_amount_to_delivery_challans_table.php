@@ -9,17 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-  public function up(): void
-{
-    Schema::table('delivery_challans', function (Blueprint $table) {
-        $table->decimal('gst_amount', 10, 2)->after('sub_total')->default(0);
-    });
-}
+    public function up(): void
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                $table->decimal('gst_amount', 10, 2)->after('sub_total')->default(0);
+            });
+        }
 
-public function down(): void
-{
-    Schema::table('delivery_challans', function (Blueprint $table) {
-        $table->dropColumn('gst_amount');
-    });
-}
+    public function down(): void
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                $table->dropColumn('gst_amount');
+            });
+        }
 };

@@ -13,33 +13,24 @@
 
     <div class="card card-primary">
         <div class="card-body"> 
- 
             <x-input
                 label="Category Name"
                 name="name"
-            />
- 
+            /> 
                 <x-textarea
             label="Description"
             name="description"
-        /> 
-
+        />  
             <x-button
             type="submit"
             color="success"
-            icon="fas fa-save">
-
-            Save Category
-
-        </x-button>
-
+            icon="fas fa-save"> 
+            Save Category 
+        </x-button> 
             <a href="{{ route('Category') }}" class="btn btn-secondary">
                 Cancel
-            </a> 
-
+            </a>  
         </div>
-    </div> 
-
-</form>
-
+    </div>  
+</form> 
 @stop

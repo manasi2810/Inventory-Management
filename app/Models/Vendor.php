@@ -12,28 +12,26 @@ class Vendor extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'vendor_code',
-        'name',
-        'email',
-        'contact',
-        'gst_number',
-        'pan_number',
-        'company_name',
-        'address',
-        'city',
-        'state',
-        'credit_limit',
-        'opening_balance',
-        'opening_balance_type',
-        'payment_days',
-        'bank_name',
-        'bank_account_no',
-        'ifsc_code',
-        'status',
-        'remarks',
-        'created_by',
-        'updated_by'
-    ];
+    'name',
+    'contact',
+    'address',
+    'gst_number',
+    'pan_number',
+    'email',
+    'company_name',
+    'city',
+    'state',
+    'status',
+    'vendor_code',
+    'credit_limit',
+    'payment_days',
+    'bank_name',
+    'bank_account_no',
+    'ifsc_code',
+    'remarks',
+    'opening_balance',
+    'opening_balance_type',
+];
 
     /*
     |----------------------------------

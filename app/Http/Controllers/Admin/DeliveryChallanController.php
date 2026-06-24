@@ -38,7 +38,7 @@ class DeliveryChallanController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.Delivery_challan.index', compact('challans'));
+        return view('Admin.Delivery_challan.index', compact('challans'));
     }
 
     // ================= CREATE =================
@@ -184,7 +184,7 @@ class DeliveryChallanController extends Controller
             return $product;
         });
 
-        return view('admin.Delivery_challan.edit', compact('challan', 'products'));
+        return view('Admin.Delivery_challan.edit', compact('challan', 'products'));
     }
 
     // ================= UPDATE =================
@@ -317,7 +317,7 @@ class DeliveryChallanController extends Controller
     public function show($id)
     {
         $challan = DeliveryChallan::with(['items.product', 'customer'])->findOrFail($id);
-        return view('admin.Delivery_challan.show', compact('challan'));
+        return view('Admin.Delivery_challan.show', compact('challan'));
     }
 
     public function destroy($id)
@@ -336,7 +336,7 @@ class DeliveryChallanController extends Controller
     public function trashed()
     {
         $challans = DeliveryChallan::onlyTrashed()->with('customer')->get();
-        return view('admin.Delivery_challan.trashed', compact('challans'));
+        return view('Admin.Delivery_challan.trashed', compact('challans'));
     }
 
     public function restore($id)

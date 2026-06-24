@@ -55,7 +55,7 @@ class PurchaseController extends Controller
                     $purchases = Purchase::with('vendor')
                         ->orderBy('id', 'desc')
                         ->get();
-                    return view('admin.purchase.index', compact('purchases'));
+                    return view('Admin.Purchase.index', compact('purchases'));
                 } 
 
             /**
@@ -71,7 +71,7 @@ class PurchaseController extends Controller
                         ? ((int) substr($lastPurchase->invoice_no, -4)) + 1
                         : 1;
                     $invoice_no = 'PO' . $year . '-' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
-                    return view('admin.purchase.create', compact('vendors', 'products', 'invoice_no'));
+                    return view('Admin.Purchase.create', compact('vendors', 'products', 'invoice_no'));
                 }
 
             /**
@@ -80,48 +80,45 @@ class PurchaseController extends Controller
             public function show($id)
                 {
                     $purchase = Purchase::with('vendor', 'items.product')->findOrFail($id);
-                    return view('admin.purchase.show', compact('purchase'));
+                    return view('Admin.Purchase.show', compact('purchase'));
                 }
 
 
             /**
              * Open Purchase Receive Page.
              */
-           public function receive($id)
-                    {
-                        $purchase = Purchase::with('items.product', 'vendor')
-                            ->findOrFail($id);
-
-                        // Prevent receive on closed PO
-                        if (in_array($purchase->status, ['received', 'short_closed'])) {
-                            return back()->with(
-                                'error',
-                                'This Purchase Order cannot be received.'
-                            );
-                        }
-
-                        foreach ($purchase->items as $item) {
-
-                            $alreadyReceived = PurchaseReceiveItem::whereHas(
-                                'receive',
-                                function ($q) use ($id) {
-                                    $q->where('purchase_id', $id);
-                                }
-                            )
-                            ->where('product_id', $item->product_id)
-                            ->sum('received_qty');
-
-                            $item->already_received = $alreadyReceived;
-
-                            $item->remaining_qty =
-                                max(0, $item->qty - $alreadyReceived);
-                        }
-
-                        return view(
-                            'admin.purchase.receive',
-                            compact('purchase')
-                        );
-                    }
+         public function receive($id)
+        {
+            $purchase = Purchase::with('items.product', 'vendor')
+                ->findOrFail($id);
+        
+            // Prevent receive on closed PO
+            if (in_array($purchase->status, ['received', 'short_closed'])) {
+                return back()->with(
+                    'error',
+                    'This Purchase Order cannot be received.'
+                );
+            }
+        
+            foreach ($purchase->items as $item) {
+        
+                $alreadyReceived = PurchaseReceiveItem::whereHas('receive', function ($q) use ($id) {
+                        $q->where('purchase_id', $id);
+                    })
+                    ->where('product_id', $item->product_id)
+                    ->sum('received_qty');
+        
+                $item->already_received = $alreadyReceived;
+        
+                // remaining qty only
+                $item->remaining_qty = max(0, $item->qty - $alreadyReceived);
+        
+                // IMPORTANT: do NOT set receive_now here
+                $item->receive_now = 0;
+            }
+        
+            return view('Admin.Purchase.receive', compact('purchase'));
+        }
 
 
              /**
@@ -188,252 +185,214 @@ class PurchaseController extends Controller
              * Save Received Items and Update Stock.
              */
             public function storeReceive(Request $request, $id)
-{
-    DB::beginTransaction();
-
-    try {
-
-        $purchase = Purchase::with('vendor')->findOrFail($id);
-
-        $vendor = $purchase->vendor;
-
-        /*
-        |-----------------------------------------
-        | 1. CHECK PO STATUS
-        |-----------------------------------------
-        */
-        if (in_array($purchase->status, ['received', 'short_closed'])) {
-            throw new Exception('This PO is already closed.');
-        }
-
-        /*
-        |-----------------------------------------
-        | 2. VALIDATE AT LEAST ONE ITEM
-        |-----------------------------------------
-        */
-        $hasReceiveQty = false;
-
-        foreach ($request->items as $item) {
-            if ((float)$item['received_qty'] > 0) {
-                $hasReceiveQty = true;
-                break;
-            }
-        }
-
-        if (!$hasReceiveQty) {
-            throw new Exception('Please enter at least one receive quantity.');
-        }
-
-        /*
-        |-----------------------------------------
-        | 3. CALCULATE TOTAL RECEIVE AMOUNT (ERP)
-        |-----------------------------------------
-        */
-        $totalReceiveAmount = 0;
-
-        foreach ($request->items as $item) {
-            if ((float)$item['received_qty'] > 0) {
-                $totalReceiveAmount += $item['received_qty'] * $item['price'];
-            }
-        }
-
-        /*
-        |-----------------------------------------
-        | 4. GET OUTSTANDING (MODEL BASED)
-        |-----------------------------------------
-        */
-        $currentOutstanding = $vendor->getOutstandingAmount();
-
-        $availableCredit = $vendor->credit_limit - $currentOutstanding;
-
-        /*
-        |-----------------------------------------
-        | 5. CREDIT LIMIT CHECK (GLOBAL ERP RULE)
-        |-----------------------------------------
-        */
-        if (($currentOutstanding + $totalReceiveAmount) > $vendor->credit_limit) {
-
-            throw new Exception(
-                'Credit limit exceeded. Available Credit: ₹' . number_format($availableCredit, 2)
-            );
-        }
-
-        /*
-        |-----------------------------------------
-        | 6. CREATE RECEIVE MASTER
-        |-----------------------------------------
-        */
-        $receive = PurchaseReceive::create([
-            'purchase_id'  => $purchase->id,
-            'receive_date' => now(),
-            'status'       => 'completed',
-        ]);
-
-        /*
-        |-----------------------------------------
-        | 7. PROCESS ITEMS
-        |-----------------------------------------
-        */
-        foreach ($request->items as $item) {
-
-            $productId   = $item['product_id'];
-            $orderedQty  = (float)$item['ordered_qty'];
-            $receiveQty  = (float)$item['received_qty'];
-            $price       = (float)$item['price'];
-
-            if ($receiveQty <= 0) {
-                continue;
-            }
-
-            $product = Product::find($productId);
-
-            if (!$product) {
-                throw new Exception('Invalid product selected.');
-            }
-
-            if ($receiveQty < 0) {
-                throw new Exception('Receive quantity cannot be negative.');
-            }
-
-            if ($price <= 0) {
-                throw new Exception('Price must be greater than zero.');
-            }
-
-            /*
-            |-----------------------------------------
-            | ALREADY RECEIVED CHECK
-            |-----------------------------------------
-            */
-            $alreadyReceived = PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
-                $q->where('purchase_id', $purchase->id);
-            })
-            ->where('product_id', $productId)
-            ->sum('received_qty');
-
-            $remainingQty = $orderedQty - $alreadyReceived;
-
-            if ($receiveQty > $remainingQty) {
-                throw new Exception(
-                    "Receive Qty ({$receiveQty}) cannot exceed Pending Qty ({$remainingQty})"
-                );
-            }
-
-            $totalReceived = $alreadyReceived + $receiveQty;
-
-            $shortQty = max(0, $orderedQty - $totalReceived);
-
-            /*
-            |-----------------------------------------
-            | STOCK IN
-            |-----------------------------------------
-            */
-            StockIn::create([
-                'product_id'   => $productId,
-                'qty'          => $receiveQty,
-                'type'         => 'purchase',
-                'reference_id' => $purchase->id,
-                'po_no'        => $purchase->invoice_no,
-                'created_by'   => auth()->id(),
-            ]);
-
-            /*
-            |-----------------------------------------
-            | STOCK LEDGER
-            |-----------------------------------------
-            */
-            $lastStock = StockLedger::where('product_id', $productId)
-                ->latest('id')
-                ->value('balance_after') ?? 0;
-
-            StockLedger::create([
-                'product_id'     => $productId,
-                'movement_type'  => 'IN',
-                'qty'            => $receiveQty,
-                'reference_type' => 'PURCHASE_RECEIVE',
-                'reference_id'   => $purchase->id,
-                'balance_after'  => $lastStock + $receiveQty,
-                'created_by'     => auth()->id(),
-            ]);
-
-            /*
-            |-----------------------------------------
-            | INVENTORY LOG
-            |-----------------------------------------
-            */
-            InventoryLog::create([
-                'purchase_id' => $purchase->id,
-                'product_id'  => $productId,
-                'action_type' => 'receive',
-                'qty'         => $receiveQty,
-                'remarks'     => 'Stock received',
-                'created_by'  => auth()->id(),
-            ]);
-
-            /*
-            |-----------------------------------------
-            | PURCHASE RECEIVE ITEM
-            |-----------------------------------------
-            */
-            PurchaseReceiveItem::create([
-                'purchase_receive_id' => $receive->id,
-                'product_id'          => $productId,
-                'ordered_qty'         => $orderedQty,
-                'received_qty'        => $receiveQty,
-                'short_qty'           => $shortQty,
-                'price'               => $price,
-            ]);
-
-            /*
-            |-----------------------------------------
-            | VENDOR LEDGER (CREDIT)
-            |-----------------------------------------
-            */
-            $receiveAmount = $receiveQty * $price;
-
-            $newBalance = $vendor->getOutstandingAmount() + $receiveAmount;
-
-            VendorLedger::create([
-                'vendor_id'      => $vendor->id,
-                'entry_type'     => 'CREDIT',
-                'amount'         => $receiveAmount,
-                'reference_type' => 'PURCHASE_RECEIVE',
-                'reference_id'   => $purchase->id,
-                'balance_after'  => $newBalance,
-                'note'           => 'Stock received for PO ' . $purchase->invoice_no,
-                'created_by'     => auth()->id(),
-            ]);
-        }
-
-        /*
-        |-----------------------------------------
-        | 8. UPDATE PURCHASE STATUS
-        |-----------------------------------------
-        */
-        $totalOrdered = PurchaseItem::where('purchase_id', $purchase->id)->sum('qty');
-
-        $totalReceived = PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
-            $q->where('purchase_id', $purchase->id);
-        })->sum('received_qty');
-
-        $purchase->update([
-            'status' => ($totalReceived >= $totalOrdered) ? 'received' : 'partial'
-        ]);
-
-        DB::commit();
-
-        return redirect()
-            ->route('Purchase')
-            ->with('success', 'Purchase received successfully.');
-
-    } catch (Exception $e) {
-
-        DB::rollBack();
-
-        return back()
-            ->withInput()
-            ->with('error', $e->getMessage());
-    }
-}
+                    {
+                            DB::beginTransaction();
+                        
+                            try {
+                        
+                                $purchase = Purchase::with('vendor')->findOrFail($id);
+                                $vendor = $purchase->vendor;
+                        
+                                  
+                                // 1. CHECK PO STATUS
+                                
+                                if (in_array($purchase->status, ['received', 'short_closed'])) {
+                                    throw new Exception('This PO is already closed.');
+                                }
+                        
+                                //  2. VALIDATE INPUT ITEMS
+                                 
+                                if (empty($request->items) || !is_array($request->items)) {
+                                    throw new Exception('Invalid items data.');
+                                }
+                        
+                                $hasReceiveQty = false;
+                        
+                                foreach ($request->items as $item) {
+                                    if ((float)$item['received_qty'] > 0) {
+                                        $hasReceiveQty = true;
+                                        break;
+                                    }
+                                }
+                        
+                                if (!$hasReceiveQty) {
+                                    throw new Exception('Please enter at least one receive quantity.');
+                                }
+                        
+                                //   3. CALCULATE TOTAL RECEIVE AMOUNT
+                                
+                                $totalReceiveAmount = 0;
+                        
+                                foreach ($request->items as $item) {
+                                    $qty = (float)$item['received_qty'];
+                                    $price = (float)$item['price'];
+                        
+                                    if ($qty > 0) {
+                                        $totalReceiveAmount += $qty * $price;
+                                    }
+                                }
+                        
+                                //  4. GET OUTSTANDING & CREDIT CHECK
+                                 
+                                $currentOutstanding = $vendor->getOutstandingAmount();
+                                $availableCredit = $vendor->credit_limit - $currentOutstanding;
+                        
+                                if (($currentOutstanding + $totalReceiveAmount) > $vendor->credit_limit) {
+                                    throw new Exception(
+                                        'Credit limit exceeded. Available Credit: ₹' . number_format($availableCredit, 2)
+                                    );
+                                }
+                        
+                                //  5. CREATE RECEIVE MASTER
+                                 
+                                $receive = PurchaseReceive::create([
+                                    'purchase_id'  => $purchase->id,
+                                    'receive_date' => now(),
+                                    'status'       => 'completed',
+                                ]);
+                        
+                                //   6. PROCESS ITEMS
+                                 
+                        
+                                $vendorRunningBalance = $currentOutstanding;
+                        
+                                foreach ($request->items as $item) {
+                        
+                                    $productId  = $item['product_id'];
+                                    $orderedQty = (float)$item['ordered_qty'];
+                                    $receiveQty = (float)$item['received_qty'];
+                                    $price      = (float)$item['price'];
+                        
+                                    if ($receiveQty <= 0) {
+                                        continue;
+                                    }
+                        
+                                    $product = Product::find($productId);
+                        
+                                    if (!$product) {
+                                        throw new Exception('Invalid product selected.');
+                                    }
+                        
+                                    if ($price <= 0) {
+                                        throw new Exception('Price must be greater than zero.');
+                                    }
+                        
+                                    //  ALREADY RECEIVED CHECK
+                                     
+                                    $alreadyReceived = PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
+                                        $q->where('purchase_id', $purchase->id);
+                                    })
+                                    ->where('product_id', $productId)
+                                    ->sum('received_qty');
+                        
+                                    $remainingQty = $orderedQty - $alreadyReceived;
+                        
+                                    if ($receiveQty > $remainingQty) {
+                                        throw new Exception(
+                                            "Receive Qty ({$receiveQty}) cannot exceed Pending Qty ({$remainingQty})"
+                                        );
+                                    }
+                        
+                                    $totalReceived = $alreadyReceived + $receiveQty;
+                                    $shortQty = max(0, $orderedQty - $totalReceived);
+                        
+                                    // STOCK IN
+                                    
+                                    StockIn::create([
+                                        'product_id'   => $productId,
+                                        'qty'          => $receiveQty,
+                                        'type'         => 'purchase',
+                                        'reference_id' => $purchase->id,
+                                        'po_no'        => $purchase->invoice_no,
+                                        'created_by'   => auth()->id(),
+                                    ]);
+                        
+                                    //   STOCK LEDGER (SAFE UPDATE)
+                                    
+                                    $lastStock = StockLedger::where('product_id', $productId)
+                                        ->lockForUpdate()
+                                        ->latest('id')
+                                        ->value('balance_after') ?? 0;
+                        
+                                    StockLedger::create([
+                                        'product_id'     => $productId,
+                                        'movement_type'  => 'IN',
+                                        'qty'            => $receiveQty,
+                                        'reference_type' => 'PURCHASE_RECEIVE',
+                                        'reference_id'   => $purchase->id,
+                                        'balance_after'  => $lastStock + $receiveQty,
+                                        'created_by'     => auth()->id(),
+                                    ]);
+                        
+                                    //  INVENTORY LOG
+                                    
+                                    InventoryLog::create([
+                                        'purchase_id' => $purchase->id,
+                                        'product_id'  => $productId,
+                                        'action_type' => 'receive',
+                                        'qty'         => $receiveQty,
+                                        'remarks'     => 'Stock received',
+                                        'created_by'  => auth()->id(),
+                                    ]);
+                        
+                                    //  RECEIVE ITEM
+                                     
+                                    PurchaseReceiveItem::create([
+                                        'purchase_receive_id' => $receive->id,
+                                        'product_id'          => $productId,
+                                        'ordered_qty'         => $orderedQty,
+                                        'received_qty'        => $receiveQty,
+                                        'short_qty'           => $shortQty,
+                                        'price'               => $price,
+                                    ]);
+                        
+                                    //  VENDOR LEDGER (FIXED)
+                                    
+                                    $receiveAmount = $receiveQty * $price;
+                        
+                                    $vendorRunningBalance += $receiveAmount;
+                        
+                                    VendorLedger::create([
+                                        'vendor_id'      => $vendor->id,
+                                        'entry_type'     => 'CREDIT',
+                                        'amount'         => $receiveAmount,
+                                        'reference_type' => 'PURCHASE_RECEIVE',
+                                        'reference_id'   => $purchase->id,
+                                        'balance_after'  => $vendorRunningBalance,  
+                                        'note'           => 'Stock received for PO ' . $purchase->invoice_no,
+                                        'created_by'     => auth()->id(),
+                                    ]);
+                                }
+                        
+                                //  7. UPDATE PURCHASE STATUS
+                               
+                                $totalOrdered = PurchaseItem::where('purchase_id', $purchase->id)->sum('qty');
+                        
+                                $totalReceived = PurchaseReceiveItem::whereHas('receive', function ($q) use ($purchase) {
+                                    $q->where('purchase_id', $purchase->id);
+                                })->sum('received_qty');
+                        
+                                $purchase->update([
+                                    'status' => ($totalReceived >= $totalOrdered) ? 'received' : 'partial'
+                                ]);
+                        
+                                DB::commit();
+                        
+                                return redirect()
+                                    ->route('Purchase')
+                                    ->with('success', 'Purchase received successfully.');
+                        
+                            } catch (Exception $e) {
+                        
+                                DB::rollBack();
+                        
+                                return back()
+                                    ->withInput()
+                                    ->with('error', $e->getMessage());
+                            }
+                        }
+                    
+                    
                     /**
                      * Short Close Remaining Purchase Quantity.
                      */
@@ -547,7 +506,7 @@ class PurchaseController extends Controller
                 {
                     $purchase = Purchase::with('vendor', 'items.product')
                         ->findOrFail($id); 
-                    return view('admin.purchase.print', compact('purchase'));
+                    return view('Admin.Purchase.print', compact('purchase'));
                 }
 
             /**
@@ -559,7 +518,7 @@ class PurchaseController extends Controller
                     $purchases = Purchase::with('vendor', 'items.product')
                         ->whereIn('id', $ids)
                         ->get(); 
-                    return view('admin.purchase.multi-print', compact('purchases'));
+                    return view('Admin.Purchase.multi-print', compact('purchases'));
                 }
 
 }

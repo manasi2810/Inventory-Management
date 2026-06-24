@@ -20,6 +20,6 @@ class StockInController extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
 
-            return view('admin.Stock.stock-in', compact('stockIns'));
+            return view('Admin.Stock.stock-in', compact('stockIns'));
         }
 }

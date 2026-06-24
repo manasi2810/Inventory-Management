@@ -6,14 +6,12 @@
     <h1>Edit Customer</h1>
 @stop
 
-@section('content')
-
+@section('content') 
 <div class="card"> 
     <div class="card-body">  
         <form action="{{ route('Customer.update', $customer->id) }}" method="POST">
             @csrf
-            @method('PUT')
-
+            @method('PUT') 
             <div class="row">  
                 <div class="col-md-6">
                      <x-input
@@ -177,4 +175,5 @@
         </form> 
     </div> 
 </div> 
+
 @stop

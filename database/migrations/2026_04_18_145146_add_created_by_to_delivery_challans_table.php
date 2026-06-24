@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::table('delivery_challans', function (Blueprint $table) {
-            $table->unsignedBigInteger('created_by')->nullable()->after('notes');
- 
-        });
-    }
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                $table->unsignedBigInteger('created_by')->nullable()->after('notes');
+    
+            });
+        }
 
     public function down(): void
-    {
-        Schema::table('delivery_challans', function (Blueprint $table) {
-            // $table->dropForeign(['created_by']);
-            $table->dropColumn('created_by');
-        });
-    }
+        {
+            Schema::table('delivery_challans', function (Blueprint $table) {
+                // $table->dropForeign(['created_by']);
+                $table->dropColumn('created_by');
+            });
+        }
 };

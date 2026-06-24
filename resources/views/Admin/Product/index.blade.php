@@ -58,9 +58,7 @@
                         <a href="{{ route('Product.edit', $product->id) }}" class="btn btn-sm btn-warning">
                             Edit
                         </a> 
-                          @endcan
-
-
+                          @endcan  
                         @can('product.delete')
                         <form action="{{ route('Product.destroy', $product->id) }}"
                               method="POST"

@@ -6,8 +6,7 @@
     <div class="row mb-2">
         <div class="col-sm-6">
             <h1>Employee</h1>
-        </div>
-
+        </div> 
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
@@ -17,8 +16,7 @@
     </div>
 @stop
 
-@section('content')
-
+@section('content') 
 <form action="{{ route('Employee.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 @if(session('error'))
@@ -40,31 +38,27 @@
                 name="name"
                 type="text"
             />
-                        </div>
-
+                        </div> 
                         <div class="col-md-6">
                             <x-input
                                 label="Email"
                                 name="email"
                                 type="email"
                             />
-                        </div>
-
+                        </div> 
                         <div class="col-md-6">
                             <x-input
                                 label="Contact No"
                                 name="contact_no"
                                 type="text"
                             />
-                        </div>
-
+                        </div> 
                         <div class="col-md-12">
                             <x-textarea
                                 label="Address"
                                 name="address"
                             />
-                        </div>
-
+                        </div> 
                         <div class="col-md-6">
                             <x-input
                                 label="Password"
@@ -109,8 +103,7 @@
                             ]"
                         />
                     </div> 
-                       <div class="col-md-6">
-
+                       <div class="col-md-6"> 
                             <x-select
                                 label="Designation"
                                 name="designation"
@@ -121,8 +114,7 @@
                                     'Intern' => 'Intern',
                                     'Ground Staff' => 'Ground Staff'
                                 ]"
-                            />
-
+                            /> 
                         </div> 
                         <div class="col-md-6 form-group">
                                <x-input

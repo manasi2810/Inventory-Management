@@ -9,31 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendor_ledgers', function (Blueprint $table) {
-            $table->id();
-
+            $table->id(); 
             $table->foreignId('vendor_id')
                 ->constrained()
-                ->onDelete('cascade');
-
+                ->onDelete('cascade'); 
             // ERP CORE FIELD
             $table->enum('entry_type', ['DEBIT', 'CREDIT']);
             // DEBIT = Purchase (increase payable)
-            // CREDIT = Payment (decrease payable)
-
-            $table->decimal('amount', 15, 2);
-
+            // CREDIT = Payment (decrease payable) 
+            $table->decimal('amount', 15, 2); 
             $table->string('reference_type')->nullable();
-            // PURCHASE / PAYMENT / OPENING / ADJUSTMENT
-
-            $table->unsignedBigInteger('reference_id')->nullable();
-
+            // PURCHASE / PAYMENT / OPENING / ADJUSTMENT 
+            $table->unsignedBigInteger('reference_id')->nullable(); 
             // ERP IMPORTANT FIELD (running balance)
-            $table->decimal('balance_after', 15, 2)->default(0);
-
-            $table->text('note')->nullable();
-
-            $table->unsignedBigInteger('created_by')->nullable();
-
+            $table->decimal('balance_after', 15, 2)->default(0); 
+            $table->text('note')->nullable(); 
+            $table->unsignedBigInteger('created_by')->nullable(); 
             $table->timestamps();
         });
     }

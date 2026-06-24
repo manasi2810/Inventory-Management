@@ -18,8 +18,7 @@ class CustomerLedgerController extends Controller
         $ledgers = CustomerLedger::where('customer_id', $id)
             ->orderBy('id', 'asc')
             ->get();
-
-        // ERP: current balance from ledger
+ 
         $currentBalance = $ledgers->last()->balance_after 
             ?? $customer->opening_balance;
 

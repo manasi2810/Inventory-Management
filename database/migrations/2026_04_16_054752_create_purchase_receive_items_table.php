@@ -12,18 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('purchase_receive_items', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('purchase_receive_id')->constrained()->onDelete('cascade');
-    $table->foreignId('product_id')->constrained();
-
-    $table->integer('ordered_qty');
-    $table->integer('received_qty');
-    $table->integer('short_qty')->default(0);
-
-    $table->decimal('price', 10, 2)->nullable();
-
-    $table->timestamps();
-});
+        $table->id();
+        $table->foreignId('purchase_receive_id')->constrained()->onDelete('cascade');
+        $table->foreignId('product_id')->constrained(); 
+        $table->integer('ordered_qty');
+        $table->integer('received_qty');
+        $table->integer('short_qty')->default(0); 
+        $table->decimal('price', 10, 2)->nullable(); 
+        $table->timestamps();
+        });
     }
 
     /**

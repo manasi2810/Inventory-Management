@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('profile_photo')->nullable();
             $table->string('resume')->nullable();
             $table->json('certificates')->nullable();
-            $table->string('id_proof')->nullable();
-
+            $table->string('id_proof')->nullable(); 
             $table->timestamps();
         });
     }

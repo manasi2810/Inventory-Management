@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Delivery Challan</title>
-
+    <title>Delivery Challan</title> 
     <style>
         body {
             font-family: Arial, sans-serif;
             font-size: 13px;
             margin: 25px;
             color: #000;
-        }
-
+        } 
          
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
             margin-bottom: 15px;
-        }
-
+        } 
         .header h2 {
             margin: 0;
             font-size: 22px;
@@ -119,8 +116,7 @@
             }
         }
     </style>
-</head>
-
+</head> 
 <body onload="window.print()"> 
 <button class="print-btn" onclick="window.print()">Print</button> 
 <div class="header">

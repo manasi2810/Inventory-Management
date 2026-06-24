@@ -29,7 +29,7 @@ class CustomerController extends Controller
     public function index()
         {
             $customers = Customer::latest()->get();
-            return view('admin.customer.index', compact('customers'));
+            return view('Admin.Customer.index', compact('customers'));
         }
 
     /**
@@ -37,7 +37,7 @@ class CustomerController extends Controller
      */
     public function create()
         {
-            return view('admin.customer.create');
+            return view('Admin.Customer.create');
         }
 
     /**
@@ -98,7 +98,7 @@ class CustomerController extends Controller
     public function edit($id)
         {
             $customer = Customer::findOrFail($id);
-            return view('admin.customer.edit', compact('customer'));
+            return view('Admin.Customer.edit', compact('customer'));
         }
 
     /**

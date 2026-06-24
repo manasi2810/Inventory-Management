@@ -22,11 +22,10 @@ class VendorPaymentController extends Controller
             ->where('entry_type', 'DEBIT')
             ->latest()
             ->get();
-
-        // ✅ SINGLE SOURCE OF TRUTH (NO MANUAL SUM)
+ 
         $outstanding = $vendor->getOutstandingAmount();
 
-        return view('admin.vendor.payments', compact(
+        return view('Admin.Vendor.payments', compact(
             'vendor',
             'payments',
             'outstanding'
@@ -112,7 +111,7 @@ class VendorPaymentController extends Controller
                 $ledger->running_balance = $runningBalance;
             }
 
-            return view('admin.vendor.statement', compact('vendor', 'ledgers'));
+            return view('Admin.Vendor.statement', compact('vendor', 'ledgers'));
         }
         public function agingReport()
 {
@@ -167,6 +166,6 @@ class VendorPaymentController extends Controller
         ];
     }
 
-    return view('admin.vendor.aging_report', compact('report'));
+    return view('Admin.Vendor.aging_report', compact('report'));
 }
 }

@@ -29,7 +29,7 @@ class VendorLedgerController extends Controller
 
     $outstanding = $currentBalance;
 
-    return view('admin.vendor.ledger', compact(
+    return view('Admin.Vendor.ledger', compact(
         'vendor',
         'ledgers',
         'currentBalance',

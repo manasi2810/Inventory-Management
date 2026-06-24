@@ -9,29 +9,20 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-
+    <div class="col-12"> 
        <div class="card"> 
-                <div class="card-header">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <h3 class="card-title mb-0">Vendor Details</h3>
-
-                        <div class="d-flex gap-2">
-
+                <div class="card-header"> 
+                    <div class="d-flex justify-content-between align-items-center"> 
+                        <h3 class="card-title mb-0">Vendor Details</h3> 
+                        <div class="d-flex gap-2"> 
                             <a href="{{ route('vendor.aging.report') }}" class="btn btn-dark btn-sm">
                                 Aging Report
-                            </a>
-
+                            </a> 
                             <a href="{{ route('Vendors.create') }}" class="btn btn-primary btn-sm">
                                 + Add Vendor
-                            </a>
-
-                        </div>
-
-                    </div>
-
+                            </a> 
+                        </div>  
+                    </div> 
                 </div>
             </div>
             <div class="card-body">  
@@ -77,60 +68,60 @@
                     </td> 
                           <td>
 
-    @can('vendor.edit')
-    <a href="{{ route('Vendors.edit', $vendor->id) }}"
-       class="btn btn-sm btn-info"   title="Edit Vendor">
-        <i class="fas fa-edit"></i>
-    </a>
+                @can('vendor.edit')
+                <a href="{{ route('Vendors.edit', $vendor->id) }}"
+                class="btn btn-sm btn-info"   title="Edit Vendor">
+                    <i class="fas fa-edit"></i>
+                </a>
 
-    <a href="{{ route('vendor.ledger', $vendor->id) }}"
-       class="btn btn-dark btn-sm" title="Ledger">
-        <i class="fas fa-book"></i>
-    </a>
-    <a href="{{ route('vendor.statement', $vendor->id) }}"
-   class="btn btn-dark btn-sm" title="Statement">
-    <i class="fas fa-file-alt"></i>
-</a>
+                <a href="{{ route('vendor.ledger', $vendor->id) }}"
+                class="btn btn-dark btn-sm" title="Ledger">
+                    <i class="fas fa-book"></i>
+                </a>
+                <a href="{{ route('vendor.statement', $vendor->id) }}"
+            class="btn btn-dark btn-sm" title="Statement">
+                <i class="fas fa-file-alt"></i>
+            </a>
 
-    <a href="{{ route('vendor.payments', $vendor->id) }}"
-       class="btn btn-success btn-sm" title="Payment">
-        <i class="fas fa-rupee-sign"></i> 
-    </a>
-    @if($vendor->deleted_at)
+                <a href="{{ route('vendor.payments', $vendor->id) }}"
+                class="btn btn-success btn-sm" title="Payment">
+                    <i class="fas fa-rupee-sign"></i> 
+                </a>
+                @if($vendor->deleted_at)
 
-<form action="{{ route('Vendors.restore',$vendor->id) }}"
-      method="POST"
-      style="display:inline;">
-    @csrf
+            <form action="{{ route('Vendors.restore',$vendor->id) }}"
+                method="POST"
+                style="display:inline;">
+                @csrf
 
-    <button type="submit"
-            class="btn btn-warning btn-sm"
-            title="Restore">
-        <i class="fas fa-undo"></i>
-    </button>
-</form>
+                <button type="submit"
+                        class="btn btn-warning btn-sm"
+                        title="Restore">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </form>
 
-@endif
+            @endif
 
-    @endcan
+                @endcan
 
-    @can('vendor.delete')
-    <form action="{{ route('Vendors.destroy', $vendor->id) }}"
-          method="POST"
-          style="display:inline;">
-        @csrf
-        @method('DELETE')
+                @can('vendor.delete')
+                <form action="{{ route('Vendors.destroy', $vendor->id) }}"
+                    method="POST"
+                    style="display:inline;">
+                    @csrf
+                    @method('DELETE')
 
-        <button type="submit"
-                class="btn btn-danger btn-sm"
-                title="Delete"
-                onclick="return confirm('Are you sure you want to delete this vendor?')">
-            <i class="fas fa-trash"></i> 
-        </button>
-    </form>
-    @endcan
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            title="Delete"
+                            onclick="return confirm('Are you sure you want to delete this vendor?')">
+                        <i class="fas fa-trash"></i> 
+                    </button>
+                </form>
+                @endcan
 
-</td>
+            </td>
                         </tr> 
                         @endforeach 
                     </tbody> 

@@ -28,32 +28,28 @@
                     <td>{{ $role->name }}</td> 
                   <td>
 
-    @can('role.edit')
-    <a href="{{ route('Role.edit', $role->id) }}" 
-       class="btn btn-sm btn-info">
-        Edit
-    </a>
-    @endcan
+        @can('role.edit')
+        <a href="{{ route('Role.edit', $role->id) }}" 
+        class="btn btn-sm btn-info">
+            Edit
+        </a>
+        @endcan 
 
+        @can('role.delete')
+        <form action="{{ route('Role.destroy', $role->id) }}"
+            method="POST"
+            style="display:inline-block;"> 
+            @csrf
+            @method('DELETE')
 
-    @can('role.delete')
-    <form action="{{ route('Role.destroy', $role->id) }}"
-          method="POST"
-          style="display:inline-block;">
-
-        @csrf
-        @method('DELETE')
-
-        <button type="submit"
-                class="btn btn-sm btn-danger"
-                onclick="return confirm('Are you sure?')">
-            Delete
-        </button>
-
-    </form>
-    @endcan
-
-</td>
+            <button type="submit"
+                    class="btn btn-sm btn-danger"
+                    onclick="return confirm('Are you sure?')">
+                Delete
+            </button> 
+        </form>
+        @endcan 
+    </td>
                 </tr>
                 @endforeach 
             </tbody> 

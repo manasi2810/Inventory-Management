@@ -10,7 +10,6 @@
 
 <div class="card shadow">
     <div class="card-body"> 
-        
         <div class="row mb-4">  
             <div class="col-md-4">
                 <div class="border p-3 rounded bg-light">
@@ -22,16 +21,14 @@
                         </span>
                     </p>
                 </div>
-            </div>
-
+            </div> 
             <div class="col-md-4">
                 <div class="border p-3 rounded bg-light">
                     <h5><strong>Customer</strong></h5>
                     <p>{{ $challan->customer->name ?? '-' }}</p>
                     <p>{{ $challan->delivery_to }}</p>
                 </div>
-            </div>
-
+            </div> 
             <div class="col-md-4">
                 <div class="border p-3 rounded bg-light">
                     <h5><strong>Transport Details</strong></h5>
@@ -40,9 +37,7 @@
                     <p><strong>LR No:</strong> {{ $challan->lr_no ?? '-' }}</p>
                 </div>
             </div> 
-        </div>
-
-        
+        </div> 
         <div class="table-responsive">
             <table class="table table-bordered table-striped text-center">
                 <thead class="bg-dark text-white">
@@ -66,12 +61,9 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-
-         
+        </div> 
         <div class="row mt-4">
-            <div class="col-md-6"></div>
-
+            <div class="col-md-6"></div> 
             <div class="col-md-6">
                 <table class="table table-bordered">
                     <tr>
@@ -92,28 +84,23 @@
                     </tr>
                 </table>
             </div>
-        </div> 
-        
+        </div>  
         <div class="mt-3 d-flex justify-content-between">
 
             <a href="{{ route('Delivery_challan') }}" class="btn btn-secondary">
                 Back
-            </a>
-
+            </a> 
             <div>
                 <a href="{{ route('Delivery_challan.print', $challan->id) }}" class="btn btn-primary">
                     Print
-                </a>
-
+                </a> 
                 @if($challan->status == 'pending')
                     <a href="{{ route('Delivery_challan.edit', $challan->id) }}" class="btn btn-warning">
                         Edit
                     </a>
                 @endif
-            </div>
-
-        </div>
-
+            </div> 
+        </div> 
     </div>
 </div>
 

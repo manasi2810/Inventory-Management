@@ -28,8 +28,7 @@ return new class extends Migration
     $table->string('page_title')->nullable();
     $table->string('alt_text')->nullable();
     $table->text('meta_keywords')->nullable();
-    $table->timestamps();
-
+    $table->timestamps(); 
     $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
 });
     }

@@ -10,19 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::table('stock_ledgers', function (Blueprint $table) {
-            $table->string('movement_type')->change();
-        });
-    }
+        {
+            Schema::table('stock_ledgers', function (Blueprint $table) {
+                $table->string('movement_type')->change();
+            });
+        }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::table('stock_ledgers', function (Blueprint $table) {
-            //
-        });
-    }
+        {
+            Schema::table('stock_ledgers', function (Blueprint $table) {
+                //
+            });
+        }
 };

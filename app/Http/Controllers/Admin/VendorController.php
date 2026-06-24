@@ -23,12 +23,12 @@ class VendorController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.vendor.index', compact('vendors'));
+        return view('Admin.Vendor.index', compact('vendors'));
     }
 
     public function create()
     {
-        return view('admin.vendor.create');
+        return view('Admin.Vendor.create');
     }
 
     public function store(Request $request)
@@ -104,7 +104,7 @@ class VendorController extends Controller
     public function edit($id)
     {
         $vendor = Vendor::findOrFail($id);
-        return view('admin.vendor.edit', compact('vendor'));
+        return view('Admin.Vendor.edit', compact('vendor'));
     }
 
     public function update(Request $request, $id)

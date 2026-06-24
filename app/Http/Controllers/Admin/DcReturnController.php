@@ -73,8 +73,7 @@ class DcReturnController extends Controller
         $request->validate([
             'delivery_challan_id' => 'required|exists:delivery_challans,id',
             'return_qty' => 'required|array',
-        ]);
-
+        ]); 
         DB::beginTransaction();
 
         try {

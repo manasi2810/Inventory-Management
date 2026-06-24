@@ -19,8 +19,7 @@ return new class extends Migration
         $table->unsignedBigInteger('reference_id')->nullable();
         $table->text('reason')->nullable();
         $table->unsignedBigInteger('created_by');
-        $table->timestamps();
-
+        $table->timestamps(); 
         $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
     });
 }

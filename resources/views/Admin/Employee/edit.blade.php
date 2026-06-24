@@ -60,23 +60,17 @@
                         /> 
                         </div>
                        <div class="col-md-6 form-group">
-                            <label>Role</label>
-
-                            <select class="form-control" name="role" required>
-
-                                <option value="">Select Role</option>
-
-                                @foreach($roles as $role)
-
+                            <label>Role</label> 
+                            <select class="form-control" name="role" required> 
+                                <option value="">Select Role</option> 
+                                @foreach($roles as $role) 
                                     <option value="{{ $role->name }}"
                                         {{ $employee->user->hasRole($role->name) ? 'selected' : '' }}>
 
                                         {{ $role->name }}
 
-                                    </option>
-
-                                @endforeach
-
+                                    </option>  
+                                @endforeach 
                             </select>
                         </div>
                         <div class="col-md-6"> 
@@ -207,6 +201,5 @@
             </div> 
         </div> 
     </div> 
-</form>
-
+</form>  
 @stop

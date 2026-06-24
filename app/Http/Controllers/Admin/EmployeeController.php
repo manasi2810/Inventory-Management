@@ -32,7 +32,7 @@ class EmployeeController extends Controller
     public function index()
         {
             $employees = \App\Models\Employee::with('user')->get();
-            return view('admin.employee.index', compact('employees'));
+            return view('Admin.Employee.index', compact('employees'));
         }
         // Employee Create Page Open
     public function create()
@@ -116,7 +116,7 @@ class EmployeeController extends Controller
         {
             $employee = Employee::with('user')->findOrFail($id); 
             $roles = Role::all(); 
-            return view('admin.employee.edit', compact('employee', 'roles'));
+            return view('Admin.Employee.edit', compact('employee', 'roles'));
         }
 
         // Update Created Emplyee Details 

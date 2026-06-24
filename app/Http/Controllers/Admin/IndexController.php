@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\DeliveryChallan;
@@ -25,11 +24,11 @@ class IndexController extends Controller
             $lowStock = Product::withSum('stockIns', 'qty')
                 ->get()
                 ->filter(fn($p) => ($p->stock_ins_sum_qty ?? 0) < 10)
-                ->count();
+                ->count(); 
 
-            return view('Admin.dashboard', compact(
+                return view('Admin.dashboard', compact(
                 'totalProducts',
-                'totalOrders',
+                'totalOrders', 
                 'totalStock',
                 'lowStock'
             ));

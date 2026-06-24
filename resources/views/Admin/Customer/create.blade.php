@@ -8,15 +8,11 @@
 
 @section('content')
 
-<div class="card">
-
-    <div class="card-body">
-
+<div class="card"> 
+    <div class="card-body"> 
         <form action="{{ route('Customer.store') }}" method="POST">
-            @csrf
-
-            <div class="row">
- 
+            @csrf 
+            <div class="row"> 
                 <div class="col-md-6"> 
                     <x-input
                         label="Name *"
@@ -85,7 +81,7 @@
                     name="country"
                     value="India"
                 />
-            </div>
+                </div>
                 <div class="col-md-6 mt-2">
                      <x-input
                     label="GST Number"
@@ -106,8 +102,7 @@
                         step="0.01"
                         value="0"
                     />
-                </div>
-
+                </div> 
                 <div class="col-md-6 mt-2">
                     <x-input
                         label="Opening Balance"

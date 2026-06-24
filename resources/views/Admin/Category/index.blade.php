@@ -44,8 +44,7 @@
                                    class="btn btn-sm btn-info">
                                     Edit
                                 </a> 
-                                  @endcan
-
+                                  @endcan 
 
                                 @can('category.delete')
                                 <form action="{{ route('Category.destroy', $category->id) }}" 

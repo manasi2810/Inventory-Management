@@ -22,30 +22,24 @@
                                 label="Category Name"
                                 name="name"
                                 :value="old('name', $category->name)"
-                        />
- 
+                        /> 
                         <x-textarea
                             label="Description"
                             name="description"
                             :value="old('description', $category->description)"
-                        />
- 
+                        /> 
                         <x-button
                             type="submit"
                             color="success"
                             icon="fas fa-save"> 
                             Update Category 
-                        </x-button>
-
+                        </x-button> 
                     <a href="{{ route('Category') }}" class="btn btn-secondary">
                         Cancel
-                    </a>
-
-                </form>
-
+                    </a> 
+                </form> 
             </div>
-        </div>
-
+        </div> 
     </div>
 </div>
 

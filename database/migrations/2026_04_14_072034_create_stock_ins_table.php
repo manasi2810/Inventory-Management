@@ -18,8 +18,7 @@ return new class extends Migration
         $table->string('type')->default('purchase'); // purchase, return, manual
         $table->unsignedBigInteger('reference_id')->nullable();
         $table->unsignedBigInteger('created_by');
-        $table->timestamps();
-
+        $table->timestamps(); 
         $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
     });
 }
