@@ -15,29 +15,25 @@ class VendorPaymentController extends Controller
      * Show Vendor Payment Page
      */
     public function index($id)
-    {
+        {
         $vendor = Vendor::findOrFail($id);
 
         $payments = VendorLedger::where('vendor_id', $id)
             ->where('entry_type', 'DEBIT')
             ->latest()
             ->get();
-
-        // ✅ SINGLE SOURCE OF TRUTH (NO MANUAL SUM)
+ 
         $outstanding = $vendor->getOutstandingAmount();
 
-        return view('admin.vendor.payments', compact(
+        return view('Admin.Vendor.payments', compact(
             'vendor',
             'payments',
             'outstanding'
         ));
-    }
-
-    /**
-     * Save Vendor Payment
-     */
+    } 
+   
     public function store(Request $request, $id)
-    {
+        {
         $request->validate([
             'amount' => 'required|numeric|min:1',
         ]);
@@ -112,10 +108,11 @@ class VendorPaymentController extends Controller
                 $ledger->running_balance = $runningBalance;
             }
 
-            return view('admin.vendor.statement', compact('vendor', 'ledgers'));
+            return view('Admin.Vendor.statement', compact('vendor', 'ledgers'));
         }
-        public function agingReport()
-{
+        
+    public function agingReport()
+        {
     $vendors = Vendor::all();
 
     $report = [];
@@ -167,6 +164,6 @@ class VendorPaymentController extends Controller
         ];
     }
 
-    return view('admin.vendor.aging_report', compact('report'));
+    return view('Admin.Vendor.aging_report', compact('report'));
 }
 }

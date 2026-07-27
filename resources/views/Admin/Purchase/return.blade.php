@@ -11,9 +11,7 @@
 <div class="card">
 
     <div class="card-header">
-        <h3 class="card-title">
-            Purchase Return Entry
-        </h3>
+        <h3 class="card-title">Purchase Return Entry</h3>
     </div>
 
     <div class="card-body">
@@ -32,48 +30,44 @@
 
         <div class="row mb-3">
             <div class="col-md-4">
-                <strong>PO No :</strong>
+                <strong>PO No:</strong>
                 {{ $purchase->invoice_no }}
             </div>
 
             <div class="col-md-4">
-                <strong>Vendor :</strong>
+                <strong>Vendor:</strong>
                 {{ $purchase->vendor->name ?? '-' }}
             </div>
 
             <div class="col-md-4">
-                <strong>Date :</strong>
+                <strong>Date:</strong>
                 {{ $purchase->purchase_date }}
             </div>
         </div>
 
-        <form action="{{ route('purchase.return.store',$purchase->id) }}"
-              method="POST">
-
+        <form action="{{ route('purchase.return.store', $purchase->id) }}" method="POST">
             @csrf
 
-            <table class="table table-bordered table-striped"> 
+            <table class="table table-bordered table-striped">
+
                 <thead>
-                <tr>
-                    <th>Product</th>
-                    <th width="120">Received</th>
-                    <th width="120">Returned</th>
-                    <th width="120">Available</th>
-                    <th width="120">Return Qty</th>
-                    <th width="120">Price</th>
-                    <th width="150">Total</th>
-                </tr>
-                </thead> 
-                <tbody> 
+                    <tr>
+                        <th>Product</th>
+                        <th width="120">Received</th>
+                        <th width="120">Returned</th>
+                        <th width="120">Available</th>
+                        <th width="120">Return Qty</th>
+                        <th width="120">Price</th>
+                        <th width="150">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
                 @foreach($purchase->items as $index => $item)
 
-                    @php
-                        $receivedQty = (float) ($item->qty ?? 0);
-                        $returnedQty = (float) ($item->returned_qty ?? 0);
-                        $availableQty = max(0, $receivedQty - $returnedQty);
-                    @endphp
- 
                     <tr>
+
                         <td>
                             {{ $item->product->name }}
 
@@ -81,51 +75,58 @@
                                    name="items[{{ $index }}][product_id]"
                                    value="{{ $item->product_id }}">
                         </td>
+
                         <td>
-                            {{ $receivedQty }}
+                            {{ $item->received_qty }}
                         </td>
+
                         <td>
-                            {{ $returnedQty }}
+                            {{ $item->returned_qty }}
                         </td>
+
                         <td>
                             <span class="badge badge-info">
-                                {{ $availableQty }}
+                                {{ $item->available_return }}
                             </span>
                         </td>
-                       <td>
-                            @if($availableQty > 0)
+
+                        <td>
+                            @if($item->available_return > 0)
+
                                 <input type="number"
-                                    name="items[{{ $index }}][return_qty]"
-                                    class="form-control return_qty"
-                                    min="0"
-                                    max="{{ $availableQty }}"
-                                    value="0">
+                                       name="items[{{ $index }}][return_qty]"
+                                       class="form-control return_qty"
+                                       min="0"
+                                       max="{{ $item->available_return }}"
+                                       value="0">
+
                             @else
 
                                 <input type="number"
-                                    class="form-control"
-                                    value="0"
-                                    readonly>
+                                       class="form-control"
+                                       value="0"
+                                       readonly>
 
                             @endif
-                        </td> 
-                        <td>
+                        </td>
 
+                        <td>
                             <input type="number"
                                    name="items[{{ $index }}][price]"
                                    class="form-control price"
                                    value="{{ $item->price }}"
                                    readonly>
-                        </td> 
-                        <td>
+                        </td>
 
+                        <td>
                             <input type="text"
                                    class="form-control total"
                                    value="0.00"
                                    readonly>
+                        </td>
 
-                        </td> 
                     </tr>
+
                 @endforeach
 
                 </tbody>

@@ -31,30 +31,64 @@
                 </tr>
             </thead>
 
-            <tbody>
-                @forelse($ledgers as $ledger)
-                    <tr>
-                        <td>{{ $ledger->created_at->format('d-m-Y') }}</td>
+           <tbody>
+@forelse($ledgers as $ledger)
+<tr>
+    <td>{{ $ledger->created_at->format('d-m-Y') }}</td>
 
-                        <td>
-                            @if($ledger->entry_type == 'CREDIT')
-                                <span class="badge badge-success">CREDIT (SALE)</span>
-                            @else
-                                <span class="badge badge-danger">DEBIT (PAYMENT)</span>
-                            @endif
-                        </td>
+    <td>
+        @switch($ledger->entry_type)
+            @case('DISPATCH')
+                <span class="badge badge-info">DISPATCH</span>
+                @break
 
-                        <td>{{ $ledger->amount }}</td>
-                        <td>{{ $ledger->reference_type }}</td>
-                        <td>{{ $ledger->note }}</td>
-                        <td><b>{{ $ledger->balance_after }}</b></td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">No Ledger Found</td>
-                    </tr>
-                @endforelse
-            </tbody>
+            @case('SALE')
+                <span class="badge badge-primary">SALE</span>
+                @break
+
+            @case('PAYMENT')
+                <span class="badge badge-success">PAYMENT</span>
+                @break
+
+            @case('DEBIT')
+                <span class="badge badge-danger">DEBIT</span>
+                @break
+
+            @case('CREDIT')
+                <span class="badge badge-success">CREDIT</span>
+                @break
+
+            @default
+                <span class="badge badge-secondary">{{ $ledger->entry_type }}</span>
+        @endswitch
+    </td>
+
+    <td>
+        @if($ledger->debit > 0)
+            <span class="text-danger">
+                {{ number_format($ledger->debit,2) }}
+            </span>
+        @else
+            <span class="text-success">
+                {{ number_format($ledger->credit,2) }}
+            </span>
+        @endif
+    </td>
+
+    <td>{{ $ledger->reference_no }}</td>
+
+    <td>{{ $ledger->remarks }}</td>
+
+    <td>
+        <strong>{{ number_format($ledger->balance_after,2) }}</strong>
+    </td>
+</tr>
+@empty
+<tr>
+    <td colspan="6" class="text-center">No Ledger Found</td>
+</tr>
+@endforelse
+</tbody>
         </table>
 
     </div>

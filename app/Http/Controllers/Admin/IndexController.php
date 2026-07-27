@@ -24,7 +24,9 @@ class IndexController extends Controller
 
             $lowStock = Product::withSum('stockIns', 'qty')
                 ->get()
-                ->filter(fn($p) => ($p->stock_ins_sum_qty ?? 0) < 10)
+                ->filter(function ($p) {
+                    return ($p->stock_ins_sum_qty ?? 0) < 10;
+                })
                 ->count();
 
             return view('Admin.dashboard', compact(

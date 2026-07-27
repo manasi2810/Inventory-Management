@@ -3,50 +3,55 @@
 namespace App\Services;
 
 use App\Models\CustomerLedger;
-use Illuminate\Support\Facades\DB;
 
 class CustomerLedgerService
 {
-    public function addEntry($customerId, $type, $amount, $refType = null, $refId = null)
-    {
-        return DB::transaction(function () use (
-            $customerId,
-            $type,
-            $amount,
-            $refType,
-            $refId
-        ) {
+    public function addEntry(
+        $customerId,
+        $referenceType,
+        $referenceId,
+        $referenceNo,
+        $transactionType,
+        $debit = 0,
+        $credit = 0,
+        $remarks = null,
+        $subTotal = 0,
+        $gstAmount = 0,
+        $totalAmount = 0
+    ) {
 
-            // Lock last ledger entry for safe balance calculation
-            $lastBalance = CustomerLedger::where('customer_id', $customerId)
-                ->lockForUpdate()
-                ->latest()
-                ->value('balance_after') ?? 0;
+        $debit = (float) ($debit ?? 0);
+        $credit = (float) ($credit ?? 0);
 
-            // ERP balance logic
-            if ($type === 'CREDIT') {
+        $subTotal = (float) ($subTotal ?? 0);
+        $gstAmount = (float) ($gstAmount ?? 0);
+        $totalAmount = (float) ($totalAmount ?? 0);
 
-                // Sales / Invoice → increases receivable
-                $newBalance = $lastBalance + $amount;
+        $lastBalance = CustomerLedger::where('customer_id', $customerId)
+            ->lockForUpdate()
+            ->latest('id')
+            ->value('balance_after') ?? 0;
 
-            } elseif ($type === 'DEBIT') {
+        $balance = $lastBalance + $debit - $credit;
 
-                // Payment → reduces receivable
-                $newBalance = $lastBalance - $amount;
+        return CustomerLedger::create([
+            'customer_id'    => $customerId,
+            'entry_type'     => $transactionType,
 
-            } else {
-                throw new \Exception("Invalid ledger type: {$type}");
-            }
+            'debit'          => $debit,
+            'credit'         => $credit,
 
-            return CustomerLedger::create([
-                'customer_id'    => $customerId,
-                'entry_type'     => $type,
-                'amount'         => $amount,
-                'reference_type'  => $refType,
-                'reference_id'   => $refId,
-                'balance_after'  => $newBalance,
-                'created_by'     => auth()->id(),
-            ]);
-        });
+            'sub_total'      => $subTotal,
+            'gst_amount'     => $gstAmount,
+            'total_amount'   => $totalAmount,
+
+            'reference_type' => $referenceType,
+            'reference_id'   => $referenceId,
+            'reference_no'   => $referenceNo,
+
+            'balance_after'  => $balance,
+            'remarks'        => $remarks,
+            'created_by'     => auth()->id(),
+        ]);
     }
 }

@@ -20,19 +20,22 @@ class RoleController extends Controller
             $this->middleware('permission:role.delete')->only(['destroy']);
         }
     
+    
         // Role index
     public function index(Request $request): View
         {
             $roles = Role::with('users')->orderBy('id', 'DESC')->get();
-            return view('admin.role.index', compact('roles'));
+            return view('Admin.Role.index', compact('roles'));
         }
+
 
         // Role creation
     public function create()
         { 
             $permissions = Permission::all(); 
-            return view('admin.role.create', compact('permissions'));
+            return view('Admin.Role.create', compact('permissions'));
         }
+
 
         // Role store
     public function store(Request $request)
@@ -49,13 +52,15 @@ class RoleController extends Controller
             return redirect('/Role')->with('success', 'Role created successfully');
         }
 
+
         // show saved data                                                                                                                           
     public function show($id): View
         {
             $role = Role::findOrFail($id);
             $rolePermissions = $role->permissions()->get();  
-            return view('admin.role.show', compact('role', 'rolePermissions'));
+            return view('Admin.Role.show', compact('role', 'rolePermissions'));
         }
+
 
         // Edit Role
     public function edit($id)
@@ -63,8 +68,9 @@ class RoleController extends Controller
             $role = Role::findOrFail($id);
             $permissions = Permission::all(); 
             $rolePermissions = $role->permissions->pluck('name')->toArray();
-            return view('admin.role.edit', compact('role', 'permissions', 'rolePermissions'));
+            return view('Admin.Role.edit', compact('role', 'permissions', 'rolePermissions'));
         }
+
 
         // Update Created Role 
     public function update(Request $request, $id)
@@ -81,6 +87,8 @@ class RoleController extends Controller
             $role->syncPermissions($permissions);  
             return redirect()->route('Role')->with('success', 'Role updated successfully!');
         }
+        
+        
         // Delete Role 
     public function destroy($id): RedirectResponse
         {

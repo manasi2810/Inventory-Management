@@ -14,7 +14,7 @@ use DB;
 class DcReturnController extends Controller
 {
     public function __construct()
-    {
+        {
         $this->middleware('permission:dc-return.view')
             ->only(['index', 'create']);
 
@@ -32,7 +32,7 @@ class DcReturnController extends Controller
     // CREATE RETURN PAGE
     // =========================
     public function create($id)
-    {
+        {
         $dc = DeliveryChallan::with('items.product')->findOrFail($id);
 
         $dc->all_returned = true;
@@ -49,7 +49,9 @@ class DcReturnController extends Controller
 
             $item->return_breakdown = $returnItems
                 ->groupBy('condition')
-                ->map(fn($g) => $g->sum('return_qty'));
+               ->map(function ($g) {
+                    return $g->sum('return_qty');
+                });
 
             $item->returned_qty = $returnItems->sum('return_qty');
 
@@ -62,14 +64,14 @@ class DcReturnController extends Controller
             }
         }
 
-        return view('admin.delivery_challan.return', compact('dc'));
+        return view('Admin.Delivery_challan.return', compact('dc'));
     }
 
     // =========================
     // STORE RETURN
     // =========================
     public function store(Request $request)
-    {
+        {
         $request->validate([
             'delivery_challan_id' => 'required|exists:delivery_challans,id',
             'return_qty' => 'required|array',

@@ -20,11 +20,10 @@
                     <h3 class="card-title mb-0">Delivery Challan List</h3>
 
                     <div>
-                         
                         <button class="btn btn-dark btn-sm" id="printSelected">
                             Print Selected (Dispatched Only)
-                        </button> 
-                        
+                        </button>
+
                         <a href="{{ route('Delivery_challan.create') }}"
                            class="btn btn-primary btn-sm">
                             + Create Challan
@@ -35,8 +34,10 @@
             </div>
 
             {{-- BODY --}}
-            <div class="card-body"> 
-                <table class="table table-bordered table-striped" id="challanTable"> 
+            <div class="card-body">
+
+                <table class="table table-bordered table-striped" id="challanTable">
+
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="selectAll"></th>
@@ -45,150 +46,191 @@
                             <th>Customer</th>
                             <th>Date</th>
                             <th>Total Qty</th>
+                            <th>Dispatched</th>
                             <th>Total Amount</th>
-                            <th>Status</th> 
-                            <th width="250">Actions</th>
+                            <th>Status</th>
+                            <th width="300">Actions</th>
                         </tr>
-                    </thead> 
-                    <tbody>   
+                    </thead>
+
+                    <tbody>
+
                     @foreach($challans as $challan)
-                        <tr> 
+
+                        @php
+                            $totalOrdered = $challan->items->sum('qty');
+                            $totalDispatched = 0;
+
+                            foreach($challan->items as $item){
+                                $totalDispatched += $item->dispatched_qty ?? 0;
+                            }
+
+                            $pending = $totalOrdered - $totalDispatched;
+                        @endphp
+
+                        <tr>
+
+                            {{-- SELECT --}}
                             <td>
                                 @if($challan->status == 'dispatched')
                                     <input type="checkbox" class="dc-check" value="{{ $challan->id }}">
                                 @endif
-                            </td> 
-                            <td>{{ $loop->iteration }}</td> 
-                            <td><b>{{ $challan->challan_no ?? '-' }}</b></td>  
-                            <td>{{ $challan->customer->name ?? '-' }}</td> 
-                            <td>{{ $challan->challan_date }}</td> 
-                            <td>{{ $challan->items->sum('qty') }}</td> 
-                            <td>₹ {{ number_format($challan->total_amount, 2) }}</td> 
+                            </td>
+
+                            <td>{{ $loop->iteration }}</td>
+
+                            {{-- CHALLAN NO (ERP ENTRY POINT) --}}
                             <td>
-                                @if($challan->status == 'draft')
-                                    <span class="badge badge-secondary">Draft</span>
-                                @elseif($challan->status == 'approved')
-                                    <span class="badge badge-primary">Approved</span>
-                                @elseif($challan->status == 'dispatched')
-                                    <span class="badge badge-warning">Dispatched</span>
-                                @elseif($challan->status == 'delivered')
-                                    <span class="badge badge-success">Delivered</span>
-                                @elseif($challan->status == 'cancelled')
-                                    <span class="badge badge-danger">Cancelled</span>
+                                <b>{{ $challan->challan_no ?? '-' }}</b>
+
+                                <br>
+
+                                {{-- QUICK ERP HINT --}}
+                              
+                            </td>
+
+                            <td>{{ $challan->customer->name ?? '-' }}</td>
+
+                            <td>{{ $challan->challan_date }}</td>
+
+                            <td>
+                                {{ $totalOrdered }}
+                            </td>
+
+                            {{-- DISPATCHED SUMMARY --}}
+                            <td>
+                                <span class="text-success">
+                                    {{ $totalDispatched }}
+                                </span>
+
+                               
+                            </td>
+
+                            <td>₹ {{ number_format($challan->total_amount, 2) }}</td>
+
+                            {{-- STATUS (ERP LOGIC) --}}
+                            <td>
+                                @if($totalDispatched == 0)
+                                    <span class="badge badge-secondary">Pending</span>
+
+                                @elseif($totalDispatched < $totalOrdered)
+                                    <span class="badge badge-info">Partial</span>
+
+                                @else
+                                    <span class="badge badge-success">Completed</span>
                                 @endif
-                            </td>  
-                        <td> 
-                        {{-- PRINT / VIEW / RETURN (only dispatched) --}}
-                        @if($challan->status == 'dispatched') 
-                            @can('delivery.print')
-                            <a href="{{ route('Delivery_challan.print', $challan->id) }}"
-                            target="_blank"
-                            class="btn btn-sm btn-secondary">
-                                Print
-                            </a>
-                            @endcan
+                            </td>
 
-                            @can('delivery.view')
-                            <a href="{{ route('Delivery_challan.show', $challan->id) }}"
-                            class="btn btn-sm btn-info">
-                                View
-                            </a>
-                            @endcan
+                            {{-- ACTIONS --}}
+                            <td>
 
-                            @can('dc-return.create')
-                            <a href="{{ route('dc_return.create', $challan->id) }}"
-                            class="btn btn-sm btn-dark">
-                                DC Return
-                            </a>
-                            @endcan
+                                
+                                @can('delivery.view')
+                                <a href="{{ route('Delivery_challan.show', $challan->id) }}"
+                                   class="btn btn-xs btn-info">
+                                    View
+                                </a>
+                                @endcan
 
-                        @endif 
+                                {{-- PRINT --}}
+                                @if($challan->status == 'dispatched')
+                                    @can('delivery.print')
+                                    <a href="{{ route('Delivery_challan.print', $challan->id) }}"
+                                       target="_blank"
+                                       class="btn btn-xs btn-secondary">
+                                        Print
+                                    </a>
+                                    @endcan
+                                @endif
 
-                        {{-- APPROVE --}}
-                        @if($challan->status == 'draft')
-                            @can('delivery.approve')
-                            <form action="{{ route('delivery_challan.approve', $challan->id) }}"
-                                method="POST"
-                                style="display:inline-block;">
-                                @csrf 
-                                <button type="submit"
-                                        class="btn btn-sm btn-success"
-                                        onclick="return confirm('Approve this challan?')">
-                                    Approve
-                                </button>
-                            </form>
-                            @endcan
-                        @endif
+                                {{-- APPROVE --}}
+                                @if($challan->status == 'draft')
+                                    @can('delivery.approve')
+                                    <form action="{{ route('delivery_challan.approve', $challan->id) }}"
+                                          method="POST"
+                                          style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn btn-xs btn-success"
+                                                onclick="return confirm('Approve this challan?')">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    @endcan
+                                @endif
 
+                                {{-- DISPATCH --}}
+                                @if($challan->status == 'approved')
+                                    <a href="{{ route('Delivery_challan.dispatch_page', $challan->id) }}"
+                                       class="btn btn-xs btn-warning">
+                                        <i class="fas fa-truck"></i> Dispatch
+                                    </a>
 
-                        {{-- EDIT --}}
-                        @if($challan->status != 'dispatched')
-                            @can('delivery.edit')
-                            <a href="{{ route('Delivery_challan.edit', $challan->id) }}"
-                            class="btn btn-sm btn-primary">
-                                Edit
-                            </a>
-                            @endcan
-                        @endif
+                                @elseif($challan->status == 'partially_dispatched')
+                                    <a href="{{ route('Delivery_challan.dispatch_page', $challan->id) }}"
+                                       class="btn btn-xs btn-warning">
+                                        Partial Dispatch
+                                    </a>
+                                @endif
 
+                                {{-- DELETE --}}
+                                @if($challan->status != 'dispatched')
+                                    @can('delivery.delete')
+                                    <form action="{{ route('Delivery_challan.destroy', $challan->id) }}"
+                                          method="POST"
+                                          style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-xs btn-danger"
+                                                onclick="return confirm('Are you sure?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    @endcan
+                                @endif
 
-                        {{-- DISPATCH --}}
-                        @if($challan->status == 'approved')
-                            @can('delivery.dispatch')
-                            <form action="{{ route('Delivery_challan.dispatch', $challan->id) }}"
-                                method="POST"
-                                style="display:inline-block;">
-                                @csrf
+                                {{-- RESTORE --}}
+                                @if($challan->deleted_at)
+                                    @can('delivery.restore')
+                                    <form action="{{ route('Delivery_challan.restore', $challan->id) }}"
+                                          method="POST"
+                                          style="display:inline-block;">
+                                        @csrf
+                                        <button class="btn btn-success btn-xs">
+                                            Restore
+                                        </button>
+                                    </form>
+                                    @endcan
+                                @endif
+                                {{-- DC RETURN --}}
+                            @if($challan->status == 'dispatched' || $challan->status == 'partially_dispatched')
+                            
+                                @can('dc-return.create')
+                                    <a href="{{ route('dc_return.create', $challan->id) }}"
+                                          class="btn btn-dark btn-xs">
+                                        DC Return
+                                    </a>
+                                @endcan
+                        
+                            @endif
+                            
+                            
+                         
 
-                                <button type="submit"
-                                        class="btn btn-sm btn-warning"
-                                        onclick="return confirm('Dispatch this challan? Stock will be reduced.')">
-                                    Dispatch
-                                </button>
-                            </form>
-                            @endcan
-                        @endif
-  
-                        {{-- DELETE (ONLY ADMIN ROLE SHOULD BE HANDLED VIA PERMISSION NOW) --}}
-                        @if($challan->status != 'dispatched')
-                            @can('delivery.delete')
-                            <form action="{{ route('Delivery_challan.destroy', $challan->id) }}"
-                                method="POST"
-                                style="display:inline-block;">
-                                @csrf
-                                @method('DELETE') 
-                                <button type="submit"
-                                        class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this challan?')">
-                                    Delete
-                                </button>
-                            </form>
-                            @endcan
-                        @endif  
-                        {{-- RESTORE (SOFT DELETE) --}}
-                        @if($challan->deleted_at)
-                            @can('delivery.restore')
-                            <form action="{{ route('Delivery_challan.restore', $challan->id) }}"
-                                method="POST"
-                                style="display:inline-block;">
-                                @csrf
-
-                                <button class="btn btn-sm btn-success">
-                                    Restore
-                                </button>
-                            </form>
-                            @endcan
-                        @endif 
-                    </td>
                         </tr>
+
                     @endforeach
 
-                    </tbody> 
-                </table> 
+                    </tbody>
+
+                </table>
+
             </div>
-        </div> 
+        </div>
+
     </div>
-</div> 
+</div>
+
 @stop
 
 @push('js')
@@ -197,11 +239,7 @@ $(document).ready(function () {
 
     $('#challanTable').DataTable({
         responsive: true,
-        autoWidth: false,
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true
+        autoWidth: false
     });
 
     $('#selectAll').on('click', function () {
@@ -210,17 +248,21 @@ $(document).ready(function () {
 
     $('#printSelected').on('click', function () {
 
-        let ids = []; 
+        let ids = [];
+
         $('.dc-check:checked').each(function () {
             ids.push($(this).val());
-        }); 
+        });
+
         if (ids.length === 0) {
-            alert('Please select ONLY dispatched challans');
+            alert('Please select dispatched challans');
             return;
-        }  
+        }
+
         let url = "{{ route('Delivery_challan.bulkPrint') }}?ids=" + ids.join(',');
         window.open(url, '_blank');
-    }); 
+    });
+
 });
 </script>
 @endpush

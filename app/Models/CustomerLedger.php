@@ -6,20 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerLedger extends Model
 {
-    protected $fillable = [
-        'customer_id',
-        'entry_type',       // DEBIT / CREDIT
-        'amount',
-        'reference_type',   // DC / INVOICE / PAYMENT / OPENING
-        'reference_id',
-        'balance_after',
-        'remarks',
-    ];
+  protected $fillable = [
+    'customer_id',
+    'entry_type',
+    'debit',
+    'credit',
 
-    protected $casts = [
-        'amount' => 'decimal:2',
-        'balance_after' => 'decimal:2',
-    ];
+    'sub_total',
+    'gst_amount',
+    'total_amount',
+
+    'reference_type',
+    'reference_id',
+    'reference_no',
+    'balance_after',
+    'remarks',
+    'created_by',
+];
+
+  protected $casts = [
+    'debit' => 'decimal:2',
+    'credit' => 'decimal:2',
+    'balance_after' => 'decimal:2',
+];
 
     /* ================= RELATION ================= */
 

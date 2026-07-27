@@ -4,9 +4,7 @@
 
 @section('content_header')
     <h1>Receive Purchase Order</h1>
-@stop
-
-
+@stop 
 @section('content')
 
 <div class="row">
@@ -23,8 +21,7 @@
     </div>
 @endif
         <form action="{{ route('Purchase.receive.store', $purchase->id) }}" method="POST">
-            @csrf
-
+            @csrf 
             {{-- PURCHASE INFO --}}
             <div class="card mb-3">
                 <div class="card-header bg-primary text-white">
@@ -34,12 +31,10 @@
                     <div class="row">
                         <div class="col-md-4">
                             <strong>PO No:</strong> {{ $purchase->invoice_no }}
-                        </div>
-
+                        </div> 
                         <div class="col-md-4">
                             <strong>Vendor:</strong> {{ $purchase->vendor->name ?? '-' }}
-                        </div>
-
+                        </div> 
                         <div class="col-md-4">
                             <strong>Date:</strong> {{ $purchase->purchase_date }}
                         </div>

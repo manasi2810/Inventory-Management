@@ -32,14 +32,16 @@ class EmployeeController extends Controller
     public function index()
         {
             $employees = \App\Models\Employee::with('user')->get();
-            return view('admin.employee.index', compact('employees'));
+            return view('Admin.Employee.index', compact('employees'));
         }
+        
         // Employee Create Page Open
     public function create()
         {  
             $roles = Role::all();  
             return view('Admin.Employee.create', compact('roles'));
         }
+        
         // Employee creation (Save)
     public function store(Request $request)
         {
@@ -116,7 +118,7 @@ class EmployeeController extends Controller
         {
             $employee = Employee::with('user')->findOrFail($id); 
             $roles = Role::all(); 
-            return view('admin.employee.edit', compact('employee', 'roles'));
+            return view('Admin.Employee.edit', compact('employee', 'roles'));
         }
 
         // Update Created Emplyee Details 
@@ -180,8 +182,8 @@ class EmployeeController extends Controller
         }
         
             // Delete Employee delete
-        public function destroy($id)
-            {
+    public function destroy($id)
+        {
                 DB::beginTransaction();
 
                 try {

@@ -11,22 +11,20 @@ class CustomerLedgerController extends Controller
     /**
      * Show Customer Ledger (ERP style)
      */
-    public function index($id)
-    {
-        $customer = Customer::findOrFail($id);
-
-        $ledgers = CustomerLedger::where('customer_id', $id)
-            ->orderBy('id', 'asc')
-            ->get();
-
-        // ERP: current balance from ledger
-        $currentBalance = $ledgers->last()->balance_after 
-            ?? $customer->opening_balance;
-
-        return view('admin.customer.ledger', compact(
-            'customer',
-            'ledgers',
-            'currentBalance'
-        ));
-    }
+   public function index($id)
+        {
+            $customer = Customer::findOrFail($id);
+        
+            $ledgers = CustomerLedger::where('customer_id', $id)
+                        ->latest('id')
+                        ->get();
+        
+            $currentBalance = optional($ledgers->first())->balance_after
+                                ?? $customer->opening_balance;
+        
+            return view(
+                'Admin.Customer.ledger',
+                compact('customer','ledgers','currentBalance')
+            );
+        }
 }

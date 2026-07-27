@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class VendorController extends Controller
 {
     public function __construct()
-    {
+        {
         $this->middleware('permission:vendor.view')->only(['index']);
         $this->middleware('permission:vendor.create')->only(['create', 'store']);
         $this->middleware('permission:vendor.edit')->only(['edit', 'update']);
@@ -18,21 +18,21 @@ class VendorController extends Controller
     }
 
     public function index()
-    {
+        {
         $vendors = Vendor::withTrashed()
             ->latest()
             ->get();
 
-        return view('admin.vendor.index', compact('vendors'));
+        return view('Admin.Vendor.index', compact('vendors'));
     }
 
     public function create()
-    {
-        return view('admin.vendor.create');
+        {
+        return view('Admin.Vendor.create');
     }
 
     public function store(Request $request)
-    {
+        {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -102,13 +102,13 @@ class VendorController extends Controller
     }
 
     public function edit($id)
-    {
+        {
         $vendor = Vendor::findOrFail($id);
-        return view('admin.vendor.edit', compact('vendor'));
+        return view('Admin.Vendor.edit', compact('vendor'));
     }
 
     public function update(Request $request, $id)
-    {
+        {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -180,7 +180,7 @@ class VendorController extends Controller
     }
 
     public function destroy($id)
-    {
+        {
         Vendor::findOrFail($id)->delete();
 
         return redirect()->route('Vendors')
@@ -188,7 +188,7 @@ class VendorController extends Controller
     }
 
     public function restore($id)
-    {
+        {
         Vendor::withTrashed()->findOrFail($id)->restore();
 
         return redirect()->route('Vendors')

@@ -10,7 +10,7 @@ class VendorLedgerController extends Controller
 {
     // SHOW LEDGER PAGE
   public function index($vendorId)
-{
+    {
     $vendor = Vendor::findOrFail($vendorId);
 
     $ledgers = VendorLedger::where('vendor_id', $vendorId)
@@ -29,7 +29,7 @@ class VendorLedgerController extends Controller
 
     $outstanding = $currentBalance;
 
-    return view('admin.vendor.ledger', compact(
+    return view('Admin.Vendor.ledger', compact(
         'vendor',
         'ledgers',
         'currentBalance',

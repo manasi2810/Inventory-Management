@@ -95,4 +95,5 @@ class DeliveryChallan extends Model
     {
         return $this->status === 'closed';
     }
+    
 }

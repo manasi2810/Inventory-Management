@@ -13,10 +13,15 @@ class StockService
     // =====================
     // GET STOCK (SAFE)
     // =====================
-    public function getStock($productId)
+  public function getStock($productId)
     {
         $product = Product::find($productId);
-        return $product ? $product->stock_quantity : 0;
+    
+        if (!$product) {
+            return 0;
+        }
+    
+        return $product->stock_quantity;
     }
 
     // =====================
@@ -24,128 +29,231 @@ class StockService
     // =====================
     public function hasStock($productId, $qty)
     {
-        $product = Product::find($productId);
-        return $product && ($product->stock_quantity ?? 0) >= $qty;
+        return Product::where('id', $productId)
+            ->where('stock_quantity', '>=', $qty)
+            ->exists();
     }
 
     // =====================
-    // INCREASE STOCK
+    // INCREASE STOCK (STOCK IN)
     // =====================
-    public function increaseStock($productId, $qty, $reference = [])
+   public function increaseStock($productId, $qty, $reference = [])
     {
-        return DB::transaction(function () use ($productId, $qty, $reference) {
+    return DB::transaction(function () use ($productId, $qty, $reference) {
 
-            $product = Product::where('id', $productId)
-                ->lockForUpdate()
-                ->first();
+        $product = Product::where('id', $productId)
+            ->lockForUpdate()
+            ->first();
 
-            if (!$product) {
-                throw new \Exception("Product not found: {$productId}");
-            }
+        if (!$product) {
+            throw new \Exception("Product not found.");
+        }
+
+        $product->stock_quantity += $qty;
+        $product->save();
+
+        StockIn::create([
+            'product_id' => $productId,
+            'qty' => $qty,
+            'reference' => !empty($reference)
+                ? json_encode($reference)
+                : null,
+            'created_by' => $reference['user_id'] ?? auth()->id(),
+        ]);
+
+        StockLedger::create([
+            'product_id' => $productId,
+            'movement_type' => 'IN',
+            'qty' => $qty,
+
+            'reference_type' =>
+                $reference['reference_type']
+                ?? $reference['type']
+                ?? 'MANUAL_IN',
+
+            'reference_id' =>
+                $reference['reference_id']
+                ?? $reference['id']
+                ?? null,
+
+            'balance_after' => $product->stock_quantity,
+
+            'created_by' =>
+                $reference['user_id']
+                ?? auth()->id(),
+        ]);
+    });
+}
+    // =====================
+    // DECREASE STOCK (STOCK OUT)
+    // =====================
+  public function decreaseStock($productId, $qty, $reference = [])
+{
+    return DB::transaction(function () use ($productId, $qty, $reference) {
+
+        $product = Product::where('id', $productId)
+            ->lockForUpdate()
+            ->first();
+
+        if (!$product) {
+            throw new \Exception("Product not found.");
+        }
+
+        if ($product->stock_quantity < $qty) {
+            throw new \Exception("Insufficient stock for {$product->name}");
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Product Stock
+        |--------------------------------------------------------------------------
+        */
+
+        $product->stock_quantity -= $qty;
+        $product->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Stock Out Entry
+        |--------------------------------------------------------------------------
+        */
+
+        StockOut::create([
+
+            'product_id' => $productId,
+
+            'qty' => $qty,
+
+            'type' => strtolower(
+                $reference['reference_type']
+                ?? $reference['type']
+                ?? 'manual'
+            ),
+
+            'reference_id' => $reference['reference_id']
+                ?? $reference['id']
+                ?? null,
+
+            'reference_no' => $reference['reference_no']
+                ?? null,
+
+            'reason' => $reference['reason']
+                ?? 'Stock Out',
+
+            'created_by' => $reference['user_id']
+                ?? auth()->id(),
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Stock Ledger Entry
+        |--------------------------------------------------------------------------
+        */
+
+        StockLedger::create([
+
+            'product_id' => $productId,
+
+            'movement_type' => 'OUT',
+
+            'qty' => $qty,
+
+            'reference_type' => $reference['reference_type']
+                ?? $reference['type']
+                ?? 'MANUAL_OUT',
+
+            'reference_id' => $reference['reference_id']
+                ?? $reference['id']
+                ?? null,
+
+            'balance_after' => $product->stock_quantity,
+
+            'created_by' => $reference['user_id']
+                ?? auth()->id(),
+        ]);
+
+        return true;
+    });
+}
+
+    // =====================
+    // RETURN STOCK (ERP SAFE)
+    // =====================
+  public function returnStock($productId, $qty, $condition, $reference = [])
+{
+    return DB::transaction(function () use ($productId, $qty, $condition, $reference) {
+
+        $product = Product::where('id', $productId)
+            ->lockForUpdate()
+            ->first();
+
+        if (!$product) {
+            throw new \Exception("Product not found.");
+        }
+
+        switch ($condition) {
+
+            case 'good':
+                $referenceType = 'RETURN_GOOD';
+                break;
+
+            case 'damaged':
+                $referenceType = 'RETURN_DAMAGED';
+                break;
+
+            case 'scrap':
+                $referenceType = 'RETURN_SCRAP';
+                break;
+
+            default:
+                $referenceType = 'RETURN_UNKNOWN';
+        }
+
+        if ($condition == 'good') {
 
             $product->stock_quantity += $qty;
             $product->save();
 
             StockIn::create([
+
                 'product_id' => $productId,
+
                 'qty' => $qty,
-                'reference' => json_encode($reference),
-                'created_by' => auth()->id(),
+
+                'reference' => !empty($reference)
+                    ? json_encode($reference)
+                    : null,
+
+                'created_by' =>
+                    $reference['user_id']
+                    ?? auth()->id(),
             ]);
+        }
 
-            StockLedger::create([
-                'product_id' => $productId,
-                'movement_type' => 'IN',
-                'qty' => $qty,
-                'reference_type' => $reference['type'] ?? 'IN',
-                'reference_id' => $reference['id'] ?? null,
-                'balance_after' => $product->stock_quantity,
-                'created_by' => auth()->id(),
-            ]);
-        });
-    }
+        StockLedger::create([
 
-    // =====================
-    // DECREASE STOCK
-    // =====================
-    public function decreaseStock($productId, $qty, $reference = [])
-    {
-        return DB::transaction(function () use ($productId, $qty, $reference) {
+            'product_id' => $productId,
 
-            $product = Product::where('id', $productId)
-                ->lockForUpdate()
-                ->first();
+            'movement_type' =>
+            ($condition == 'good')
+                ? 'IN'
+                : 'RETURN',
 
-            if (!$product) {
-                throw new \Exception("Product not found: {$productId}");
-            }
+            'qty' => $qty,
 
-            if (($product->stock_quantity ?? 0) < $qty) {
-                throw new \Exception("Insufficient stock for product: {$product->name}");
-            }
+            'reference_type' => $referenceType,
 
-            $product->stock_quantity -= $qty;
-            $product->save();
+            'reference_id' =>
+                $reference['reference_id']
+                ?? $reference['id']
+                ?? null,
 
-            StockOut::create([
-                'product_id' => $productId,
-                'qty' => $qty,
-                'reference_type' => $reference['type'] ?? 'OUT',
-                'reference_id' => $reference['id'] ?? null,
-                'created_by' => $reference['user_id'] ?? auth()->id(),
-            ]);
+            'balance_after' => $product->stock_quantity,
 
-            StockLedger::create([
-                'product_id' => $productId,
-                'movement_type' => 'OUT',
-                'qty' => $qty,
-                'reference_type' => $reference['type'] ?? 'OUT',
-                'reference_id' => $reference['id'] ?? null,
-                'balance_after' => $product->stock_quantity,
-                'created_by' => $reference['user_id'] ?? auth()->id(),
-            ]);
-        });
-    }
-
-    // =====================
-    // RETURN STOCK (FIXED ERP LOGIC)
-    // =====================
-    public function returnStock($productId, $qty, $condition, $reference = [])
-    {
-        return DB::transaction(function () use ($productId, $qty, $condition, $reference) {
-
-            $product = Product::where('id', $productId)
-                ->lockForUpdate()
-                ->first();
-
-            if (!$product) {
-                throw new \Exception("Product not found: {$productId}");
-            }
-
-            $type = match ($condition) {
-                'good' => 'RETURN_GOOD',
-                'damaged' => 'RETURN_DAMAGED',
-                'scrap' => 'RETURN_SCRAP',
-                default => 'RETURN_UNKNOWN',
-            };
-
-            // ONLY GOOD STOCK increases inventory
-            if ($condition === 'good') {
-                $product->stock_quantity += $qty;
-                $product->save();
-            }
-
-            // damaged/scrap → NO stock increase (ERP correct)
-
-            StockLedger::create([
-                'product_id' => $productId,
-                'movement_type' => 'IN',
-                'qty' => $qty,
-                'reference_type' => $type,
-                'reference_id' => $reference['id'] ?? null,
-                'balance_after' => $product->stock_quantity,
-                'created_by' => auth()->id(),
-            ]);
-        });
-    }
+            'created_by' =>
+                $reference['user_id']
+                ?? auth()->id(),
+        ]);
+    });
+}
 }
