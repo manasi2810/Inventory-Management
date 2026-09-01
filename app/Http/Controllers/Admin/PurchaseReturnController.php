@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\StockIn; 
 use App\Models\InventoryLog;
+use App\Models\StockLedger;
+use App\Models\Product;
 
 class PurchaseReturnController extends Controller
 {
@@ -168,6 +170,24 @@ class PurchaseReturnController extends Controller
                             'created_by'   => Auth::id(),
                         ]);
                          
+                         
+                       $lastStock = StockLedger::where('product_id', $item['product_id'])
+                            ->lockForUpdate()
+                            ->latest('id')
+                            ->value('balance_after') ?? 0;
+                        
+                        StockLedger::create([
+                            'product_id'     => $item['product_id'],
+                            'movement_type'  => 'OUT',
+                            'qty'            => $returnQty,
+                            'reference_type' => 'PURCHASE_RETURN',
+                            'reference_id'   => $return->id,
+                            'balance_after'  => $lastStock - $returnQty,
+                            'created_by'     => Auth::id(),
+                        ]);
+                        
+                        $product = Product::findOrFail($item['product_id']);
+                        $product->decrement('stock_quantity', $returnQty);
                         
                         /*
                         |-----------------------------------------

@@ -59,7 +59,7 @@ class ReportController extends Controller
                 $returns = $this->reportService->getDcReturnReport($filters);
                 $summary = $this->reportService->getDcReturnSummary($filters);
                 $products = Product::orderBy('name')->get(); 
-                return view('admin.report.dc_return_report', compact(
+                return view('Admin.Report.dc_return_report', compact(
                     'returns', 'summary', 'products'
                 ));
             }
@@ -77,8 +77,7 @@ class ReportController extends Controller
                 $dcList = $this->reportService->getDcReport($filters);
                 $summary = $this->reportService->getDcReportSummary($filters); 
                 return view('Admin.Report.dc_report', compact('dcList', 'summary'));
-            }
-
+            } 
 
         public function exportDcMainReport(Request $request)
             {
@@ -102,8 +101,7 @@ class ReportController extends Controller
             {
                 return (new StockLedgerExport($request->all()))
                     ->download('stock_ledger_report.xlsx');
-            }
-
+            } 
     
         /* ================= PRODUCT REPORT ================= */
         public function productReport(Request $request)
@@ -118,8 +116,7 @@ class ReportController extends Controller
             {
                 return (new ProductReportExport($request->all()))
                     ->download('product_report.xlsx');
-            }
-
+            } 
   
         /* ================= CUSTOMER REPORT ================= */
         public function customerReport(Request $request)
@@ -128,16 +125,14 @@ class ReportController extends Controller
                 $customers = $this->reportService->getCustomerReport($filters);
                 $summary   = $this->reportService->getCustomerSummary($filters); 
                 return view('Admin.Report.customer_report', compact('customers', 'summary'));
-            }
-            
+            } 
 
         /* EXPORT CUSTOMER REPORT */
         public function exportCustomerReport(Request $request)
             {
                 return (new \App\Exports\CustomerReportExport($request->all()))
                     ->download('customer_report.xlsx');
-            }
- 
+            } 
   
         /* ================= VENDOR REPORT ================= */
         public function getVendorReport($filters = [])
@@ -173,8 +168,7 @@ class ReportController extends Controller
                 $vendors = $this->reportService->getVendorReport($filters);
                 $summary = $this->reportService->getVendorSummary($filters);  
                 return view('Admin.Report.vendor_report', compact('vendors', 'summary'));
-            }
-            
+            } 
 
         /* EXPORT VENDOR REPORT */
         public function exportVendorReport(Request $request)

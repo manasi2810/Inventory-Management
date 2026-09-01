@@ -380,10 +380,10 @@ return [
                 'route' => 'stock-in',
                 'can'   => 'stock.in',
             ],
-            [
-                'text' => 'Stock Out',
-                'url' => '/stock-out',
-                  'can'   => 'stock.out',
+          [
+                'text'  => 'Stock Out',
+                'route' => 'stock-out',    
+                'can'   => 'stock.out',
             ],
         ],
     ],

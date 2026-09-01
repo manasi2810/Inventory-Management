@@ -24,4 +24,8 @@ class PurchaseReceiveItem extends Model
     {
         return $this->belongsTo(PurchaseReceive::class, 'purchase_receive_id');
     }
+    public function purchaseReceive()
+    {
+        return $this->belongsTo(PurchaseReceive::class);
+    }
 }

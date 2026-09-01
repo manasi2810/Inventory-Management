@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\DcReturnItem;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\StockIn;
 use App\Models\StockOut;
 use App\Models\StockLedger;
+use App\Models\PurchaseReceive;
 use App\Models\DeliveryChallan;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +24,17 @@ class ReportService
                 ])
                 ->latest()
                 ->paginate(20);
+        }
+        
+    public function getDcReturnReportForExport($filters)
+        {
+            return $this->baseQuery($filters)
+                ->with([
+                    'dcReturn.deliveryChallan.customer',
+                    'product'
+                ])
+                ->latest()
+                ->get();
         }
 
     /* ================= DC RETURN SUMMARY ================= */
@@ -62,75 +75,296 @@ class ReportService
         }
 
     /* ================= STOCK REPORT ================= */
-    public function getStockReport()
+    public function getStockReport($filters = [])
         {
-            return Product::query()
-                ->select('id', 'name', 'sku', 'opening_stock')
-                ->get()
-                ->map(function ($product) {
-
-                    // 📥 Purchase
-                    $purchase = DB::table('stock_ins')
-                        ->where('product_id', $product->id)
-                        ->sum('qty');
-
-                    // 📤 Sales
-                    $sales = DB::table('stock_ledgers')
-                        ->where('product_id', $product->id)
-                        ->where('movement_type', 'OUT')
-                        ->sum('qty');
-
-                    // 📥 Returns
-                    $returns = DB::table('dc_return_items')
-                        ->where('product_id', $product->id)
-                        ->sum('return_qty');
-
-                
-                    $opening = $product->opening_stock ?? 0;
-
-                    $totalIn = $opening + $purchase + $returns;
-
-                    $totalOut = $sales;
-
-                    $closing = $totalIn - $totalOut;
-
-                    return (object)[
-                        'id' => $product->id,
-                        'name' => $product->name,
-                        'sku' => $product->sku,
-
-                        'opening_stock' => $opening,
-                        'purchase_qty' => $purchase,
-                        'sale_qty' => $sales,
-                        'return_qty' => $returns,
-
-                        'closing_stock' => $closing,
-                    ];
-                });
-        }
+                return Product::query()
+                    ->select(
+                        'id',
+                        'name',
+                        'sku',
+                        'category_id',
+                        'stock_quantity'
+                    )
+                    ->with('category')
+                    ->get()
+                    ->map(function ($product) use ($filters) {
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | STOCK LEDGER QUERY
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $ledgerQuery = DB::table('stock_ledgers')
+                            ->where('product_id', $product->id);
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DATE FILTER
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        if (!empty($filters['from_date'])) {
+                            $ledgerQuery->whereDate(
+                                'created_at',
+                                '>=',
+                                $filters['from_date']
+                            );
+                        }
+            
+                        if (!empty($filters['to_date'])) {
+                            $ledgerQuery->whereDate(
+                                'created_at',
+                                '<=',
+                                $filters['to_date']
+                            );
+                        }
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | STOCK IN
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $stockIn = (clone $ledgerQuery)
+                            ->where('movement_type', 'IN')
+                            ->sum('qty');
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | STOCK OUT
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $stockOut = (clone $ledgerQuery)
+                            ->where('movement_type', 'OUT')
+                            ->sum('qty');
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RETURNS
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $returns = DB::table('dc_return_items')
+                            ->where('product_id', $product->id)
+                            ->when(
+                                !empty($filters['from_date']),
+                                function ($query) use ($filters) {
+                                    $query->whereDate(
+                                        'created_at',
+                                        '>=',
+                                        $filters['from_date']
+                                    );
+                                }
+                            )
+                            ->when(
+                                !empty($filters['to_date']),
+                                function ($query) use ($filters) {
+                                    $query->whereDate(
+                                        'created_at',
+                                        '<=',
+                                        $filters['to_date']
+                                    );
+                                }
+                            )
+                            ->sum('return_qty');
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | TOTAL IN / OUT
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $totalIn = $stockIn + $returns;
+            
+                        $totalOut = $stockOut;
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | FIRST MOVEMENT
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $firstMovement = (clone $ledgerQuery)
+                            ->orderBy('created_at', 'asc')
+                            ->first();
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | LAST MOVEMENT
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        $lastMovement = (clone $ledgerQuery)
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | STATUS
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        if ($product->stock_quantity <= 0) {
+            
+                            $status = 'Out of Stock';
+            
+                        } elseif ($product->stock_quantity <= 10) {
+            
+                            $status = 'Low Stock';
+            
+                        } else {
+            
+                            $status = 'In Stock';
+                        }
+            
+            
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RETURN DATA
+                        |--------------------------------------------------------------------------
+                        */
+            
+                        return (object) [
+            
+                            'id' => $product->id,
+            
+                            'name' => $product->name,
+            
+                            'sku' => $product->sku,
+            
+                            'category' => $product->category->name ?? '-',
+            
+                            'purchase_qty' => $stockIn,
+            
+                            'return_qty' => $returns,
+            
+                            'total_in' => $totalIn,
+            
+                            'sale_qty' => $stockOut,
+            
+                            'total_out' => $totalOut,
+            
+                            /*
+                             * Current actual stock
+                             */
+                            'closing_stock' => $product->stock_quantity,
+            
+                            'status' => $status,
+            
+                            /*
+                             * First movement
+                             */
+                            'first_movement_date' =>
+                                $firstMovement?->created_at,
+            
+                            /*
+                             * Last movement
+                             */
+                            'last_movement_date' =>
+                                $lastMovement?->created_at,
+            
+                            'last_movement_type' =>
+                                $lastMovement?->movement_type,
+            
+                            'last_movement_qty' =>
+                                $lastMovement?->qty,
+            
+                            'last_balance' =>
+                                $lastMovement?->balance_after,
+            
+                            'last_reference_type' =>
+                                $lastMovement?->reference_type,
+            
+                            'last_reference_id' =>
+                                $lastMovement?->reference_id,
+            
+                            'last_created_by' => $lastMovement
+                            ? (User::find($lastMovement->created_by)?->name ?? '-')
+                            : '-',
+                        ];
+                    });
+            }
+            
     /* ================= DC REPORT ================= */
     public function getDcReport($filters)
         {
-            $query = DeliveryChallan::with(['customer', 'items']);
-
+        $query = DeliveryChallan::with([
+            'customer',
+            'items.product'
+        ]);
+    
+        if (!empty($filters['from_date'])) {
+            $query->whereDate(
+                'challan_date',
+                '>=',
+                $filters['from_date']
+            );
+        }
+    
+        if (!empty($filters['to_date'])) {
+            $query->whereDate(
+                'challan_date',
+                '<=',
+                $filters['to_date']
+            );
+        }
+    
+        if (!empty($filters['status'])) {
+            $query->where(
+                'status',
+                $filters['status']
+            );
+        }
+    
+        if (!empty($filters['customer_id'])) {
+            $query->where(
+                'customer_id',
+                $filters['customer_id']
+            );
+        }
+    
+        return $query
+            ->latest()
+            ->paginate(20);
+    }
+    
+    
+    public function getDcReportForExport($filters)
+        {
+            $query = DeliveryChallan::with([
+                'customer',
+                'items.product'
+            ]);
+        
             if (!empty($filters['from_date'])) {
                 $query->whereDate('challan_date', '>=', $filters['from_date']);
             }
-
+        
             if (!empty($filters['to_date'])) {
                 $query->whereDate('challan_date', '<=', $filters['to_date']);
             }
-
+        
             if (!empty($filters['status'])) {
                 $query->where('status', $filters['status']);
             }
-
+        
             if (!empty($filters['customer_id'])) {
                 $query->where('customer_id', $filters['customer_id']);
             }
-
-            return $query->latest()->paginate(20);
+        
+            return $query->latest()->get();
         }
+
 
     public function getDcReportSummary($filters)
         {
@@ -166,43 +400,152 @@ class ReportService
     public function getStockLedgerReport($filters)
         {
             $query = StockLedger::with('product');
-
+        
             if (!empty($filters['from_date'])) {
-                $query->whereDate('created_at', '>=', $filters['from_date']);
+                $query->whereDate(
+                    'created_at',
+                    '>=',
+                    $filters['from_date']
+                );
             }
-
+        
             if (!empty($filters['to_date'])) {
-                $query->whereDate('created_at', '<=', $filters['to_date']);
+                $query->whereDate(
+                    'created_at',
+                    '<=',
+                    $filters['to_date']
+                );
             }
-
+        
             if (!empty($filters['product_id'])) {
-                $query->where('product_id', $filters['product_id']);
+                $query->where(
+                    'product_id',
+                    $filters['product_id']
+                );
             }
-
-            return $query->orderBy('id', 'desc')->paginate(20);
+        
+            $ledger = $query
+                ->orderBy('id', 'desc')
+                ->paginate(20);
+        
+            $ledger->getCollection()->transform(function ($item) {
+        
+                /*
+                |--------------------------------------------------------------------------
+                | Created By
+                |--------------------------------------------------------------------------
+                */
+        
+                $item->created_by_name = User::find(
+                    $item->created_by
+                )?->name ?? '-';
+        
+        
+                /*
+                |--------------------------------------------------------------------------
+                | Default Reference Details
+                |--------------------------------------------------------------------------
+                */
+        
+                $item->reference_no = '-';
+                $item->reference_date = null;
+        
+        
+                /*
+                |--------------------------------------------------------------------------
+                | Purchase Receive
+                |--------------------------------------------------------------------------
+                */
+        
+                if ($item->reference_type === 'PURCHASE_RECEIVE') {
+        
+                    $receive = PurchaseReceive::with('purchase')
+                        ->find($item->reference_id);
+        
+                    if ($receive) {
+        
+                        $item->reference_date = $receive->receive_date;
+        
+                        /*
+                        | Purchase has invoice/document number
+                        | Use the actual column from your Purchase model.
+                        */
+        
+                        $item->reference_no =
+                            $receive->purchase->invoice_no
+                            ?? $receive->purchase->id
+                            ?? '-';
+                    }
+                }
+        
+                return $item;
+            });
+        
+            return $ledger;
         }
+        
 
     public function getStockLedgerSummary($filters)
         {
-            $query = StockLedger::query();
-
-            if (!empty($filters['from_date'])) {
-                $query->whereDate('created_at', '>=', $filters['from_date']);
+                $query = StockLedger::query();
+            
+                if (!empty($filters['from_date'])) {
+                    $query->whereDate(
+                        'created_at',
+                        '>=',
+                        $filters['from_date']
+                    );
+                }
+            
+                if (!empty($filters['to_date'])) {
+                    $query->whereDate(
+                        'created_at',
+                        '<=',
+                        $filters['to_date']
+                    );
+                }
+            
+                if (!empty($filters['product_id'])) {
+                    $query->where(
+                        'product_id',
+                        $filters['product_id']
+                    );
+                }
+            
+                if (!empty($filters['movement_type'])) {
+                    $query->where(
+                        'movement_type',
+                        $filters['movement_type']
+                    );
+                }
+            
+                if (!empty($filters['reference_type'])) {
+                    $query->where(
+                        'reference_type',
+                        $filters['reference_type']
+                    );
+                }
+            
+                return $query->selectRaw("
+                    COUNT(*) as total_movements,
+            
+                    SUM(
+                        CASE
+                            WHEN movement_type = 'IN'
+                            THEN qty
+                            ELSE 0
+                        END
+                    ) as total_in,
+            
+                    SUM(
+                        CASE
+                            WHEN movement_type = 'OUT'
+                            THEN qty
+                            ELSE 0
+                        END
+                    ) as total_out
+                ")->first();
             }
-
-            if (!empty($filters['to_date'])) {
-                $query->whereDate('created_at', '<=', $filters['to_date']);
-            }
-
-            if (!empty($filters['product_id'])) {
-                $query->where('product_id', $filters['product_id']);
-            }
-
-            return $query->selectRaw("
-                SUM(CASE WHEN movement_type = 'IN' THEN qty ELSE 0 END) as total_in,
-                SUM(CASE WHEN movement_type = 'OUT' THEN qty ELSE 0 END) as total_out
-            ")->first();
-        }
 
 
     public function getProductReport($filters = [])
@@ -224,6 +567,7 @@ class ReportService
                     return $product;
                 });
         }
+        
 
     public function getProductSummary($filters = [])
         {
@@ -235,8 +579,7 @@ class ReportService
                 'total_stock_out' => $products->sum('total_out'),
                 'total_available' => $products->sum('available_stock'),
             ];
-        }
-
+        } 
 
     /* ================= CUSTOMER REPORT ================= */
     public function getCustomerReport($filters = [])
@@ -257,6 +600,8 @@ class ReportService
                     return $customer;
                 });
         }
+        
+        
     /* ================= CUSTOMER SUMMARY ================= */
     public function getCustomerSummary($filters = [])
         {

@@ -48,7 +48,12 @@ Route::resource('/Product', ProductController::class)->names([
     'edit' => 'Product.edit',
     'update' => 'Product.update',
     'destroy' => 'Product.destroy',
+    // 'restore' => 'Product.restore',
 ]);
+Route::patch(
+    '/Product/{Product}/restore',
+    [ProductController::class, 'restore']
+)->name('Product.restore');
 
 Route::resource('/Vendors', VendorController::class)->names([
     'index' => 'Vendors',
@@ -57,8 +62,8 @@ Route::resource('/Vendors', VendorController::class)->names([
     'edit' => 'Vendors.edit',
     'update' => 'Vendors.update',
     'destroy' => 'Vendors.destroy',
-]);
-
+    
+]); 
 
 Route::resource('Customer', CustomerController::class)->names([
     'index' => 'Customer',

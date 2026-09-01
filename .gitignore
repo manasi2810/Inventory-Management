@@ -57,5 +57,4 @@ Thumbs.db
 # --- Optional ---
 *.bak
 *.swp
-*.tmp.git.zip
-.git.zip
+*.tmp

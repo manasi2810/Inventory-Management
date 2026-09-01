@@ -12,6 +12,7 @@
 
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
+
             <li class="breadcrumb-item">
                 <a href="#">Dashboard</a>
             </li>
@@ -19,6 +20,7 @@
             <li class="breadcrumb-item active">
                 Product
             </li>
+
         </ol>
     </div>
 
@@ -26,12 +28,12 @@
 
 @stop
 
+
 @section('content')
 
 <form id="productForm"
       action="{{ route('Product.store') }}"
-      method="POST"
-      enctype="multipart/form-data">
+      method="POST">
 
     @csrf
 
@@ -45,6 +47,7 @@
 
         </div>
 
+
         <div class="card-body">
 
             {{-- GENERAL DETAILS --}}
@@ -52,6 +55,7 @@
             <h5 class="mb-3 text-primary">
                 <b>General Details</b>
             </h5>
+
 
             <div class="row">
 
@@ -63,6 +67,7 @@
                     />
 
                 </div>
+
 
                 <div class="col-md-6">
 
@@ -76,6 +81,7 @@
 
             </div>
 
+
             <div class="row">
 
                 <div class="col-md-4">
@@ -87,6 +93,7 @@
 
                 </div>
 
+
                 <div class="col-md-4">
 
                     <x-input
@@ -95,6 +102,7 @@
                     />
 
                 </div>
+
 
                 <div class="col-md-4">
 
@@ -107,6 +115,7 @@
                 </div>
 
             </div>
+
 
             <div class="row">
 
@@ -121,7 +130,9 @@
 
             </div>
 
+
             <hr>
+
 
             {{-- STOCK & PRICING --}}
 
@@ -129,17 +140,8 @@
                 <b>Stock & Pricing</b>
             </h5>
 
+
             <div class="row">
-{{-- 
-                <div class="col-md-4">
-
-                    <x-input
-                        label="Opening Stock"
-                        name="opening_stock"
-                        type="number"
-                    />
-
-                </div> --}}
 
                 <div class="col-md-4">
 
@@ -150,17 +152,32 @@
 
                 </div>
 
+
                 <div class="col-md-4">
 
                     <x-input
-                        label="Price"
+                        label="Cost Price"
+                        name="cost_price"
+                        type="number"
+                        step="0.01"
+                    />
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <x-input
+                        label="Selling Price"
                         name="price"
                         type="number"
+                        step="0.01"
                     />
 
                 </div>
 
             </div>
+
 
             <div class="row">
 
@@ -177,6 +194,7 @@
 
                 </div>
 
+
                 <div class="col-md-6">
 
                     <x-select
@@ -192,77 +210,8 @@
 
             </div>
 
-            <hr>
-
-            {{-- PRODUCT IMAGES --}}
-
-            <h5 class="mb-3 text-warning">
-                <b>Product Images</b>
-            </h5>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <x-file-input
-                        label="Main Image"
-                        name="main_image"
-                    />
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <x-file-input
-                        label="Gallery Images"
-                        name="gallery_images[]"
-                        :multiple="true"
-                    />
-
-                </div>
-
-            </div>
-
-            <hr>
-
-            {{-- SEO DETAILS --}}
-
-            <h5 class="mb-3 text-info">
-                <b>SEO Details</b>
-            </h5>
-
-            <div class="row">
-
-                <div class="col-md-4">
-
-                    <x-input
-                        label="Page Title"
-                        name="page_title"
-                    />
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <x-input
-                        label="Alt Text"
-                        name="alt_text"
-                    />
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <x-input
-                        label="Meta Keywords"
-                        name="meta_keywords"
-                    />
-
-                </div>
-
-            </div>
-
         </div>
+
 
         <div class="card-footer text-right">
 
@@ -275,10 +224,11 @@
 
             </x-button>
 
+
             <a href="{{ route('Product') }}"
                class="btn btn-secondary">
 
-               Cancel
+                Cancel
 
             </a>
 
@@ -289,6 +239,7 @@
 </form>
 
 @stop
+
 
 @push('js')
 

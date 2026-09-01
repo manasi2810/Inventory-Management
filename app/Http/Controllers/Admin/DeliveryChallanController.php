@@ -408,10 +408,10 @@ class DeliveryChallanController extends Controller
     // ============ DISPATCH PAGE ================
     public function dispatchPage($id)
         {
-        $challan = DeliveryChallan::with('items.product')->findOrFail($id);
-
-        return view('Admin.Delivery_challan.dispatch', compact('challan'));
-    }
+            $challan = DeliveryChallan::with('items.product')->findOrFail($id);
+    
+            return view('Admin.Delivery_challan.dispatch', compact('challan'));
+        }
 
     // ============ DISPATCH STORE ===============
    
@@ -482,7 +482,7 @@ class DeliveryChallanController extends Controller
                     );
                 }
 
-                // FIX: check stock immediately before decrement (adjacent, not separated by other logic)
+                // FIX: check stock immediately before decrement 
                 if (!$stockService->hasStock($item->product_id, $dispatchQty)) {
                     throw new Exception("Insufficient stock for {$item->product->name}");
                 }

@@ -87,7 +87,7 @@
                                     <select name="items[0][product_id]" class="form-control product-select" required> 
                                         <option value="">Select Product</option> 
                                         @foreach($products as $product) 
-                                            <option value="{{ $product->id }}" data-price="{{ $product->price }}">
+                                            <option value="{{ $product->id }}" data-price="{{ $product->cost_price }}">
                                                 {{ $product->name }}
                                             </option> 
                                         @endforeach 
@@ -140,7 +140,7 @@ $('#addRow').click(function () {
             <select name="items[${rowIndex}][product_id]" class="form-control product-select" required>
                 <option value="">Select Product</option>
                 @foreach($products as $product)
-                    <option value="{{ $product->id }}" data-price="{{ $product->price }}">
+                    <option value="{{ $product->id }}" data-price="{{ $product->cost_price }}">
                         {{ $product->name }}
                     </option>
                 @endforeach

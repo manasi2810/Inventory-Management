@@ -3,146 +3,142 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Customer\StoreCustomerRequest;
+use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
 
 class CustomerController extends Controller
-    {
- 
+{
     public function __construct()
-        {
-            $this->middleware('permission:customer.view')
-                ->only(['index']);
+    {
+        // View Permission
+        $this->middleware('permission:customer.view')
+            ->only(['index']);
 
-            $this->middleware('permission:customer.create')
-                ->only(['create', 'store']);
+        // Create Permission
+        $this->middleware('permission:customer.create')
+            ->only(['create', 'store']);
 
-            $this->middleware('permission:customer.edit')
-                ->only(['edit', 'update']);
+        // Edit Permission
+        $this->middleware('permission:customer.edit')
+            ->only(['edit', 'update']);
 
-            $this->middleware('permission:customer.delete')
-                ->only(['destroy']);
-        }
-    /**
-     * Show all customers
-     */
-    public function index()
-        {
-            $customers = Customer::latest()->get();
-            return view('Admin.Customer.index', compact('customers'));
-        }
-
-    /**
-     * Show create form
-     */
-    public function create()
-        {
-            return view('Admin.Customer.create');
-        }
-
-    /**
-     * Store new customer
-     */
-   public function store(Request $request)
-        {
-            $request->validate([
-                'name'              => 'required|string|max:255',
-                'mobile'            => 'nullable|string|max:20',
-                'alternate_mobile'  => 'nullable|string|max:20',
-                'email'             => 'nullable|email|max:255',
-                'gst_number'        => 'nullable|string|max:50',
-                'pan_number'        => 'nullable|string|max:20',
-                'credit_limit'      => 'nullable|numeric|min:0',
-                'opening_balance'   => 'nullable|numeric',
-            ]);
-        
-            Customer::create([
-                'customer_code'     => 'CUS-' . time(),  
-                'name'              => $request->name,
-                'company_name'      => $request->company_name, 
-                'mobile'            => $request->mobile,
-                'alternate_mobile'  => $request->alternate_mobile,
-                'email'             => $request->email, 
-                'billing_address'   => $request->billing_address,
-                'shipping_address'  => $request->shipping_address, 
-                'city'              => $request->city,
-                'state'             => $request->state,
-                'pincode'           => $request->pincode,
-                'country'           => $request->country ?? 'India', 
-                'gst_number'        => $request->gst_number,
-                'pan_number'        => $request->pan_number, 
-                'credit_limit'      => $request->credit_limit ?? 0,
-                'opening_balance'   => $request->opening_balance ?? 0, 
-                'customer_type'     => $request->customer_type ?? 'business',
-                'status'            => $request->status ?? 1,  
-                'notes'             => $request->notes, 
-                'created_by'        => auth()->id(),
-            ]);
-        
-            return redirect()->route('Customer')
-                ->with('success', 'Customer created successfully');
+        // Delete Permission
+        $this->middleware('permission:customer.delete')
+            ->only(['destroy']);
     }
 
     /**
-     * Edit customer
+     * Display all customers.
      */
-    public function edit($id)
-        {
-            $customer = Customer::findOrFail($id);
-            return view('Admin.Customer.edit', compact('customer'));
-        }
+    public function index()
+    {
+        $customers = Customer::latest()->get();
+
+        return view(
+            'Admin.Customer.index',
+            compact('customers')
+        );
+    }
 
     /**
-     * Update customer
+     * Show create customer form.
      */
-   public function update(Request $request, $id)
-        {
-            $request->validate([
-                'name'              => 'required|string|max:255',
-                'mobile'            => 'nullable|string|max:20',
-                'alternate_mobile'  => 'nullable|string|max:20',
-                'email'             => 'nullable|email|max:255',
-                'gst_number'        => 'nullable|string|max:50',
-                'pan_number'        => 'nullable|string|max:20',
-                'credit_limit'      => 'nullable|numeric|min:0',
-                'opening_balance'   => 'nullable|numeric',
-            ]); 
-            $customer = Customer::findOrFail($id); 
-            $customer->update([
-                'name'              => $request->name,
-                'company_name'      => $request->company_name, 
-                'mobile'            => $request->mobile,
-                'alternate_mobile'  => $request->alternate_mobile,
-                'email'             => $request->email, 
-                'billing_address'   => $request->billing_address,
-                'shipping_address'  => $request->shipping_address, 
-                'city'              => $request->city,
-                'state'             => $request->state,
-                'pincode'           => $request->pincode,
-                'country'           => $request->country ?? 'India', 
-                'gst_number'        => $request->gst_number,
-                'pan_number'        => $request->pan_number, 
-                'credit_limit'      => $request->credit_limit ?? 0,
-                'opening_balance'   => $request->opening_balance ?? 0, 
-                'customer_type'     => $request->customer_type,
-                'status'            => $request->status, 
-                'notes'             => $request->notes, 
-                'updated_by'        => auth()->id(),
-            ]); 
-            return redirect()->route('Customer')
-                ->with('success', 'Customer updated successfully');
-        }
+    public function create()
+    {
+        return view('Admin.Customer.create');
+    }
+
     /**
-    * Delete customer
-    */
- 
-    public function toggleStatus($id)
-        {
-            $customer = Customer::findOrFail($id); 
-            $customer->update([
-                'status' => !$customer->status
-            ]); 
-            return redirect()->back()
-                ->with('success', 'Customer status updated successfully');
-        }
+     * Store new customer.
+     */
+    public function store(StoreCustomerRequest $request)
+    {
+        $data = $request->validated();
+
+        $data['customer_code'] = 'CUS-' . time();
+        $data['country'] = $data['country'] ?? 'India';
+        $data['credit_limit'] = $data['credit_limit'] ?? 0;
+        $data['opening_balance'] = $data['opening_balance'] ?? 0;
+        $data['customer_type'] = $data['customer_type'] ?? 'business';
+        $data['status'] = $data['status'] ?? 1;
+        $data['created_by'] = auth()->id();
+
+        Customer::create($data);
+
+        return redirect()
+            ->route('Customer')
+            ->with(
+                'success',
+                'Customer created successfully'
+            );
+    }
+
+    /**
+     * Show edit customer form.
+     */
+    public function edit(Customer $customer)
+    {
+        return view(
+            'Admin.Customer.edit',
+            compact('customer')
+        );
+    }
+
+    /**
+     * Update customer.
+     */
+    public function update(
+        UpdateCustomerRequest $request,
+        Customer $customer
+    ) {
+        $data = $request->validated();
+
+        $data['country'] = $data['country'] ?? 'India';
+        $data['credit_limit'] = $data['credit_limit'] ?? 0;
+        $data['opening_balance'] = $data['opening_balance'] ?? 0;
+        $data['updated_by'] = auth()->id();
+
+        $customer->update($data);
+
+        return redirect()
+            ->route('Customer')
+            ->with(
+                'success',
+                'Customer updated successfully'
+            );
+    }
+
+    /**
+     * Toggle customer status.
+     */
+    public function toggleStatus(Customer $customer)
+    {
+        $customer->update([
+            'status' => ! $customer->status,
+            'updated_by' => auth()->id(),
+        ]);
+
+        return redirect()
+            ->back()
+            ->with(
+                'success',
+                'Customer status updated successfully'
+            );
+    }
+
+    /**
+     * Delete customer.
+     */
+    public function destroy(Customer $customer)
+    {
+        $customer->delete();
+
+        return redirect()
+            ->route('Customer')
+            ->with(
+                'success',
+                'Customer deleted successfully'
+            );
+    }
 }

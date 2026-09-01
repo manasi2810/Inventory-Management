@@ -43,75 +43,89 @@ class EmployeeController extends Controller
         }
         
         // Employee creation (Save)
-    public function store(Request $request)
-        {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'contact_no' => 'nullable|string|max:20',
-                'address' => 'nullable|string',
-                'role' => 'required|string',
-                'password' => 'required|string|min:6',
-                'department' => 'nullable|string|max:255',
-                'designation' => 'nullable|string|max:255',
-                'date_of_join' => 'nullable|date',
-                'salary' => 'nullable|numeric',
-                'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'resume' => 'nullable|mimes:pdf,doc,docx|max:2048',
-                'certificates.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-                'id_proof' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            ]);
-            // dd('STORE METHOD HIT', $request->all());
-            DB::beginTransaction();
-            try { 
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'contact_no' => $request->contact_no,
-                    'address' => $request->address,
-                    'role_id' => \Spatie\Permission\Models\Role::where('name', $request->role)->first()->id,
-                    'password' => Hash::make($request->password),
-                ]);
-                $user->assignRole($request->role);
-    
-                $profilePhotoPath = $request->file('profile_photo') ? $request->file('profile_photo')->store('employees/profile_photos','public') : null;
-                $resumePath = $request->file('resume') ? $request->file('resume')->store('employees/resumes','public') : null;
-                $idProofPath = $request->file('id_proof') ? $request->file('id_proof')->store('employees/id_proofs','public') : null;
+   public function store(StoreEmployeeRequest $request)
+{
+    DB::beginTransaction();
 
-                $certificatesPaths = null;
-                if ($request->hasFile('certificates')) {
-                    $certificatesPaths = [];
-                    foreach ($request->file('certificates') as $file) {
-                        $certificatesPaths[] = $file->store('employees/certificates','public');
-                    }
-                    $certificatesPaths = json_encode($certificatesPaths);
-                } 
-                Employee::create([
-                    'user_id' => $user->id,
-                    'contact_no' => $request->contact_no,
-                    'address' => $request->address,
-                    'department' => $request->department,
-                    'designation' => $request->designation,
-                    'date_of_join' => $request->date_of_join,
-                    'salary' => $request->salary,
-                    'profile_photo' => $profilePhotoPath,
-                    'resume' => $resumePath,
-                    'certificates' => $certificatesPaths,
-                    'id_proof' => $idProofPath,
-                ]);
+    try {
 
-                DB::commit();
-                return redirect('/Employee')->with('success', 'Employee created successfully'); 
-            } 
-            // catch (\Exception $e) {
-            //     DB::rollBack();
-            //     return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
-            // }
-            catch (\Exception $e) {
-                DB::rollBack(); 
-                dd($e->getMessage());
-            } 
+        $data = $request->validated();
+
+        $role = Role::where('name', $data['role'])->firstOrFail();
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'contact_no' => $data['contact_no'] ?? null,
+            'address' => $data['address'] ?? null,
+            'role_id' => $role->id,
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $user->assignRole($data['role']);
+
+        $profilePhotoPath = $request->hasFile('profile_photo')
+            ? $request->file('profile_photo')
+                ->store('employees/profile_photos', 'public')
+            : null;
+
+        $resumePath = $request->hasFile('resume')
+            ? $request->file('resume')
+                ->store('employees/resumes', 'public')
+            : null;
+
+        $idProofPath = $request->hasFile('id_proof')
+            ? $request->file('id_proof')
+                ->store('employees/id_proofs', 'public')
+            : null;
+
+        $certificatesPaths = null;
+
+        if ($request->hasFile('certificates')) {
+
+            $certificates = [];
+
+            foreach ($request->file('certificates') as $file) {
+                $certificates[] = $file->store(
+                    'employees/certificates',
+                    'public'
+                );
+            }
+
+            $certificatesPaths = json_encode($certificates);
         }
+
+        Employee::create([
+            'user_id' => $user->id,
+            'contact_no' => $data['contact_no'] ?? null,
+            'address' => $data['address'] ?? null,
+            'department' => $data['department'] ?? null,
+            'designation' => $data['designation'] ?? null,
+            'date_of_join' => $data['date_of_join'] ?? null,
+            'salary' => $data['salary'] ?? null,
+            'profile_photo' => $profilePhotoPath,
+            'resume' => $resumePath,
+            'certificates' => $certificatesPaths,
+            'id_proof' => $idProofPath,
+        ]);
+
+        DB::commit();
+
+        return redirect('/Employee')
+            ->with('success', 'Employee created successfully');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Something went wrong: ' . $e->getMessage()
+            );
+    }
+}
  
         // Edit Emplyeee
     public function edit($id)
@@ -122,65 +136,103 @@ class EmployeeController extends Controller
         }
 
         // Update Created Emplyee Details 
-    public function update(Request $request, $id)
-        {
-            $employee = Employee::with('user')->findOrFail($id);
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $employee->user->id,
-                'contact_no' => 'nullable|string|max:20',
-                'address' => 'nullable|string',
-                'role' => 'required|string',
-                'department' => 'nullable|string|max:255',
-                'designation' => 'nullable|string|max:255',
-                'date_of_join' => 'nullable|date',
-                'salary' => 'nullable|numeric',
-                'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'resume' => 'nullable|mimes:pdf,doc,docx|max:2048',
-                'certificates.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-                'id_proof' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            ]); 
-            DB::beginTransaction();
-            try { 
-                $employee->user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'contact_no' => $request->contact_no,
-                'address' => $request->address,
-            ]);
+   public function update(
+    UpdateEmployeeRequest $request,
+    Employee $employee
+) {
+    DB::beginTransaction();
 
-            $employee->user->syncRoles([$request->role]);
-                    if ($request->hasFile('profile_photo')) {
-                    $employee->profile_photo = $request->file('profile_photo')->store('employees/profile_photos','public');
-                }
-                if ($request->hasFile('resume')) {
-                    $employee->resume = $request->file('resume')->store('employees/resumes','public');
-                }
-                if ($request->hasFile('id_proof')) {
-                    $employee->id_proof = $request->file('id_proof')->store('employees/id_proofs','public');
-                }
-                if ($request->hasFile('certificates')) {
-                    $certs = [];
-                    foreach ($request->file('certificates') as $file) {
-                        $certs[] = $file->store('employees/certificates','public');
-                    }
-                    $employee->certificates = json_encode($certs);
-                } 
-                $employee->update([
-                    'department' => $request->department,
-                    'designation' => $request->designation,
-                    'date_of_join' => $request->date_of_join,
-                    'salary' => $request->salary,
-                ]);
+    try {
 
-                DB::commit();
-                return redirect()->route('Employee.index')->with('success', 'Employee updated successfully!');
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
-            }
+        $data = $request->validated();
+
+        $employee->load('user');
+
+        $employee->user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'contact_no' => $data['contact_no'] ?? null,
+            'address' => $data['address'] ?? null,
+        ]);
+
+        $employee->user->syncRoles([
+            $data['role']
+        ]);
+
+        if ($request->hasFile('profile_photo')) {
+
+            $employee->profile_photo =
+                $request->file('profile_photo')
+                    ->store(
+                        'employees/profile_photos',
+                        'public'
+                    );
         }
-        
+
+        if ($request->hasFile('resume')) {
+
+            $employee->resume =
+                $request->file('resume')
+                    ->store(
+                        'employees/resumes',
+                        'public'
+                    );
+        }
+
+        if ($request->hasFile('id_proof')) {
+
+            $employee->id_proof =
+                $request->file('id_proof')
+                    ->store(
+                        'employees/id_proofs',
+                        'public'
+                    );
+        }
+
+        if ($request->hasFile('certificates')) {
+
+            $certificates = [];
+
+            foreach ($request->file('certificates') as $file) {
+
+                $certificates[] = $file->store(
+                    'employees/certificates',
+                    'public'
+                );
+            }
+
+            $employee->certificates =
+                json_encode($certificates);
+        }
+
+        $employee->update([
+            'department' => $data['department'] ?? null,
+            'designation' => $data['designation'] ?? null,
+            'date_of_join' => $data['date_of_join'] ?? null,
+            'salary' => $data['salary'] ?? null,
+        ]);
+
+        DB::commit();
+
+        return redirect()
+            ->route('Employee.index')
+            ->with(
+                'success',
+                'Employee updated successfully!'
+            );
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Something went wrong: ' . $e->getMessage()
+            );
+    }
+}
             // Delete Employee delete
     public function destroy($id)
         {

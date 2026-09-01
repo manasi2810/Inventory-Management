@@ -3,60 +3,56 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreVendorRequest;
+use App\Http\Requests\UpdateVendorRequest;
 use App\Models\Vendor;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class VendorController extends Controller
 {
     public function __construct()
-        {
-        $this->middleware('permission:vendor.view')->only(['index']);
-        $this->middleware('permission:vendor.create')->only(['create', 'store']);
-        $this->middleware('permission:vendor.edit')->only(['edit', 'update']);
-        $this->middleware('permission:vendor.delete')->only(['destroy']);
+    {
+        $this->middleware('permission:vendor.view')
+            ->only(['index']);
+
+        $this->middleware('permission:vendor.create')
+            ->only(['create', 'store']);
+
+        $this->middleware('permission:vendor.edit')
+            ->only(['edit', 'update']);
+
+        $this->middleware('permission:vendor.delete')
+            ->only(['destroy']);
     }
 
+    /**
+     * Display all vendors.
+     */
     public function index()
-        {
+    {
         $vendors = Vendor::withTrashed()
             ->latest()
             ->get();
 
-        return view('Admin.Vendor.index', compact('vendors'));
+        return view(
+            'Admin.Vendor.index',
+            compact('vendors')
+        );
     }
 
+    /**
+     * Show create vendor form.
+     */
     public function create()
-        {
+    {
         return view('Admin.Vendor.create');
     }
 
-    public function store(Request $request)
-        {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'contact' => 'nullable|string|max:20',
-            'gst_number' => 'nullable|string|max:50',
-            'pan_number' => 'nullable|string|max:20',
-            'company_name' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-
-            'credit_limit' => 'nullable|numeric|min:0',
-            'opening_balance' => 'nullable|numeric|min:0',
-            'opening_balance_type' => 'required|in:CR,DR',
-            'payment_days' => 'nullable|integer|min:0',
-
-            'bank_name' => 'nullable|string|max:255',
-            'bank_account_no' => 'nullable|string|max:50',
-            'ifsc_code' => 'nullable|string|max:20',
-
-            'status' => 'required|in:active,inactive,blocked',
-            'remarks' => 'nullable|string',
-        ]);
-
+    /**
+     * Store new vendor.
+     */
+    public function store(StoreVendorRequest $request)
+    {
         DB::beginTransaction();
 
         try {
@@ -89,50 +85,40 @@ class VendorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('Vendors')
+            return redirect()
+                ->route('Vendors')
                 ->with('success', 'Vendor created successfully');
 
         } catch (\Exception $e) {
 
             DB::rollBack();
 
-            return back()->withInput()
+            return back()
+                ->withInput()
                 ->with('error', $e->getMessage());
         }
     }
 
+    /**
+     * Show edit vendor form.
+     */
     public function edit($id)
-        {
+    {
         $vendor = Vendor::findOrFail($id);
-        return view('Admin.Vendor.edit', compact('vendor'));
+
+        return view(
+            'Admin.Vendor.edit',
+            compact('vendor')
+        );
     }
 
-    public function update(Request $request, $id)
-        {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'contact' => 'nullable|string|max:20',
-            'gst_number' => 'nullable|string|max:50',
-            'pan_number' => 'nullable|string|max:20',
-            'company_name' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-
-            'credit_limit' => 'nullable|numeric|min:0',
-            'opening_balance' => 'nullable|numeric|min:0',
-            'opening_balance_type' => 'required|in:CR,DR',
-            'payment_days' => 'nullable|integer|min:0',
-
-            'bank_name' => 'nullable|string|max:255',
-            'bank_account_no' => 'nullable|string|max:50',
-            'ifsc_code' => 'nullable|string|max:20',
-
-            'status' => 'required|in:active,inactive,blocked',
-            'remarks' => 'nullable|string',
-        ]);
-
+    /**
+     * Update vendor.
+     */
+    public function update(
+        UpdateVendorRequest $request,
+        $id
+    ) {
         DB::beginTransaction();
 
         try {
@@ -167,31 +153,43 @@ class VendorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('Vendors')
+            return redirect()
+                ->route('Vendors')
                 ->with('success', 'Vendor updated successfully');
 
         } catch (\Exception $e) {
 
             DB::rollBack();
 
-            return back()->withInput()
+            return back()
+                ->withInput()
                 ->with('error', $e->getMessage());
         }
     }
 
+    /**
+     * Delete vendor.
+     */
     public function destroy($id)
-        {
+    {
         Vendor::findOrFail($id)->delete();
 
-        return redirect()->route('Vendors')
+        return redirect()
+            ->route('Vendors')
             ->with('success', 'Vendor deleted successfully');
     }
 
+    /**
+     * Restore deleted vendor.
+     */
     public function restore($id)
-        {
-        Vendor::withTrashed()->findOrFail($id)->restore();
+    {
+        Vendor::withTrashed()
+            ->findOrFail($id)
+            ->restore();
 
-        return redirect()->route('Vendors')
+        return redirect()
+            ->route('Vendors')
             ->with('success', 'Vendor restored successfully');
     }
 }
