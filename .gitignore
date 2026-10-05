@@ -2,9 +2,8 @@
 /vendor
 /node_modules
 .env
-.env.backup
-.env.production
 .env.*
+!.env.example
 
 # --- Laravel Cache ---
 /bootstrap/cache/*
@@ -47,9 +46,13 @@ Thumbs.db
 !/storage/app/public/.gitignore
 
 /storage/framework/cache/*
+!/storage/framework/cache/.gitignore
 /storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
 /storage/framework/views/*
+!/storage/framework/views/.gitignore
 /storage/logs/*
+!/storage/logs/.gitignore
 
 /storage/*.key
 /storage/pail
