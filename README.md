@@ -82,9 +82,6 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000
-
-> If the seeder does not create a login, create a user with `php artisan tinker` or register through the login page.
 
 ## Project structure
 
