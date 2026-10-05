@@ -93,8 +93,7 @@ Vendor ──► Purchase ──► Receive Goods ──► Stock In ──► I
 | **Delivery** | Challans with approval, dispatch, bulk print, trash / restore, returns |
 | **Invoice** | Invoice from dispatch, PDF download |
 | **Accounts** | Vendor ledger, payments, statement, aging, customer ledger |
-| **Reports** | Stock, product, vendor, customer, ledger, DC, DC return, all exportable |
-| **API** | Attendance login, check-in, check-out, today's status |
+| **Reports** | Stock, product, vendor, customer, ledger, DC, DC return, all exportable | 
 
 ## Technical highlights
 
@@ -104,8 +103,7 @@ Vendor ──► Purchase ──► Receive Goods ──► Stock In ──► I
 - **Soft deletes:** products, vendors and delivery challans can be trashed and restored, so history is not lost
 - **Document printing:** print views for purchases, delivery challans and dispatches, and PDF generation for invoices
 - **Report exports:** export endpoints on stock, product, vendor, customer, ledger and DC reports
-- **Auth flows:** email-based password reset and email verification
-- **API layer:** a small JSON API for mobile attendance alongside the web admin
+- **Auth flows:** email-based password reset and email verification 
 - **MVC structure:** controllers for requests, Eloquent models for data, Blade views with AdminLTE
 
 ## Tech stack
