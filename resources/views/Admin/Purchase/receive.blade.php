@@ -110,11 +110,9 @@
                                            readonly>
                                 </td> 
                             </tr> 
-                            @endforeach
-
+                            @endforeach 
                         </tbody>
-                    </table>
-
+                    </table> 
                     <button type="submit" class="btn btn-primary mt-3">
                         Save Receive
                     </button> 
@@ -123,8 +121,7 @@
         </form> 
     </div>
 </div> 
-@stop
-
+@stop 
 @push('js')
 <script>
 $(document).ready(function () {

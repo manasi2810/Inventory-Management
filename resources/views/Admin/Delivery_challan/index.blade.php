@@ -9,30 +9,28 @@
 @section('content')
 
 <div class="row">
-    <div class="col-12">
-
-        <div class="card">
-
+    <div class="col-12"> 
+        <div class="card"> 
             {{-- HEADER --}}
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h3 class="card-title mb-0">Delivery Challan List</h3>
-
+                <div class="d-flex justify-content-between align-items-center"> 
+                    <h3 class="card-title mb-0">Delivery Challan List</h3> 
                     <div>
                         <button class="btn btn-dark btn-sm" id="printSelected">
                             Print Selected (Dispatched Only)
+<<<<<<< Updated upstream
                         </button>
 
+=======
+                        </button> 
+>>>>>>> Stashed changes
                         <a href="{{ route('Delivery_challan.create') }}"
                            class="btn btn-primary btn-sm">
                             + Create Challan
                         </a>
-                    </div>
-
+                    </div> 
                 </div>
-            </div>
-
+            </div> 
             {{-- BODY --}}
             <div class="card-body">
 
@@ -51,18 +49,25 @@
                             <th>Status</th>
                             <th width="300">Actions</th>
                         </tr>
+<<<<<<< Updated upstream
                     </thead>
 
                     <tbody>
 
                     @foreach($challans as $challan)
 
+=======
+                    </thead> 
+                    <tbody> 
+                    @foreach($challans as $challan) 
+>>>>>>> Stashed changes
                         @php
                             $totalOrdered = $challan->items->sum('qty');
                             $totalDispatched = 0;
 
                             foreach($challan->items as $item){
                                 $totalDispatched += $item->dispatched_qty ?? 0;
+<<<<<<< Updated upstream
                             }
 
                             $pending = $totalOrdered - $totalDispatched;
@@ -70,11 +75,18 @@
 
                         <tr>
 
+=======
+                            } 
+                            $pending = $totalOrdered - $totalDispatched;
+                        @endphp 
+                        <tr> 
+>>>>>>> Stashed changes
                             {{-- SELECT --}}
                             <td>
                                 @if($challan->status == 'dispatched')
                                     <input type="checkbox" class="dc-check" value="{{ $challan->id }}">
                                 @endif
+<<<<<<< Updated upstream
                             </td>
 
                             <td>{{ $loop->iteration }}</td>
@@ -97,15 +109,36 @@
                                 {{ $totalOrdered }}
                             </td>
 
+=======
+                            </td> 
+                            <td>{{ $loop->iteration }}</td>
+
+                            {{-- CHALLAN NO (ERP ENTRY POINT) --}}
+                            <td>
+                                <b>{{ $challan->challan_no ?? '-' }}</b> 
+                                <br> 
+                                {{-- QUICK ERP HINT --}} 
+                            </td> 
+                            <td>{{ $challan->customer->name ?? '-' }}</td> 
+                            <td>{{ $challan->challan_date }}</td> 
+                            <td>
+                                {{ $totalOrdered }}
+                            </td> 
+>>>>>>> Stashed changes
                             {{-- DISPATCHED SUMMARY --}}
                             <td>
                                 <span class="text-success">
                                     {{ $totalDispatched }}
+<<<<<<< Updated upstream
                                 </span>
 
                                
                             </td>
 
+=======
+                                </span> 
+                            </td> 
+>>>>>>> Stashed changes
                             <td>₹ {{ number_format($challan->total_amount, 2) }}</td>
 
                             {{-- STATUS (ERP LOGIC) --}}
@@ -119,19 +152,29 @@
                                 @else
                                     <span class="badge badge-success">Completed</span>
                                 @endif
+<<<<<<< Updated upstream
                             </td>
 
                             {{-- ACTIONS --}}
                             <td>
 
+=======
+                            </td> 
+                            {{-- ACTIONS --}}
+                            <td>  
+>>>>>>> Stashed changes
                                 
                                 @can('delivery.view')
                                 <a href="{{ route('Delivery_challan.show', $challan->id) }}"
                                    class="btn btn-xs btn-info">
                                     View
                                 </a>
+<<<<<<< Updated upstream
                                 @endcan
 
+=======
+                                @endcan 
+>>>>>>> Stashed changes
                                 {{-- PRINT --}}
                                 @if($challan->status == 'dispatched')
                                     @can('delivery.print')
@@ -141,8 +184,12 @@
                                         Print
                                     </a>
                                     @endcan
+<<<<<<< Updated upstream
                                 @endif
 
+=======
+                                @endif 
+>>>>>>> Stashed changes
                                 {{-- APPROVE --}}
                                 @if($challan->status == 'draft')
                                     @can('delivery.approve')
@@ -157,14 +204,19 @@
                                         </button>
                                     </form>
                                     @endcan
+<<<<<<< Updated upstream
                                 @endif
 
+=======
+                                @endif 
+>>>>>>> Stashed changes
                                 {{-- DISPATCH --}}
                                 @if($challan->status == 'approved')
                                     <a href="{{ route('Delivery_challan.dispatch_page', $challan->id) }}"
                                        class="btn btn-xs btn-warning">
                                         <i class="fas fa-truck"></i> Dispatch
                                     </a>
+<<<<<<< Updated upstream
 
                                 @elseif($challan->status == 'partially_dispatched')
                                     <a href="{{ route('Delivery_challan.dispatch_page', $challan->id) }}"
@@ -225,6 +277,57 @@
 
                 </table>
 
+=======
+
+                                @elseif($challan->status == 'partially_dispatched')
+                                    <a href="{{ route('Delivery_challan.dispatch_page', $challan->id) }}"
+                                       class="btn btn-xs btn-warning">
+                                        Partial Dispatch
+                                    </a>
+                                @endif 
+                                {{-- DELETE --}}
+                                @if($challan->status != 'dispatched')
+                                    @can('delivery.delete')
+                                    <form action="{{ route('Delivery_challan.destroy', $challan->id) }}"
+                                          method="POST"
+                                          style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-xs btn-danger"
+                                                onclick="return confirm('Are you sure?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    @endcan
+                                @endif 
+                                {{-- RESTORE --}}
+                                @if($challan->deleted_at)
+                                    @can('delivery.restore')
+                                    <form action="{{ route('Delivery_challan.restore', $challan->id) }}"
+                                          method="POST"
+                                          style="display:inline-block;">
+                                        @csrf
+                                        <button class="btn btn-success btn-xs">
+                                            Restore
+                                        </button>
+                                    </form>
+                                    @endcan
+                                @endif
+                                {{-- DC RETURN --}}
+                            @if($challan->status == 'dispatched' || $challan->status == 'partially_dispatched')
+                            
+                                @can('dc-return.create')
+                                    <a href="{{ route('dc_return.create', $challan->id) }}"
+                                          class="btn btn-dark btn-xs">
+                                        DC Return
+                                    </a>
+                                @endcan 
+                            @endif  
+                        </tr> 
+                    @endforeach 
+                    </tbody> 
+                </table> 
+>>>>>>> Stashed changes
             </div>
         </div>
 
