@@ -2,9 +2,6 @@
 
 A Laravel web application that manages the full stock cycle of a business: purchase from vendors, stock tracking, delivery and dispatch to customers, invoicing and returns, with role-based access and reports in one dashboard.
 
-**Live demo:** https://your-domain.com
-**Demo login:** admin@example.com / password
-
 ## Screenshots
 
 | Dashboard | Purchase Entry |
@@ -14,14 +11,14 @@ A Laravel web application that manages the full stock cycle of a business: purch
 | Inventory | Delivery Challan |
 |---|---|
 | ![Inventory](docs/inventory.png) | ![Challan](docs/challan.png) |
- 
 
 ## Workflow
 
- 
-Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispatch / Delivery Challan ──► Invoice ──► Customer
-                                         ▲                       │
- 
+```
+Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispatch / Challan ──► Invoice ──► Customer
+                                         ▲                 │
+                                         └──── Return ◄────┘
+```
 
 1. **Purchase:** record items bought from a vendor.
 2. **Stock in:** purchased quantities are added to product stock.
@@ -87,6 +84,8 @@ php artisan serve
 
 Open http://127.0.0.1:8000
 
+> If the seeder does not create a login, create a user with `php artisan tinker` or register through the login page.
+
 ## Project structure
 
 ```text
@@ -108,8 +107,7 @@ routes/
 - [ ] Database transactions around purchase, dispatch and return saves
 - [ ] Stock movement history per product
 - [ ] Low-stock alerts
-- [ ] PDF / Excel export for reports and invoices
-- [ ] Automated tests with GitHub Actions
+- [ ] PDF / Excel export for reports and invoices 
 
 ## Author
 
