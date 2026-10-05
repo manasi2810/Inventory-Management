@@ -6,11 +6,15 @@ A Laravel web application that manages the full stock cycle of a business: purch
 
 | Dashboard | Purchase Entry |
 |---|---|
-| ![Dashboard](docs/dashboard.png) | ![Purchase](docs/purchase.png) |
+| ![Dashboard](docs/Dashboard.JPG) | ![Purchase](docs/Purchase.JPG) |
 
-| Inventory | Delivery Challan |
+| Delivery Challan | Challan View |
 |---|---|
-| ![Inventory](docs/inventory.png) | ![Challan](docs/challan.png) |
+| ![Delivery Challan](docs/Delivery%20Challan.JPG) | ![Challan View](docs/DC%20View.JPG) |
+
+| Ledger Report |
+|---|
+| ![Ledger Report](docs/Ledger%20Report.JPG) |
 
 ## Workflow
 
