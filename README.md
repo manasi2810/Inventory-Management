@@ -141,10 +141,22 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-
+ 
 ## Project structure
 
-(keep your existing Project structure section)
+```text
+app/            Controllers, models, services
+database/       Migrations and seeders
+resources/      Blade views
+routes/
+├── auth.php        Login and session
+├── master.php      Employees, roles, products, vendors
+├── purchase.php    Purchase entry and records
+├── inventory.php   Stock-in and inventory
+├── delivery.php    Challans, dispatch and returns
+├── reports.php     Reports
+└── system.php      Dashboard, logs, settings
+```
 
 ## Roadmap
 
