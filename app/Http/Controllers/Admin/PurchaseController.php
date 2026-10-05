@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseStoreRequest;
 use App\Http\Requests\PurchaseReceiveRequest;
 use App\Services\PurchaseService; 
+use Exception;
 
 class PurchaseController extends Controller
 {
