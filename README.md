@@ -44,6 +44,39 @@ Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispa
 | **Reports** | Purchase, inventory, delivery and system reports |
 | **System** | Dashboard analytics, activity logs, settings, login |
 
+## Implemented features
+
+**Access & security**
+- Login with session handling and protected routes
+- Role & permission management: create roles, assign permissions, assign roles to employees
+- Activity log of user actions
+
+**Master data**
+- CRUD for employees, categories, products, vendors and customers
+- Search / filter / pagination on list pages
+
+**Purchase**
+- Purchase entry with multiple items per purchase
+- Vendor-wise purchase records and tracking
+
+**Inventory**
+- Stock-in against purchases
+- Live stock per product and inventory reports
+
+**Dispatch & delivery**
+- Delivery challan creation with item selection
+- Dispatch records and challan view / print
+- Product return handling
+
+**Invoicing**
+- Invoice generation from dispatched goods
+- Customer ledger / ledger report
+
+**Reports & dashboard**
+- Purchase, inventory, delivery and ledger reports
+- Dashboard with summary counts
+- Export / print options (PDF, Excel) *(only if implemented)*
+- 
 ## Technical highlights
 
 - **Modular routing:** one route file per domain (`auth`, `master`, `purchase`, `inventory`, `delivery`, `reports`, `system`) instead of one large `web.php`
