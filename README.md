@@ -119,9 +119,28 @@ Vendor ──► Purchase ──► Receive Goods ──► Stock In ──► I
 
 ![ER Diagram](docs/er-diagram.png)
 
-## Getting started
+## Getting started 
 
-(keep your existing Getting started section)
+**Requirements:** PHP 8.2+, Composer, Node.js, MySQL
+
+```bash
+git clone https://github.com/manasi2810/Inventory-Management.git
+cd Inventory-Management
+
+composer install
+npm install && npm run build
+
+cp .env.example .env
+php artisan key:generate
+```
+
+Create a MySQL database and set `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD` in `.env`, then:
+
+```bash
+php artisan migrate --seed
+php artisan serve
+```
+
 
 ## Project structure
 
