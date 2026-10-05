@@ -1,119 +1,117 @@
 # Inventory & Purchase Management System
 
-A full-featured business management system built with Laravel and Blade.  
-This application helps manage inventory, purchases, deliveries, employees, vendors, customers, and system reports through a centralized dashboard.
+A Laravel web application that manages the full stock cycle of a business: purchase from vendors, stock tracking, delivery and dispatch to customers, invoicing and returns, with role-based access and reports in one dashboard.
 
----
+**Live demo:** https://your-domain.com
+**Demo login:** admin@example.com / password
 
-# 🚀 Modules Included
+## Screenshots
 
-## 👨‍💼 Master Management
-- Employee Management
-- Role & Permission Management
-- Category Management
-- Product Management
-- Vendor Management
-- Customer Management
+| Dashboard | Purchase Entry |
+|---|---|
+| ![Dashboard](docs/dashboard.png) | ![Purchase](docs/purchase.png) |
 
-## 📦 Purchase Module
-- Purchase Entry
-- Vendor Purchases
-- Purchase Records
-- Purchase Tracking
+| Inventory | Delivery Challan |
+|---|---|
+| ![Inventory](docs/inventory.png) | ![Challan](docs/challan.png) |
+ 
 
-## 🏬 Inventory Module
-- Stock In Management
-- Inventory Tracking
-- Product Stock Monitoring
-- Inventory Reports
+## Workflow
 
-## 🚚 Delivery Module
-- Delivery Challan Management
-- Product Return Handling
-- Delivery Records
+ 
+Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispatch / Delivery Challan ──► Invoice ──► Customer
+                                         ▲                       │
+ 
 
-## 📊 Reports Module
-- Purchase Reports
-- Inventory Reports
-- Delivery Reports
-- System Reports
+1. **Purchase:** record items bought from a vendor.
+2. **Stock in:** purchased quantities are added to product stock.
+3. **Dispatch / Delivery:** challans send products to customers and reduce stock.
+4. **Invoice:** generate invoices for dispatched goods.
+5. **Return:** returned products go back into stock.
+6. **Reports:** purchase, inventory and delivery history.
 
-## ⚙️ System Module
-- Dashboard Analytics
-- Activity Logs
-- System Settings
-- User Authentication
+## Modules
 
----
+| Module | What it covers |
+|---|---|
+| **Master data** | Employees, roles & permissions, categories, products, vendors |
+| **Customers (ERP)** | Customer records linked to dispatches and invoices |
+| **Purchase** | Purchase entry, vendor-wise records, purchase tracking |
+| **Inventory** | Stock-in, live stock per product, inventory reports |
+| **Dispatch & Delivery** | Delivery challans, dispatch records, product returns |
+| **Invoice** | Invoice generation for deliveries |
+| **Reports** | Purchase, inventory, delivery and system reports |
+| **System** | Dashboard analytics, activity logs, settings, login |
 
-# 🛠 Tech Stack
+## Technical highlights
 
-- Laravel
-- PHP
-- Blade
-- MySQL
-- Bootstrap / Tailwind CSS
-- JavaScript
-- Laravel Authentication
+- **Modular routing:** one route file per domain (`auth`, `master`, `purchase`, `inventory`, `delivery`, `reports`, `system`) instead of one large `web.php`
+- **Role-based access:** roles and permissions decide which modules and actions each employee can use
+- **MVC structure:** controllers for requests, Eloquent models for data, Blade views for the UI (AdminLTE)
+- **Relational database:** products, vendors, customers, purchases, deliveries and invoices are linked with foreign keys
 
----
+## Tech stack
 
-# 📂 Project Structure
+| Layer | Technology |
+|---|---|
+| Backend | Laravel, PHP |
+| Database | MySQL |
+| Frontend | Blade, AdminLTE, Bootstrap / Tailwind CSS, JavaScript |
+| Build tool | Vite |
 
-```text
-routes/
-│
-├── auth.php
-├── master.php
-├── purchase.php
-├── inventory.php
-├── delivery.php
-├── reports.php
-└── system.php
+## Database design
+
+![ER Diagram](docs/er-diagram.png)
+
+## Getting started
+
+**Requirements:** PHP 8.2+, Composer, Node.js, MySQL
+
+```bash
+git clone https://github.com/manasi2810/Inventory-Management.git
+cd Inventory-Management
+
+composer install
+npm install && npm run build
+
+cp .env.example .env
+php artisan key:generate
 ```
 
----
+Create a MySQL database and set `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD` in `.env`, then:
 
-# 🔐 Authentication
+```bash
+php artisan migrate --seed
+php artisan serve
+```
 
-- Secure Login System
-- Session Management
-- Route Protection
-- Role-Based Access
+Open http://127.0.0.1:8000
 
----
+## Project structure
 
- 
+```text
+app/            Controllers, models, services
+database/       Migrations and seeders
+resources/      Blade views
+routes/
+├── auth.php        Login and session
+├── master.php      Employees, roles, products, vendors
+├── purchase.php    Purchase entry and records
+├── inventory.php   Stock-in and inventory
+├── delivery.php    Challans, dispatch and returns
+├── reports.php     Reports
+└── system.php      Dashboard, logs, settings
+```
 
-# 🎯 Key Features
+## Roadmap
 
-- Modular Route Structure
-- Clean Laravel MVC Architecture
-- Business Workflow Automation
-- Inventory & Stock Tracking
-- Secure Authentication System
-- Report Generation
-- Scalable Backend Structure
+- [ ] Database transactions around purchase, dispatch and return saves
+- [ ] Stock movement history per product
+- [ ] Low-stock alerts
+- [ ] PDF / Excel export for reports and invoices
+- [ ] Automated tests with GitHub Actions
 
- 
+## Author
 
-# 📈 Learning Outcomes
-
-Through this project, I improved my skills in:
-
-- Laravel Framework
-- Backend Development
-- Database Design
-- Authentication & Authorization
-- Inventory Management Logic
-- Modular Application Architecture
-- CRUD Operations
-- System Design
- 
-
-# 👨‍💻 Author
- 
-
-- GitHub: https://github.com/manasi2810
-- LinkedIn: https://linkedin.com/in/mansi-nikam-25b833259  
- 
+**Mansi Nikam**, Laravel Developer
+[GitHub](https://github.com/manasi2810) · [LinkedIn](https://linkedin.com/in/mansi-nikam-25b833259)
