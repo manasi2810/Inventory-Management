@@ -1,8 +1,9 @@
 # Inventory & Purchase Management System
 
-A Laravel web application that manages the full stock cycle of a business: purchase from vendors, stock tracking, delivery and dispatch to customers, invoicing and returns, with role-based access and reports in one dashboard.
+A Laravel web application that manages the full stock cycle of a business: purchase from vendors, goods receipt, stock tracking, delivery challans with approval and dispatch, invoicing, returns, vendor payments and ledgers, with role-based access and reports in one dashboard.
 
 ## Screenshots
+ 
 
 | Dashboard | Purchase Entry |
 |---|---|
@@ -19,70 +20,93 @@ A Laravel web application that manages the full stock cycle of a business: purch
 ## Workflow
 
 ```
-Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispatch / Challan ──► Invoice ──► Customer
-                                         ▲                 │
-                                         └──── Return ◄────┘
+Vendor ──► Purchase ──► Receive Goods ──► Stock In ──► Inventory
+                │                                          │
+                └──► Purchase Return (to vendor)           ▼
+                                              Delivery Challan ──► Approve ──► Dispatch ──► Invoice (PDF)
+                                                       ▲                                        │
+                                                       └────────── DC Return (from customer) ◄─┘
 ```
 
-1. **Purchase:** record items bought from a vendor.
-2. **Stock in:** purchased quantities are added to product stock.
-3. **Dispatch / Delivery:** challans send products to customers and reduce stock.
-4. **Invoice:** generate invoices for dispatched goods.
-5. **Return:** returned products go back into stock.
-6. **Reports:** purchase, inventory and delivery history.
+1. **Purchase:** create a purchase order for a vendor, print it, edit it, or short-close it when the rest of the order will not arrive.
+2. **Receive:** record goods received against a purchase.
+3. **Stock in / out:** stock-in entries update inventory, and a stock-out view shows what has left.
+4. **Delivery challan:** create a challan, approve it, then dispatch it. Print single or bulk challans.
+5. **Invoice:** generate an invoice from a dispatch and download it as PDF.
+6. **Returns:** handle customer returns against a delivery challan and returns to vendors against a purchase.
+7. **Payments & ledgers:** record vendor payments and view vendor and customer ledgers, statements and aging.
+
+## Implemented features
+
+**Authentication & access**
+- Login, registration, logout, password reset by email, email verification and password confirmation
+- Profile management (edit, update password, delete account)
+- Role management with permissions, and employee management
+- Customer activate / deactivate toggle
+
+**Master data**
+- Full CRUD for categories, products, customers, vendors and employees
+- Soft delete and restore for products and vendors
+
+**Purchase management**
+- Purchase create / edit / view / delete, print and multi-purchase print
+- Goods receipt (receive) against a purchase
+- Short-close for partially fulfilled purchases
+- Purchase return to vendor
+
+**Inventory**
+- Stock-in entry management
+- Stock-out view
+- Stock ledger report
+
+**Delivery & dispatch**
+- Delivery challan CRUD with approval step before dispatch
+- Dispatch page with dispatch records, view and print
+- Single and bulk challan printing
+- Trash, restore and permanent delete for challans
+- Delivery challan returns (DC return)
+
+**Invoicing**
+- Create an invoice from a dispatch, view it and download it as PDF
+
+**Vendor & customer accounts**
+- Vendor ledger, vendor payments, vendor statement and vendor aging report
+- Customer ledger
+
+**Reports (with export)**
+- Stock, product, vendor, customer, ledger, delivery challan and DC return reports
+
+**Mobile attendance API**
+- REST endpoints for login, check-in, check-out and today's attendance, so field employees can mark attendance from a mobile app
+
+**Dashboard**
+- Summary view after login
 
 ## Modules
 
 | Module | What it covers |
 |---|---|
-| **Master data** | Employees, roles & permissions, categories, products, vendors |
-| **Customers (ERP)** | Customer records linked to dispatches and invoices |
-| **Purchase** | Purchase entry, vendor-wise records, purchase tracking |
-| **Inventory** | Stock-in, live stock per product, inventory reports |
-| **Dispatch & Delivery** | Delivery challans, dispatch records, product returns |
-| **Invoice** | Invoice generation for deliveries |
-| **Reports** | Purchase, inventory, delivery and system reports |
-| **System** | Dashboard analytics, activity logs, settings, login |
+| **Access control** | Login, registration, password reset, email verification, roles, permissions, employees |
+| **Master data** | Categories, products, vendors, customers (with soft delete and restore) |
+| **Purchase** | Purchase orders, receive, short-close, print, return to vendor |
+| **Inventory** | Stock in, stock out, stock ledger |
+| **Delivery** | Challans with approval, dispatch, bulk print, trash / restore, returns |
+| **Invoice** | Invoice from dispatch, PDF download |
+| **Accounts** | Vendor ledger, payments, statement, aging, customer ledger |
+| **Reports** | Stock, product, vendor, customer, ledger, DC, DC return, all exportable |
+| **API** | Attendance login, check-in, check-out, today's status |
 
-## Implemented features
-
-**Access & security**
-- Login with session handling and protected routes
-- Role & permission management: create roles, assign permissions, assign roles to employees
-- Activity log of user actions
-
-**Master data**
-- CRUD for employees, categories, products, vendors and customers
-- Search / filter / pagination on list pages
-
-**Purchase**
-- Purchase entry with multiple items per purchase
-- Vendor-wise purchase records and tracking
-
-**Inventory**
-- Stock-in against purchases
-- Live stock per product and inventory reports
-
-**Dispatch & delivery**
-- Delivery challan creation with item selection
-- Dispatch records and challan view / print
-- Product return handling
-
-**Invoicing**
-- Invoice generation from dispatched goods
-- Customer ledger / ledger report
-
-**Reports & dashboard**
-- Purchase, inventory, delivery and ledger reports
-- Dashboard with summary counts
-- Export / print options (PDF, Excel) *(only if implemented)*
-- 
 ## Technical highlights
 
 - **Modular routing:** one route file per domain (`auth`, `master`, `purchase`, `inventory`, `delivery`, `reports`, `system`) instead of one large `web.php`
+- **Resource controllers:** RESTful CRUD for master data and documents, plus custom actions (approve, dispatch, receive, short-close, restore)
 - **Role-based access:** roles and permissions decide which modules and actions each employee can use
-- **MVC structure:** controllers for requests, Eloquent models for data, Blade views for the UI (AdminLTE)
-- **Relational database:** products, vendors, customers, purchases, deliveries and invoices are linked with foreign keys
+- **Soft deletes:** products, vendors and delivery challans can be trashed and restored, so history is not lost
+- **Document printing:** print views for purchases, delivery challans and dispatches, and PDF generation for invoices
+- **Report exports:** export endpoints on stock, product, vendor, customer, ledger and DC reports
+- **Auth flows:** email-based password reset and email verification
+- **API layer:** a small JSON API for mobile attendance alongside the web admin
+- **MVC structure:** controllers for requests, Eloquent models for data, Blade views with AdminLTE
 
 ## Tech stack
 
@@ -99,49 +123,18 @@ Vendor ──► Purchase ──► Stock In ──► Inventory ──► Dispa
 
 ## Getting started
 
-**Requirements:** PHP 8.2+, Composer, Node.js, MySQL
-
-```bash
-git clone https://github.com/manasi2810/Inventory-Management.git
-cd Inventory-Management
-
-composer install
-npm install && npm run build
-
-cp .env.example .env
-php artisan key:generate
-```
-
-Create a MySQL database and set `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD` in `.env`, then:
-
-```bash
-php artisan migrate --seed
-php artisan serve
-```
-
+(keep your existing Getting started section)
 
 ## Project structure
 
-```text
-app/            Controllers, models, services
-database/       Migrations and seeders
-resources/      Blade views
-routes/
-├── auth.php        Login and session
-├── master.php      Employees, roles, products, vendors
-├── purchase.php    Purchase entry and records
-├── inventory.php   Stock-in and inventory
-├── delivery.php    Challans, dispatch and returns
-├── reports.php     Reports
-└── system.php      Dashboard, logs, settings
-```
+(keep your existing Project structure section)
 
 ## Roadmap
 
-- [ ] Database transactions around purchase, dispatch and return saves
+- [ ] Database transactions around purchase, receive, dispatch and return saves
 - [ ] Stock movement history per product
 - [ ] Low-stock alerts
-- [ ] PDF / Excel export for reports and invoices 
+- [ ] Automated tests with GitHub Actions
 
 ## Author
 
